@@ -21,6 +21,7 @@ export function getStaticPaths() {
 const { path, group, section } = Astro.props;
 const allPosts = await getCollection('posts');
 const posts = getPostsForLearningSection(allPosts, section.slug);
+const isNotes = path.slug === 'engineering-notes';
 const allSections = path.groups.flatMap((pathGroup) =>
   pathGroup.sections.map((pathSection) => ({ group: pathGroup, section: pathSection })),
 );
@@ -44,7 +45,7 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
     <h1>{section.title}</h1>
     <p>{section.description}</p>
     <div class="curriculum-section-summary">
-      <span>{String(section.topics.length).padStart(2, '0')} planned concepts</span>
+      <span>{String(section.topics.length).padStart(2, '0')} planned {isNotes ? 'ideas' : 'concepts'}</span>
       <span>{String(posts.length).padStart(2, '0')} articles available</span>
       <a href={`/topics/${path.slug}/#${group.slug}`}>Back to {group.title} ↑</a>
     </div>
@@ -71,14 +72,16 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
   <div class="curriculum-section-content section-wrap" id="curriculum-section-content">
     <section class="curriculum-planned" data-filter-group>
       <div class="curriculum-content-heading">
-        <div><p class="section-index">CONCEPT MAP</p><h2>Topics in this subsection</h2></div>
-        <p>Each topic will become a focused guide. The structure is ready now so new articles always have a predictable home.</p>
+        <div><p class="section-index">{isNotes ? 'IDEA MAP' : 'CONCEPT MAP'}</p><h2>Topics in this {isNotes ? 'collection' : 'subsection'}</h2></div>
+        <p>{isNotes
+          ? 'Each idea can become an independent deep dive. The collection keeps related investigations easy to find as the library grows.'
+          : 'Each topic will become a focused guide. The structure is ready now so new articles always have a predictable home.'}</p>
       </div>
       <div class="curriculum-concept-grid">
         {section.topics.map((topic, index) => (
           <article data-curriculum-item>
             <span>{String(index + 1).padStart(2, '0')}</span>
-            <div><small>PLANNED CONCEPT</small><h3>{topic}</h3></div>
+            <div><small>{isNotes ? 'PLANNED NOTE' : 'PLANNED CONCEPT'}</small><h3>{topic}</h3></div>
             <i aria-hidden="true">○</i>
           </article>
         ))}

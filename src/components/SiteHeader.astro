@@ -24,11 +24,11 @@ const isLearningPath = currentPath === '/topics/' || (currentPath.startsWith('/t
 
     <nav class="desktop-nav" aria-label="Primary navigation">
       <details class:list={['desktop-learn-menu', { 'is-current': isLearningPath }] }>
-        <summary>Learning paths <span aria-hidden="true">⌄</span></summary>
+        <summary>Explore <span aria-hidden="true">⌄</span></summary>
         <div class="learn-menu-panel">
           <div class="learn-menu-heading">
-            <div><span>THE ATLAS</span><strong>Choose a learning path</strong></div>
-            <a href="/topics/">View all paths <i aria-hidden="true">↗</i></a>
+            <div><span>THE ATLAS</span><strong>Choose a path or collection</strong></div>
+            <a href="/topics/">View all topics <i aria-hidden="true">↗</i></a>
           </div>
           <div class="learn-menu-grid">
             {TOPICS.map((topic) => (
@@ -60,13 +60,13 @@ const isLearningPath = currentPath === '/topics/' || (currentPath.startsWith('/t
 
   <nav class="mobile-nav" aria-label="Mobile navigation" data-mobile-nav>
     <a class="mobile-nav-overview" href="/topics/" aria-current={currentPath === '/topics/' ? 'page' : undefined}>
-      <span>00</span>All learning paths
+      <span>00</span>All topics and paths
     </a>
     {TOPICS.map((topic) => (
       <a href={`/topics/${topic.slug}/`} aria-current={currentPath.startsWith(`/topics/${topic.slug}/`) || (topic.slug === 'dsa' && currentPath.startsWith('/dsa/')) ? 'page' : undefined}>
         <span>{topic.number}</span>{topic.title}
       </a>
     ))}
-    <a href="/about/" aria-current={currentPath.startsWith('/about/') ? 'page' : undefined}><span>06</span>About</a>
+    <a href="/about/" aria-current={currentPath.startsWith('/about/') ? 'page' : undefined}><span>08</span>About</a>
   </nav>
 </header>

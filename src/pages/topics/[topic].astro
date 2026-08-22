@@ -19,6 +19,7 @@ const { topic } = Astro.props;
 const allPosts = await getCollection('posts');
 const posts = getPostsForTopic(allPosts, topic.slug);
 const isDsa = topic.slug === 'dsa';
+const isNotes = topic.slug === 'engineering-notes';
 const curriculum = getLearningPath(topic.slug);
 const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
 ---
@@ -39,7 +40,7 @@ const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
         <p>{topic.description}</p>
         <div class="topic-hero-actions">
           <a class="button button-primary" href={isDsa ? '#dsa-sections' : '#curriculum'}>
-            {isDsa ? 'Browse DSA topics' : 'Browse sections'}
+            {isDsa ? 'Browse DSA topics' : isNotes ? 'Browse note collections' : 'Browse sections'}
           </a>
         </div>
       </div>
@@ -98,14 +99,16 @@ const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
       <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
         <div class="section-heading">
           <div>
-            <p class="section-index">CURRICULUM / {String(curriculum.groups.length).padStart(2, '0')} SECTIONS</p>
-            <h2>Choose a section, then narrow the topic.</h2>
+            <p class="section-index">{isNotes ? 'COLLECTIONS' : 'CURRICULUM'} / {String(curriculum.groups.length).padStart(2, '0')} SECTIONS</p>
+            <h2>{isNotes ? 'Browse by engineering theme.' : 'Choose a section, then narrow the topic.'}</h2>
           </div>
-          <p>The curriculum is grouped so you can learn in order or jump directly to the concept you need. Every subsection has its own article list and search.</p>
+          <p>{isNotes
+            ? 'These collections give independent articles a predictable home without forcing them into a strict learning sequence. Every collection has its own article list and search.'
+            : 'The curriculum is grouped so you can learn in order or jump directly to the concept you need. Every subsection has its own article list and search.'}</p>
         </div>
 
         <SectionSearch
-          placeholder={`Search ${topic.title} sections and concepts`}
+          placeholder={`Search ${topic.title} ${isNotes ? 'collections and ideas' : 'sections and concepts'}`}
           scopeSelector="#curriculum-directory"
           itemSelector=".curriculum-section-card"
           itemLabel="subsections"

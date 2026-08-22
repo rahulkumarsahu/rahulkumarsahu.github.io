@@ -18,6 +18,8 @@
   --cyan: #55d6d0;
   --violet: #c39bff;
   --green: #79d39e;
+  --rose: #ff91b5;
+  --orange: #ff9b71;
   --shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
   --font-display: 'Space Grotesk', 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -42,6 +44,8 @@
   --cyan: #078d8d;
   --violet: #8b54d9;
   --green: #2d9259;
+  --rose: #c34876;
+  --orange: #c85c2f;
   --shadow: 0 28px 70px rgba(37, 46, 61, 0.12);
 }
 
@@ -832,7 +836,9 @@ a {
 }
 
 .track-card:nth-child(4),
-.track-card:nth-child(5) {
+.track-card:nth-child(5),
+.track-card:nth-child(6),
+.track-card:nth-child(7) {
   grid-column: span 3;
 }
 
@@ -857,6 +863,8 @@ a {
 .track-cyan { --track-accent: var(--cyan); }
 .track-violet { --track-accent: var(--violet); }
 .track-green { --track-accent: var(--green); }
+.track-rose { --track-accent: var(--rose); }
+.track-orange { --track-accent: var(--orange); }
 
 .track-topline,
 .track-meta {
@@ -2096,6 +2104,8 @@ a {
 .post-card-cyan { --post-accent: var(--cyan); }
 .post-card-violet { --post-accent: var(--violet); }
 .post-card-green { --post-accent: var(--green); }
+.post-card-rose { --post-accent: var(--rose); }
+.post-card-orange { --post-accent: var(--orange); }
 
 .post-card:hover {
   border-color: var(--line-strong);
@@ -2262,6 +2272,8 @@ a {
 .topic-cyan { --track-accent: var(--cyan); }
 .topic-violet { --track-accent: var(--violet); }
 .topic-green { --track-accent: var(--green); }
+.topic-rose { --track-accent: var(--rose); }
+.topic-orange { --track-accent: var(--orange); }
 
 .article-header h1 {
   margin: 24px 0 19px;
@@ -3183,7 +3195,9 @@ a {
 
   .track-card,
   .track-card:nth-child(4),
-  .track-card:nth-child(5) {
+  .track-card:nth-child(5),
+  .track-card:nth-child(6),
+  .track-card:nth-child(7) {
     grid-column: span 1;
   }
 
@@ -4019,13 +4033,13 @@ a {
   right: 18px;
   display: grid;
   width: 176px;
-  gap: 9px;
+  gap: 7px;
 }
 
 .atlas-route {
   --route-accent: var(--indigo);
   display: grid;
-  min-height: 58px;
+  min-height: 52px;
   grid-template-columns: 26px 1fr auto;
   align-items: center;
   gap: 9px;
@@ -4052,6 +4066,8 @@ a {
 .atlas-route-cyan { --route-accent: var(--cyan); }
 .atlas-route-violet { --route-accent: var(--violet); }
 .atlas-route-green { --route-accent: var(--green); }
+.atlas-route-rose { --route-accent: var(--rose); }
+.atlas-route-orange { --route-accent: var(--orange); }
 
 .atlas-route > span {
   color: var(--route-accent);

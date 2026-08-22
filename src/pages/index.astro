@@ -28,14 +28,14 @@ const roadmap = [
       <p class="home-hero-kicker">FROM YOUR FIRST ARRAY TO PRODUCTION SYSTEMS</p>
       <h1>Learn the code. See the <span>system</span> behind it.</h1>
       <p class="home-hero-intro">
-        I write practical guides on DSA, Java, low level design, system design, Docker and Kubernetes. We start with the basic idea, work through code, and finish with the decisions that matter in a real system.
+        I write practical guides on DSA, Java, system design, cloud native engineering and AI, along with deeper notes from real engineering work. We start with the basic idea, work through the implementation, and finish with the decisions that matter in a real system.
       </p>
       <div class="home-hero-actions">
         <a class="button button-primary" href="/topics/dsa/">
           Start with DSA
           <span aria-hidden="true">↗</span>
         </a>
-        <a class="button button-secondary" href="#learning-paths">See all learning paths</a>
+        <a class="button button-secondary" href="#learning-paths">See all topics</a>
       </div>
       <nav class="home-starting-points" aria-label="Popular starting points">
         <span>Popular starting points</span>
@@ -45,7 +45,7 @@ const roadmap = [
       </nav>
       <dl class="home-hero-proof" aria-label="What the Atlas contains">
         <div><dt>{String(posts.length).padStart(2, '0')}</dt><dd>practical notes</dd></div>
-        <div><dt>05</dt><dd>connected paths</dd></div>
+        <div><dt>{String(TOPICS.length).padStart(2, '0')}</dt><dd>connected paths</dd></div>
         <div><dt>Java</dt><dd>first examples</dd></div>
       </dl>
     </div>
@@ -72,7 +72,7 @@ const roadmap = [
               <small>Backend engineer · 8+ years</small>
             </div>
           </div>
-          <nav class="atlas-route-list" aria-label="Learning paths">
+          <nav class="atlas-route-list" aria-label="Topics and learning paths">
             {TOPICS.map((topic, index) => (
               <a href={`/topics/${topic.slug}/`} class={`atlas-route atlas-route-${topic.accent}`} style={`--route-delay: ${index * 100}ms`}>
                 <span>{topic.number}</span>
@@ -98,10 +98,10 @@ const roadmap = [
   <section class="trust-strip" aria-label="Topics covered">
     <div class="trust-track">
       <div class="trust-group">
-        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>DOCKER</span><i>◆</i><span>KUBERNETES</span><i>◆</i>
+        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>CLOUD NATIVE</span><i>◆</i><span>AI ENGINEERING</span><i>◆</i><span>ENGINEERING NOTES</span><i>◆</i>
       </div>
       <div class="trust-group" aria-hidden="true">
-        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>DOCKER</span><i>◆</i><span>KUBERNETES</span><i>◆</i>
+        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>CLOUD NATIVE</span><i>◆</i><span>AI ENGINEERING</span><i>◆</i><span>ENGINEERING NOTES</span><i>◆</i>
       </div>
     </div>
   </section>
@@ -135,8 +135,8 @@ const roadmap = [
 
   <section class="tracks section-wrap" id="learning-paths" data-reveal>
     <div class="section-heading">
-      <div><p class="section-index">02 / LEARNING PATHS</p><h2>Pick the route you need today.</h2></div>
-      <p>Start at the beginning or jump straight to a topic. The paths connect, but you do not have to complete one before opening another.</p>
+      <div><p class="section-index">02 / PATHS &amp; COLLECTIONS</p><h2>Pick the route you need today.</h2></div>
+      <p>Follow a structured path or open a collection that matches the problem in front of you. You can always move between topics as your questions change.</p>
     </div>
     <div class="track-grid">
       {TOPICS.map((topic, index) => (
@@ -144,7 +144,7 @@ const roadmap = [
           <div class="track-topline"><span>{topic.number}</span><span class="track-arrow" aria-hidden="true">↗</span></div>
           <h3>{topic.title}</h3>
           <p>{topic.description}</p>
-          <div class="track-meta"><span>{topicCounts.get(topic.slug)} notes</span><span class="track-status"><i></i> Open path</span></div>
+          <div class="track-meta"><span>{topicCounts.get(topic.slug)} {topicCounts.get(topic.slug) === 1 ? 'note' : 'notes'}</span><span class="track-status"><i></i> Explore</span></div>
         </a>
       ))}
     </div>

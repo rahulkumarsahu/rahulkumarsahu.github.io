@@ -1,6 +1,6 @@
 # The System Design Atlas
 
-A Java-first engineering blog about DSA, low-level design, system design, Docker, and Kubernetes.
+A Java-first engineering blog about DSA, low-level design, system design, cloud native systems, AI engineering, and practical lessons from real software work.
 
 ## Requirements
 

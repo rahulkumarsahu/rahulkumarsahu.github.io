@@ -11,7 +11,7 @@ const posts = defineCollection({
     description: z.string().default(''),
     categories: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
-    topic: z.enum(['dsa', 'java', 'lld', 'system-design', 'cloud-native']).optional(),
+    topic: z.enum(['dsa', 'java', 'lld', 'system-design', 'cloud-native', 'ai', 'engineering-notes']).optional(),
     series: z.string().optional(),
     learningSection: z.string().optional(),
     difficulty: z.enum(['basics', 'easy', 'medium', 'hard']).optional(),

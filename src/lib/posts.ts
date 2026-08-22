@@ -26,6 +26,14 @@ export function getTopicForPost(post: Post): Topic {
     .join(' ')
     .toLowerCase();
 
+  if (/artificial intelligence|\bai\b|llm|large language model|rag|embedding|prompt engineering|model evaluation/.test(haystack)) {
+    return TOPICS.find((topic) => topic.slug === 'ai')!;
+  }
+
+  if (/engineering note|developer productivity|developer tooling|failure analysis|build pipeline|technical deep dive/.test(haystack)) {
+    return TOPICS.find((topic) => topic.slug === 'engineering-notes')!;
+  }
+
   if (/docker|kubernetes|helm|cloud-native|devops/.test(haystack)) {
     return TOPICS.find((topic) => topic.slug === 'cloud-native')!;
   }

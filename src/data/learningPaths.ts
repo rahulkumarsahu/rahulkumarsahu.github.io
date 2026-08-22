@@ -272,6 +272,87 @@ export const LEARNING_PATHS = [
       },
     ],
   },
+  {
+    slug: 'ai',
+    number: '06',
+    title: 'AI Engineering',
+    description: 'Build useful AI systems through strong context, retrieval, evaluation, safety, and production engineering.',
+    groups: [
+      {
+        slug: 'ai-foundations', number: '01', title: 'AI foundations', description: 'Build the mental models needed to make sound product and engineering decisions around AI systems.',
+        sections: [
+          { slug: 'ai-engineering-foundations', number: '01', title: 'AI engineering foundations', description: 'Understand models, prompts, context, outputs, evaluation, and the surrounding software system as one product.', topics: ['AI product boundaries', 'Probabilistic behavior', 'Models and inference', 'Context and output', 'Evaluation loops', 'Human review'] },
+          { slug: 'machine-learning-foundations', number: '02', title: 'Machine learning foundations', description: 'Learn the basic ideas behind training, inference, features, generalization, and common model families.', topics: ['Supervised learning', 'Unsupervised learning', 'Training and inference', 'Features', 'Overfitting', 'Model selection'] },
+          { slug: 'data-model-lifecycle', number: '03', title: 'Data and model lifecycle', description: 'Treat data quality, versioning, feedback, and model change as production concerns.', topics: ['Data quality', 'Dataset versioning', 'Labeling', 'Experiment tracking', 'Model registry', 'Feedback loops'] },
+        ],
+      },
+      {
+        slug: 'llm-applications', number: '02', title: 'LLM applications', description: 'Build language model features with explicit context, grounding, tools, and predictable output boundaries.',
+        sections: [
+          { slug: 'prompting-context', number: '01', title: 'Prompting and context engineering', description: 'Give a model the instructions and information it needs without relying on fragile prompt tricks.', topics: ['System instructions', 'Context windows', 'Few shot examples', 'Structured outputs', 'Prompt versioning', 'Context budgets'] },
+          { slug: 'embeddings-vector-search', number: '02', title: 'Embeddings and vector search', description: 'Represent meaning numerically and retrieve useful candidates with measurable relevance.', topics: ['Embeddings', 'Similarity measures', 'Chunking', 'Vector indexes', 'Hybrid search', 'Reranking'] },
+          { slug: 'rag-systems', number: '03', title: 'Retrieval augmented generation', description: 'Ground model responses in trusted information and make retrieval quality visible.', topics: ['Ingestion pipelines', 'Retrieval', 'Grounding', 'Citations', 'Freshness', 'RAG evaluation'] },
+          { slug: 'tool-use-agents', number: '04', title: 'Tool use and agents', description: 'Let models take bounded actions through typed tools, explicit state, and controlled workflows.', topics: ['Function calling', 'Tool contracts', 'Workflow state', 'Planning', 'Memory', 'Approval boundaries'] },
+        ],
+      },
+      {
+        slug: 'ai-quality', number: '03', title: 'Quality, safety and trust', description: 'Measure behavior, protect sensitive data, and design for the ways an AI feature can fail.',
+        sections: [
+          { slug: 'ai-evaluation', number: '01', title: 'AI evaluation', description: 'Turn product expectations into repeatable datasets, metrics, and review loops.', topics: ['Golden datasets', 'Offline evaluation', 'Online evaluation', 'LLM judges', 'Human review', 'Regression testing'] },
+          { slug: 'ai-safety-security', number: '02', title: 'AI safety and security', description: 'Protect models, tools, users, and data from unsafe or adversarial behavior.', topics: ['Prompt injection', 'Data leakage', 'Tool permissions', 'Content safety', 'Guardrails', 'Threat modeling'] },
+          { slug: 'ai-observability', number: '03', title: 'AI observability', description: 'Trace requests, context, model behavior, cost, and quality without collecting unnecessary sensitive data.', topics: ['Prompt traces', 'Token usage', 'Quality signals', 'Drift', 'Feedback', 'Privacy aware logging'] },
+        ],
+      },
+      {
+        slug: 'production-ai', number: '04', title: 'Production AI systems', description: 'Operate AI features with predictable latency, cost, capacity, reliability, and change management.',
+        sections: [
+          { slug: 'model-serving-inference', number: '01', title: 'Model serving and inference', description: 'Choose hosted or self managed inference and understand batching, caching, and model routing.', topics: ['Hosted models', 'Self hosting', 'Inference servers', 'Batching', 'Model routing', 'Response caching'] },
+          { slug: 'ai-latency-cost', number: '02', title: 'Latency, cost and reliability', description: 'Control token budgets, fallback behavior, timeouts, and resource use from the start.', topics: ['Token budgets', 'Streaming', 'Timeouts', 'Fallbacks', 'Rate limits', 'Cost attribution'] },
+          { slug: 'ai-system-design', number: '03', title: 'AI system design', description: 'Combine application services, data pipelines, retrieval, models, evaluation, and operations into a coherent architecture.', topics: ['AI gateways', 'Async workflows', 'Data pipelines', 'Model fallbacks', 'Evaluation services', 'Case studies'] },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'engineering-notes',
+    number: '07',
+    title: 'Engineering Notes',
+    description: 'Independent deep dives into tools, failures, experiments, and the practical decisions behind software systems.',
+    groups: [
+      {
+        slug: 'developer-tooling', number: '01', title: 'Developer tooling', description: 'Explore the systems that help engineers build, test, understand, and ship software with less friction.',
+        sections: [
+          { slug: 'ci-cd-build-systems', number: '01', title: 'CI, CD and build systems', description: 'Study pipelines, build performance, test feedback, artifact flow, and deployment safety.', topics: ['Pipeline design', 'Build caching', 'Test selection', 'Artifact flow', 'Deployment feedback', 'Failure diagnosis'] },
+          { slug: 'ai-assisted-developer-tools', number: '02', title: 'AI assisted developer tools', description: 'Use AI where it improves engineering feedback while keeping context, cost, privacy, and trust under control.', topics: ['Failure aware log reduction', 'Code review assistance', 'Repository context', 'Tool calling', 'Evaluation', 'Human approval'] },
+          { slug: 'developer-experience', number: '03', title: 'Developer experience', description: 'Reduce the time between an idea, a useful local signal, and a safe production change.', topics: ['Local environments', 'Inner loop speed', 'Documentation', 'Golden paths', 'Platform APIs', 'Feedback loops'] },
+        ],
+      },
+      {
+        slug: 'reliability-lessons', number: '02', title: 'Reliability and failure', description: 'Use incidents and production behavior to understand how systems actually fail and recover.',
+        sections: [
+          { slug: 'failure-analysis', number: '01', title: 'Failure analysis', description: 'Find the earliest meaningful failure, reconstruct its context, and separate cause from secondary noise.', topics: ['Failure timelines', 'Root cause analysis', 'Cascading errors', 'Retries', 'Recovery', 'Learning reviews'] },
+          { slug: 'observability-deep-dives', number: '02', title: 'Observability deep dives', description: 'Turn logs, metrics, traces, and profiles into useful answers instead of larger data collections.', topics: ['Signal design', 'Structured logs', 'Metrics', 'Distributed traces', 'Cardinality', 'Alert quality'] },
+          { slug: 'performance-debugging', number: '03', title: 'Performance and debugging', description: 'Follow evidence across code, runtime, network, and infrastructure when a system becomes slow or unstable.', topics: ['Profiling', 'Flame graphs', 'Memory', 'Database latency', 'Network behavior', 'Capacity bottlenecks'] },
+        ],
+      },
+      {
+        slug: 'architecture-experiments', number: '03', title: 'Architecture and experiments', description: 'Capture useful technical explorations that do not need to become a permanent learning path.',
+        sections: [
+          { slug: 'architecture-deep-dives', number: '01', title: 'Architecture deep dives', description: 'Examine one design choice closely, including the constraints that make it reasonable or risky.', topics: ['Architecture decisions', 'Tradeoffs', 'Evolution', 'Migration', 'Boundaries', 'Case studies'] },
+          { slug: 'data-pipeline-deep-dives', number: '02', title: 'Data pipeline deep dives', description: 'Explore ingestion, transformation, quality, delivery, and recovery in practical data flows.', topics: ['Ingestion', 'Stream processing', 'Batch processing', 'Data quality', 'Backfills', 'Lineage'] },
+          { slug: 'platform-patterns', number: '03', title: 'Platform patterns', description: 'Study reusable platform capabilities without hiding the infrastructure and ownership behind them.', topics: ['Self service platforms', 'Control planes', 'Service catalogs', 'Policy', 'Templates', 'Platform metrics'] },
+        ],
+      },
+      {
+        slug: 'engineering-practice', number: '04', title: 'Engineering practice', description: 'Write about the judgment, communication, and habits that shape maintainable technical work.',
+        sections: [
+          { slug: 'engineering-judgment', number: '01', title: 'Engineering judgment', description: 'Make decisions with incomplete information and explain why a tradeoff is appropriate now.', topics: ['Decision making', 'Risk', 'Scope', 'Technical debt', 'Prioritization', 'Tradeoff records'] },
+          { slug: 'technical-writing', number: '02', title: 'Technical writing', description: 'Turn technical work into explanations, design documents, runbooks, and reviews that people can use.', topics: ['Design documents', 'Runbooks', 'Architecture records', 'Code review', 'Teaching', 'Documentation maintenance'] },
+          { slug: 'career-lessons', number: '03', title: 'Career lessons', description: 'Capture the practical lessons that come from owning systems, collaborating, and helping others grow.', topics: ['Ownership', 'Mentoring', 'Communication', 'Learning', 'Leadership', 'Sustainable growth'] },
+        ],
+      },
+    ],
+  },
 ] as const;
 
 export type DsaSection = (typeof DSA_SECTIONS)[number];

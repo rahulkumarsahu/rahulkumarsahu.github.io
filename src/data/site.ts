@@ -3,8 +3,8 @@ export const SITE = {
   shortName: 'System Design Atlas',
   title: 'The System Design Atlas — Rahul Kumar',
   description:
-    'Practical guides on DSA, Java, Spring Boot, microservices, low level design, system design, Docker, and Kubernetes.',
-  tagline: 'Navigate from algorithms to distributed systems.',
+    'Practical guides on DSA, Java, system design, cloud native engineering, AI engineering, and the ideas that improve real software teams.',
+  tagline: 'Navigate from algorithms to intelligent, distributed systems.',
   url: 'https://rahulkumarsahu.github.io',
   author: 'Rahul Kumar',
   email: 'rahulkumar060995@gmail.com',
@@ -66,6 +66,26 @@ export const TOPICS = [
       'Package, deploy, observe, and operate reliable systems using Docker and Kubernetes.',
     meta: 'Production',
     accent: 'green',
+  },
+  {
+    slug: 'ai',
+    number: '06',
+    title: 'AI Engineering',
+    shortTitle: 'AI',
+    description:
+      'Build useful AI features through strong data, context, retrieval, evaluation, safety, and production engineering.',
+    meta: 'Intelligent systems',
+    accent: 'rose',
+  },
+  {
+    slug: 'engineering-notes',
+    number: '07',
+    title: 'Engineering Notes',
+    shortTitle: 'Notes',
+    description:
+      'Standalone investigations into developer tooling, reliability, performance, experiments, and lessons from real engineering work.',
+    meta: 'Independent essays',
+    accent: 'orange',
   },
 ] as const;
 

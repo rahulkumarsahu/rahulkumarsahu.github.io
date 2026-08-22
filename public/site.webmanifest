@@ -1,7 +1,7 @@
 {
   "name": "The System Design Atlas",
   "short_name": "Design Atlas",
-  "description": "Practical learning paths for DSA, Java, system design, LLD and cloud native engineering.",
+  "description": "Practical paths for DSA, Java, system design, cloud native engineering, AI engineering and independent engineering notes.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#07101d",
