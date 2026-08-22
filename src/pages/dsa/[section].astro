@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import DsaArticleCard from '../../components/DsaArticleCard.astro';
+import SectionSearch from '../../components/SectionSearch.astro';
+import { DSA_SECTIONS } from '../../data/learningPaths';
+import { getPostsForSeries } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return DSA_SECTIONS.map((section) => ({
+    params: { section: section.slug },
+    props: { section },
+  }));
+}
+
+const { section } = Astro.props;
+const posts = getPostsForSeries(await getCollection('posts'), section.slug);
+const groups = ['basics', 'easy', 'medium', 'hard'] as const;
+const groupCopy = {
+  basics: ['01', 'Learn the idea', 'Build the mental model and learn the reusable implementation pattern.'],
+  easy: ['02', 'Easy practice', 'Use the core idea in a direct problem with one main decision.'],
+  medium: ['03', 'Medium practice', 'Combine the pattern with boundaries, state, or another technique.'],
+  hard: ['04', 'Hard practice', 'Work through problems with less obvious invariants and tighter constraints.'],
+};
+---
+
+<BaseLayout title={section.title} description={section.description}>
+  <section class="page-hero dsa-section-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: section.title }]} />
+    <p class="section-index">SECTION {section.number} / DSA</p>
+    <h1>{section.title}</h1>
+    <p>{section.description}</p>
+    <div class="dsa-topic-pills">
+      {section.topics.map((topic) => <span>{topic}</span>)}
+    </div>
+  </section>
+
+  <div class="section-search-wrap section-wrap">
+    <SectionSearch
+      placeholder={`Search ${section.title} questions and concepts`}
+      scopeSelector="#difficulty-list"
+      itemSelector=".dsa-article-card"
+      itemLabel="articles"
+    />
+  </div>
+
+  <div class="difficulty-sections section-wrap" id="difficulty-list">
+    {groups.map((group) => {
+      const matching = posts.filter((post) => (post.data.difficulty ?? 'basics') === group);
+      const [number, title, description] = groupCopy[group];
+      return (
+        <section class="difficulty-section" data-filter-group>
+          <div class="difficulty-heading">
+            <span>{number}</span>
+            <div><h2>{title}</h2><p>{description}</p></div>
+            <small>{String(matching.length).padStart(2, '0')} ARTICLES</small>
+          </div>
+          {matching.length ? (
+            <div class="dsa-article-grid">{matching.map((post) => <DsaArticleCard {post} />)}</div>
+          ) : (
+            <div class="difficulty-empty">Starter articles for this level are in the publishing plan.</div>
+          )}
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>

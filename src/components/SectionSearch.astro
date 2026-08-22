@@ -1,0 +1,84 @@
+---
+interface Props {
+  placeholder: string;
+  scopeSelector: string;
+  itemSelector: string;
+  itemLabel?: string;
+}
+
+const {
+  placeholder,
+  scopeSelector,
+  itemSelector,
+  itemLabel = 'items',
+} = Astro.props;
+---
+
+<div
+  class="section-search"
+  data-section-search
+  data-scope-selector={scopeSelector}
+  data-item-selector={itemSelector}
+  data-item-label={itemLabel}
+>
+  <div class="section-search-field">
+    <span aria-hidden="true">⌕</span>
+    <input type="search" placeholder={placeholder} aria-label={placeholder} autocomplete="off" data-section-search-input />
+    <button type="button" data-section-search-clear hidden>Clear</button>
+  </div>
+  <p class="section-search-status" aria-live="polite" data-section-search-status></p>
+  <div class="section-search-empty" data-section-search-empty hidden>
+    <strong>No matching content</strong>
+    <span>Try a broader word or clear the search.</span>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-section-search]').forEach((search) => {
+    if (!(search instanceof HTMLElement)) return;
+
+    const input = search.querySelector('[data-section-search-input]');
+    const clear = search.querySelector('[data-section-search-clear]');
+    const status = search.querySelector('[data-section-search-status]');
+    const empty = search.querySelector('[data-section-search-empty]');
+    const scope = document.querySelector(search.dataset.scopeSelector || '');
+    const itemSelector = search.dataset.itemSelector || '';
+    const itemLabel = search.dataset.itemLabel || 'items';
+
+    if (!(input instanceof HTMLInputElement) || !scope || !itemSelector) return;
+
+    const items = Array.from(scope.querySelectorAll(itemSelector));
+
+    const filter = () => {
+      const query = input.value.trim().toLowerCase();
+      let visible = 0;
+
+      items.forEach((item) => {
+        const matches = !query || (item.textContent || '').toLowerCase().includes(query);
+        if (item instanceof HTMLElement) item.hidden = !matches;
+        if (matches) visible++;
+      });
+
+      scope.querySelectorAll('[data-filter-group]').forEach((group) => {
+        if (!(group instanceof HTMLElement)) return;
+        group.hidden = Boolean(query) && group.querySelectorAll(`${itemSelector}:not([hidden])`).length === 0;
+      });
+
+      if (status) {
+        status.textContent = query
+          ? `${visible} ${visible === 1 ? itemLabel.replace(/s$/, '') : itemLabel} found`
+          : `${items.length} ${itemLabel} available`;
+      }
+      if (clear instanceof HTMLButtonElement) clear.hidden = !query;
+      if (empty instanceof HTMLElement) empty.hidden = visible > 0;
+    };
+
+    input.addEventListener('input', filter);
+    clear?.addEventListener('click', () => {
+      input.value = '';
+      filter();
+      input.focus();
+    });
+    filter();
+  });
+</script>

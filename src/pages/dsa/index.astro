@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { DSA_SECTIONS } from '../../data/learningPaths';
+import { getPostsForSeries } from '../../lib/posts';
+
+const posts = await getCollection('posts');
+---
+
+<BaseLayout title="DSA Topics" description="Explore the complete Java first DSA curriculum by data structure, pattern, and difficulty.">
+  <section class="page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Topic directory' }]} />
+    <p class="section-index">DSA / TOPIC DIRECTORY</p>
+    <h1>Learn one pattern at a time.</h1>
+    <p>Each section starts with the basic idea, then moves through patterns and practice problems grouped by difficulty.</p>
+  </section>
+
+  <section class="dsa-section-directory section-wrap">
+    {DSA_SECTIONS.map((section) => {
+      const count = getPostsForSeries(posts, section.slug).length;
+      return (
+        <a class="dsa-section-row" href={`/dsa/${section.slug}/`}>
+          <span>{section.number}</span>
+          <div>
+            <small>{count ? `${count} ARTICLES AVAILABLE` : 'CURRICULUM READY'}</small>
+            <h2>{section.title}</h2>
+            <p>{section.description}</p>
+          </div>
+          <i aria-hidden="true">→</i>
+        </a>
+      );
+    })}
+  </section>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import {
+  getPostSlug,
+  getPostsForSeries,
+  getSortedPosts,
+  getTopicForPost,
+} from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = getSortedPosts(await getCollection('posts'));
+  return posts.map((post) => ({
+    params: { slug: getPostSlug(post) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const posts = getSortedPosts(await getCollection('posts'));
+const currentTopic = getTopicForPost(post);
+const seriesPosts = post.data.series ? getPostsForSeries(posts, post.data.series) : [];
+const navigationPosts = seriesPosts.length > 1 ? seriesPosts : posts;
+const currentIndex = navigationPosts.findIndex((item) => item.id === post.id);
+const previous = seriesPosts.length > 1 ? navigationPosts[currentIndex - 1] : navigationPosts[currentIndex + 1];
+const next = seriesPosts.length > 1 ? navigationPosts[currentIndex + 1] : navigationPosts[currentIndex - 1];
+const related = [
+  ...seriesPosts.filter((item) => item.id !== post.id),
+  ...posts.filter(
+    (item) => item.id !== post.id
+      && item.data.series !== post.data.series
+      && getTopicForPost(item).slug === currentTopic.slug,
+  ),
+];
+const { Content, headings } = await render(post);
+const hasContent = Boolean(post.body?.trim());
+---
+
+<PostLayout {post} {headings} {previous} {next} {related} {hasContent}>
+  <Content />
+</PostLayout>

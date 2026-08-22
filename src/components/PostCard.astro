@@ -1,0 +1,34 @@
+---
+import type { Post } from '../lib/posts';
+import { estimateReadTime, formatDate, getPostSlug, getTopicForPost } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+const topic = getTopicForPost(post);
+const slug = getPostSlug(post);
+---
+
+<article class:list={['post-card', `post-card-${topic.accent}`, { 'post-card-featured': featured }]}>
+  <a class="post-card-link" href={`/posts/${slug}/`} aria-label={`Read ${post.data.title}`}></a>
+  <div class="post-card-art" aria-hidden="true">
+    <span class="post-card-topic">{topic.number} / {topic.shortTitle}</span>
+    <div class="post-card-shape"></div>
+    <div class="post-card-grid"></div>
+  </div>
+  <div class="post-card-body">
+    <div class="post-card-meta">
+      <span>{formatDate(post.data.date)}</span>
+      <span>{estimateReadTime(post)} min read</span>
+    </div>
+    <h3>{post.data.title}</h3>
+    <p>{post.data.description || `Explore ${post.data.title} through practical examples and engineering trade-offs.`}</p>
+    <div class="post-card-footer">
+      <span>{topic.title}</span>
+      <span aria-hidden="true">Read note ↗</span>
+    </div>
+  </div>
+</article>

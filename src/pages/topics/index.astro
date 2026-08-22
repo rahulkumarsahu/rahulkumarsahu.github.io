@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { TOPICS } from '../../data/site';
+import { getPostsForTopic } from '../../lib/posts';
+
+const posts = await getCollection('posts');
+---
+
+<BaseLayout
+  title="Learning Tracks"
+  description="Explore structured learning paths across DSA, Java, Spring Boot, microservices, low level design, system design, Docker, and Kubernetes."
+>
+  <section class="page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Learning tracks' }]} />
+    <p class="section-index">ATLAS / ALL ROUTES</p>
+    <h1>Choose your route through software engineering.</h1>
+    <p>
+      Each track connects code-level decisions to system-level consequences. Start with the
+      foundations or jump to the map you need today.
+    </p>
+  </section>
+
+  <section class="topic-directory section-wrap">
+    {TOPICS.map((topic) => {
+      const topicPosts = getPostsForTopic(posts, topic.slug);
+      return (
+        <a class={`topic-directory-card track-${topic.accent}`} href={`/topics/${topic.slug}/`}>
+          <div class="topic-directory-number">{topic.number}</div>
+          <div>
+            <span>{topic.meta}</span>
+            <h2>{topic.title}</h2>
+            <p>{topic.description}</p>
+          </div>
+          <div class="topic-directory-meta">
+            <span>{topicPosts.length} {topicPosts.length === 1 ? 'note' : 'notes'}</span>
+            <i aria-hidden="true">↗</i>
+          </div>
+        </a>
+      );
+    })}
+  </section>
+</BaseLayout>

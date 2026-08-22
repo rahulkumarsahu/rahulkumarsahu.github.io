@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../data/site';
+---
+
+<BaseLayout
+  title="About Rahul Kumar"
+  description="I’m Rahul Kumar, a Senior Backend Engineer who writes about Java, distributed systems, cloud platforms, and practical software design."
+>
+  <section class="page-hero about-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'About' }]} />
+    <div class="about-page-grid">
+      <div>
+        <p class="section-index">ABOUT ME</p>
+        <h1>I build backend systems and share what I learn while doing it.</h1>
+        <p>
+          I’m Rahul Kumar, a Senior Backend Engineer at JPMorgan Chase with more than eight
+          years of experience in backend, cloud, and platform engineering. Before this, I worked
+          as a Member of Technical Staff at Oracle.
+        </p>
+        <div class="about-page-actions">
+          <a class="button button-primary" href={SITE.linkedin}>Connect on LinkedIn</a>
+          <a class="button button-secondary" href={SITE.portfolio}>View my portfolio</a>
+        </div>
+      </div>
+      <div class="portrait-frame">
+        <img src="/images/rahul-kumar.jpg" alt="Rahul Kumar" width="420" height="420" />
+        <span>RAHUL KUMAR / SENIOR BACKEND ENGINEER</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-story section-wrap">
+    <div class="about-story-label">
+      <span>01</span>
+      <p>A LITTLE ABOUT MY WORK</p>
+    </div>
+    <div class="about-story-copy">
+      <h2>I enjoy the kind of engineering work where reliability and developer experience meet.</h2>
+      <p>
+        Over the years I have worked on Java and Go services, cloud infrastructure, build
+        platforms, CI/CD systems, distributed caching, observability, and tools that help
+        developers understand failures faster. I like problems where the answer has to work in
+        production, not only on a whiteboard.
+      </p>
+      <p>
+        I started The System Design Atlas because writing forces me to understand a subject more
+        clearly. I want this to become the place where I connect DSA and Java fundamentals with
+        Low Level Design, System Design, Docker, Kubernetes, and the choices we make while running
+        real systems.
+      </p>
+    </div>
+  </section>
+
+  <section class="career-highlights section-wrap">
+    <div class="section-heading section-heading-notes">
+      <div>
+        <p class="section-index">SOME WORK I AM PROUD OF</p>
+        <h2>A few problems I have had the chance to solve.</h2>
+      </div>
+    </div>
+    <div class="principle-grid career-grid">
+      <article>
+        <span>01</span>
+        <h3>Faster build platforms</h3>
+        <p>I helped build CI/CD and container build systems that reduced build and deployment time by as much as 50 percent. The platform used Terraform, AWS ECS Fargate, and Kaniko for scalable remote builds.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>More reliable services</h3>
+        <p>I have worked on Java and Spring Boot foundations with worker pools, Redis Sentinel, rate limiting, circuit breakers, caching, and safety controls for fault tolerant services.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>Better operational visibility</h3>
+        <p>I have built AI assisted diagnostics for CI/CD failures, observability pipelines with Prometheus and Grafana, and contributed to cloud migrations involving 50 TB of data across 15 brands.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="principles section-wrap">
+    <p class="section-index">HOW I LIKE TO LEARN AND WRITE</p>
+    <div class="principle-grid">
+      <article>
+        <span>01</span>
+        <h3>Start with the why</h3>
+        <p>I understand a topic better when I know the problem it solves before looking at the final implementation.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>Be honest about tradeoffs</h3>
+        <p>Most engineering choices depend on context. I try to explain what we gain, what we give up, and when the decision changes.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>Keep it practical</h3>
+        <p>Examples should help with interviews, but they should also connect to the way software behaves after it reaches production.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="toolbox section-wrap">
+    <div>
+      <p class="section-index">ENGINEERING TOOLBOX</p>
+      <h2>Technologies I work with.</h2>
+    </div>
+    <div class="toolbox-list">
+      {['Java 8 to 21', 'Go', 'Spring Boot', 'Reactive Java', 'Distributed Systems', 'Microservices', 'AWS', 'Terraform', 'Docker', 'Kubernetes', 'Helm', 'ECS Fargate', 'Jenkins', 'CI/CD', 'Redis', 'MySQL', 'Prometheus', 'Grafana', 'GenAI', 'MCP'].map((item) => (
+        <span>{item}</span>
+      ))}
+    </div>
+  </section>
+
+  <section class="about-connect section-wrap">
+    <div class="about-connect-card">
+      <p class="section-index">LET’S CONNECT</p>
+      <h2>If you are working on an interesting backend or platform problem, I would be happy to hear about it.</h2>
+      <p>I enjoy conversations about distributed systems, Java, cloud platforms, developer productivity, practical AI tooling, and engineering careers.</p>
+      <div class="about-page-actions">
+        <a class="button button-primary" href={SITE.linkedin}>Connect on LinkedIn</a>
+        <a class="button button-secondary" href={SITE.scalableStack}>Read The Scalable Stack</a>
+        <a class="button button-secondary" href={SITE.topmate}>Book a conversation</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

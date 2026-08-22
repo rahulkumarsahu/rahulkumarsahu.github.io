@@ -1,0 +1,156 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PostCard from '../../components/PostCard.astro';
+import SectionSearch from '../../components/SectionSearch.astro';
+import { DSA_SECTIONS, getLearningPath } from '../../data/learningPaths';
+import { TOPICS } from '../../data/site';
+import { getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return TOPICS.map((topic) => ({
+    params: { topic: topic.slug },
+    props: { topic },
+  }));
+}
+
+const { topic } = Astro.props;
+const allPosts = await getCollection('posts');
+const posts = getPostsForTopic(allPosts, topic.slug);
+const isDsa = topic.slug === 'dsa';
+const curriculum = getLearningPath(topic.slug);
+const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
+---
+
+<BaseLayout title={topic.title} description={topic.description}>
+  <section class={`page-hero topic-hero section-wrap track-${topic.accent}`}>
+    <Breadcrumbs
+      items={[
+        { label: 'Atlas', href: '/' },
+        { label: 'Learning tracks', href: '/topics/' },
+        { label: topic.shortTitle },
+      ]}
+    />
+    <div class="topic-hero-grid">
+      <div>
+        <p class="section-index">TRACK {topic.number} / {topic.meta.toUpperCase()}</p>
+        <h1>{topic.title}</h1>
+        <p>{topic.description}</p>
+        <div class="topic-hero-actions">
+          <a class="button button-primary" href={isDsa ? '#dsa-sections' : '#curriculum'}>
+            {isDsa ? 'Browse DSA topics' : 'Browse sections'}
+          </a>
+        </div>
+      </div>
+      <div class="topic-hero-map" aria-hidden="true">
+        <span>{topic.number}</span>
+        <i></i><i></i><i></i>
+      </div>
+    </div>
+  </section>
+
+  {isDsa ? (
+    <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
+      <div class="section-heading section-heading-notes">
+        <div>
+          <p class="section-index">DSA TOPICS / {String(DSA_SECTIONS.length).padStart(2, '0')}</p>
+          <h2>Choose a topic, then practice by difficulty.</h2>
+        </div>
+        <p>Every topic opens into separate Basics, Easy, Medium, and Hard question lists. Start with Arrays or Binary Search, then move through the topics in order.</p>
+      </div>
+
+      <SectionSearch
+        placeholder="Search DSA topics, patterns, or data structures"
+        scopeSelector="#dsa-topic-list"
+        itemSelector=".dsa-topic-tab"
+        itemLabel="topics"
+      />
+
+      <div class="dsa-tab-grid" id="dsa-topic-list">
+        {DSA_SECTIONS.map((section) => {
+          const sectionPosts = getPostsForSeries(allPosts, section.slug);
+          return (
+            <a class:list={['dsa-topic-tab', { 'has-articles': sectionPosts.length > 0 }]} href={`/dsa/${section.slug}/`}>
+              <div class="dsa-topic-tab-top">
+                <span>{section.number}</span>
+                <small>{sectionPosts.length ? `${sectionPosts.length} ARTICLES` : 'CURRICULUM READY'}</small>
+              </div>
+              <h3>{section.title}</h3>
+              <p>{section.description}</p>
+              <div class="dsa-topic-tab-tags">
+                {section.topics.slice(0, 3).map((item) => <span>{item}</span>)}
+              </div>
+              <div class="dsa-topic-tab-levels">
+                {difficultyLevels.map((level) => {
+                  const count = sectionPosts.filter((post) => (post.data.difficulty ?? 'basics') === level).length;
+                  return <span class:list={[`level-${level}`, { 'has-count': count > 0 }]}>{level} <strong>{count}</strong></span>;
+                })}
+              </div>
+              <div class="dsa-topic-tab-action">Open question list <span>→</span></div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  ) : curriculum ? (
+    <>
+      <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">CURRICULUM / {String(curriculum.groups.length).padStart(2, '0')} SECTIONS</p>
+            <h2>Choose a section, then narrow the topic.</h2>
+          </div>
+          <p>The curriculum is grouped so you can learn in order or jump directly to the concept you need. Every subsection has its own article list and search.</p>
+        </div>
+
+        <SectionSearch
+          placeholder={`Search ${topic.title} sections and concepts`}
+          scopeSelector="#curriculum-directory"
+          itemSelector=".curriculum-section-card"
+          itemLabel="subsections"
+        />
+
+        <div class="curriculum-groups" id="curriculum-directory">
+          {curriculum.groups.map((group) => (
+            <section class="curriculum-group" id={group.slug} data-filter-group>
+              <div class="curriculum-group-heading">
+                <span>{group.number}</span>
+                <div><p>{group.title}</p><small>{group.description}</small></div>
+                <i>{String(group.sections.length).padStart(2, '0')} SUBSECTIONS</i>
+              </div>
+              <div class="curriculum-section-grid">
+                {group.sections.map((section) => {
+                  const sectionPosts = getPostsForLearningSection(allPosts, section.slug);
+                  return (
+                    <a class:list={['curriculum-section-card', { 'has-articles': sectionPosts.length > 0 }]} href={`/topics/${topic.slug}/${section.slug}/`}>
+                      <div class="curriculum-section-top">
+                        <span>{group.number}.{section.number}</span>
+                        <small>{sectionPosts.length ? `${sectionPosts.length} ${sectionPosts.length === 1 ? 'ARTICLE' : 'ARTICLES'}` : 'CURRICULUM READY'}</small>
+                      </div>
+                      <h3>{section.title}</h3>
+                      <p>{section.description}</p>
+                      <div class="curriculum-topic-chips">
+                        {section.topics.slice(0, 4).map((item) => <span>{item}</span>)}
+                      </div>
+                      <div class="curriculum-section-action">Open subsection <span>→</span></div>
+                    </a>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      {posts.length > 0 && (
+        <section class="topic-posts topic-posts-curriculum section-wrap">
+          <div class="section-heading section-heading-notes">
+            <div><p class="section-index">AVAILABLE NOW / {String(posts.length).padStart(2, '0')}</p><h2>Start with these field notes.</h2></div>
+          </div>
+          <div class="post-grid">{posts.map((post) => <PostCard {post} />)}</div>
+        </section>
+      )}
+    </>
+  ) : null}
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+import { SITE } from '../data/site';
+---
+
+<footer class="site-footer section-wrap">
+  <a class="brand footer-brand" href="/">
+    <span class="brand-avatar" aria-hidden="true">
+      <img src="/images/rahul-avatar.png" alt="" width="40" height="40" loading="lazy" />
+    </span>
+    <span class="brand-copy">
+      <strong>{SITE.name}</strong>
+      <small>{SITE.tagline}</small>
+    </span>
+  </a>
+  <p>Designed and written by {SITE.author} · India</p>
+  <div class="footer-links">
+    <a href="/topics/">Topics</a>
+    <a href="/about/">About</a>
+    <a href="/rss.xml">RSS</a>
+    <a href={SITE.github}>GitHub</a>
+    <a href="#main-content">Back to top ↑</a>
+  </div>
+</footer>

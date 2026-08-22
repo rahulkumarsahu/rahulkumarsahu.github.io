@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PostCard from '../../components/PostCard.astro';
+import { LEARNING_PATHS } from '../../data/learningPaths';
+import { getPostsForTopic } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return LEARNING_PATHS.map((path) => ({ params: { path: path.slug }, props: { path } }));
+}
+
+const { path } = Astro.props;
+const posts = getPostsForTopic(await getCollection('posts'), path.slug);
+---
+
+<BaseLayout title={`${path.title} Roadmap`} description={path.description}>
+  <section class="page-hero roadmap-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Learning tracks', href: '/topics/' }, { label: path.title }]} />
+    <div class="roadmap-page-heading">
+      <div>
+        <p class="section-index">ROADMAP {path.number}</p>
+        <h1>{path.title}</h1>
+        <p>{path.description}</p>
+      </div>
+      <div class="roadmap-progress-card">
+        <span>STARTER CONTENT</span>
+        <strong>{posts.length}<small> notes available</small></strong>
+        <div><i style={`width: ${Math.max(8, Math.min(100, (posts.length / path.groups.length) * 100))}%`}></i></div>
+        <p>The structure is ready and will grow one practical article at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="roadmap-modules section-wrap">
+    <div class="roadmap-axis" aria-hidden="true"></div>
+    {path.groups.map((group, index) => (
+      <article class:list={['roadmap-module', { 'is-available': index < posts.length }] }>
+        <div class="roadmap-module-number">{group.number}</div>
+        <div class="roadmap-module-copy">
+          <span>{index < posts.length ? 'Started' : 'Planned'}</span>
+          <h2>{group.title}</h2>
+          <p>{group.description}</p>
+        </div>
+        <a href={`/topics/${path.slug}/#${group.slug}`}>{group.sections.length} subsections →</a>
+      </article>
+    ))}
+  </section>
+
+  {posts.length > 0 && (
+    <section class="topic-posts section-wrap">
+      <div class="section-heading section-heading-notes"><div><p class="section-index">AVAILABLE NOW</p><h2>Start with these field notes.</h2></div></div>
+      <div class="post-grid">{posts.map((post) => <PostCard {post} />)}</div>
+    </section>
+  )}
+</BaseLayout>

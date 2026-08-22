@@ -1,0 +1,72 @@
+---
+import { SITE, TOPICS } from '../data/site';
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const directLinks = [
+  ['DSA', '/topics/dsa/'],
+  ['About', '/about/'],
+];
+const isLearningPath = currentPath === '/topics/' || (currentPath.startsWith('/topics/') && !currentPath.startsWith('/topics/dsa/'));
+---
+
+<header class="site-header-wrap">
+  <div class="site-header">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      <span class="brand-avatar" aria-hidden="true">
+        <img src="/images/rahul-avatar.png" alt="" width="40" height="40" />
+      </span>
+      <span class="brand-copy">
+        <strong>{SITE.name}</strong>
+        <small>by {SITE.author}</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <details class:list={['desktop-learn-menu', { 'is-current': isLearningPath }] }>
+        <summary>Learning paths <span aria-hidden="true">⌄</span></summary>
+        <div class="learn-menu-panel">
+          <div class="learn-menu-heading">
+            <div><span>THE ATLAS</span><strong>Choose a learning path</strong></div>
+            <a href="/topics/">View all paths <i aria-hidden="true">↗</i></a>
+          </div>
+          <div class="learn-menu-grid">
+            {TOPICS.map((topic) => (
+              <a class={`learn-menu-card track-${topic.accent}`} href={`/topics/${topic.slug}/`}>
+                <span>{topic.number}</span>
+                <div><strong>{topic.title}</strong><small>{topic.meta}</small></div>
+                <i aria-hidden="true">→</i>
+              </a>
+            ))}
+          </div>
+        </div>
+      </details>
+      {directLinks.map(([label, href]) => (
+        <a href={href} aria-current={(href === '/topics/dsa/' ? currentPath.startsWith('/topics/dsa/') || currentPath.startsWith('/dsa/') : currentPath.startsWith(href)) ? 'page' : undefined}>{label}</a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a class="header-start" href="/topics/dsa/">Start here <span aria-hidden="true">↗</span></a>
+      <button class="theme-toggle" type="button" aria-label="Switch colour theme" data-theme-toggle>
+        <span class="theme-icon theme-icon-sun" aria-hidden="true">☼</span>
+        <span class="theme-icon theme-icon-moon" aria-hidden="true">◐</span>
+      </button>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation" data-mobile-nav>
+    <a class="mobile-nav-overview" href="/topics/" aria-current={currentPath === '/topics/' ? 'page' : undefined}>
+      <span>00</span>All learning paths
+    </a>
+    {TOPICS.map((topic) => (
+      <a href={`/topics/${topic.slug}/`} aria-current={currentPath.startsWith(`/topics/${topic.slug}/`) || (topic.slug === 'dsa' && currentPath.startsWith('/dsa/')) ? 'page' : undefined}>
+        <span>{topic.number}</span>{topic.title}
+      </a>
+    ))}
+    <a href="/about/" aria-current={currentPath.startsWith('/about/') ? 'page' : undefined}><span>06</span>About</a>
+  </nav>
+</header>
