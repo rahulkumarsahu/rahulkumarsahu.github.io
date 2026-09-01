@@ -1,0 +1,565 @@
+<section class="recursion-lab" data-recursion-lab aria-labelledby="recursion-lab-title">
+  <div class="recursion-lab-heading">
+    <div>
+      <span>INTERACTIVE DRY RUN</span>
+      <h3 id="recursion-lab-title">See recursion execute, one line at a time</h3>
+    </div>
+    <p>Follow <code>printNTimes(3)</code> from the first call to the final return.</p>
+  </div>
+
+  <div class="recursion-workspace">
+    <section class="recursion-code-panel" aria-labelledby="recursion-code-title">
+      <div class="recursion-panel-heading">
+        <div>
+          <span class="panel-dot panel-dot-red"></span>
+          <span class="panel-dot panel-dot-yellow"></span>
+          <span class="panel-dot panel-dot-green"></span>
+        </div>
+        <strong id="recursion-code-title">RecursionDemo.java</strong>
+        <small>Java</small>
+      </div>
+
+      <pre class="recursion-code" aria-label="Java code being executed"><code><span class="code-line is-current" data-recursion-line="1" aria-current="step"><i>1</i><b>→</b><span><em>static void</em> printNTimes(<em>int</em> n) &#123;</span></span>
+<span class="code-line" data-recursion-line="2"><i>2</i><b> </b><span>    <em>if</em> (n &lt;= 0) &#123;</span></span>
+<span class="code-line" data-recursion-line="3"><i>3</i><b> </b><span>        <em>return</em>;</span></span>
+<span class="code-line" data-recursion-line="4"><i>4</i><b> </b><span>    &#125;</span></span>
+<span class="code-line" data-recursion-line="5"><i>5</i><b> </b><span></span></span>
+<span class="code-line" data-recursion-line="6"><i>6</i><b> </b><span>    System.out.println(<q>Learning recursion</q>);</span></span>
+<span class="code-line" data-recursion-line="7"><i>7</i><b> </b><span>    printNTimes(n - 1);</span></span>
+<span class="code-line" data-recursion-line="8"><i>8</i><b> </b><span>&#125;</span></span></code></pre>
+
+      <div class="recursion-current-value">
+        <span>CURRENT INPUT</span>
+        <strong data-recursion-value>n = —</strong>
+      </div>
+    </section>
+
+    <section class="recursion-stack-panel" aria-labelledby="recursion-stack-title">
+      <div class="recursion-stack-heading">
+        <div>
+          <span>CALL STACK</span>
+          <h4 id="recursion-stack-title">Newest call stays on top</h4>
+        </div>
+        <small data-recursion-depth>0 recursive frames</small>
+      </div>
+
+      <div class="stack-flow" aria-label="Stack direction">
+        <span class="stack-flow-call"><b>↑</b> Calls push a frame</span>
+        <span class="stack-flow-return"><b>↓</b> Returns pop a frame</span>
+      </div>
+      <div class="stack-top-marker"><span>TOP OF STACK</span><i></i></div>
+      <div class="recursion-stack-shell" data-recursion-stack aria-live="polite">
+        <div class="recursion-stack-empty" data-recursion-empty>
+          <span>Stack is ready</span>
+          <small>The first call will appear here.</small>
+        </div>
+        <div class="recursion-stack-frames" data-recursion-frames></div>
+        <div class="recursion-main-frame">
+          <span>PROGRAM START</span>
+          <strong>main()</strong>
+          <small>calls printNTimes(3)</small>
+        </div>
+      </div>
+      <div class="stack-bottom-marker">BOTTOM OF STACK</div>
+    </section>
+
+    <section class="recursion-explanation" aria-labelledby="recursion-explanation-title">
+      <div class="recursion-explanation-copy">
+        <span class="recursion-phase" data-recursion-phase>READY</span>
+        <h4 id="recursion-explanation-title" data-recursion-action>Ready to start</h4>
+        <p data-recursion-note>Press Next or Play. The highlighted code line and stack will change together.</p>
+
+        <div class="recursion-legend" aria-label="Stack frame states">
+          <span><i class="legend-active"></i> Running</span>
+          <span><i class="legend-waiting"></i> Waiting</span>
+          <span><i class="legend-returning"></i> Returning</span>
+        </div>
+      </div>
+
+      <div class="recursion-output-panel">
+        <div>
+          <span>CONSOLE</span>
+          <small data-recursion-output-count>0 lines</small>
+        </div>
+        <div class="recursion-output" data-recursion-output aria-live="polite">
+          <i>Nothing printed yet</i>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="recursion-controls" aria-label="Recursion dry-run controls">
+    <button type="button" data-recursion-reset>↺ Reset</button>
+    <button type="button" data-recursion-previous>← Previous</button>
+    <button class="recursion-play" type="button" data-recursion-play>Play ▶</button>
+    <button type="button" data-recursion-next>Next →</button>
+  </div>
+
+  <div class="recursion-step-line">
+    <div><i data-recursion-progress></i></div>
+    <span data-recursion-counter>Step 0 of 15</span>
+  </div>
+</section>
+
+<script>
+  type FrameState = 'active' | 'waiting' | 'base' | 'returning';
+  type Frame = { n: number; state: FrameState };
+  type Step = {
+    phase: string;
+    action: string;
+    note: string;
+    line: number;
+    value: number | null;
+    frames: Frame[];
+    output: string[];
+  };
+
+  const steps: Step[] = [
+    { phase: 'READY', action: 'Ready to start', note: 'Press Next or Play. The highlighted code line and stack will change together.', line: 1, value: null, frames: [], output: [] },
+    { phase: 'CALL', action: 'Enter with n = 3', note: 'printNTimes(3) starts and checks its base condition.', line: 2, value: 3, frames: [{ n: 3, state: 'active' }], output: [] },
+    { phase: 'PRINT', action: 'Print for n = 3', note: 'The base condition is false, so Java prints the first message.', line: 6, value: 3, frames: [{ n: 3, state: 'active' }], output: ['Learning recursion'] },
+    { phase: 'RECURSE', action: 'Call with n - 1', note: 'The active n = 3 call now asks the same method to solve n = 2.', line: 7, value: 3, frames: [{ n: 3, state: 'active' }], output: ['Learning recursion'] },
+    { phase: 'CALL', action: 'Enter with n = 2', note: 'A new n = 2 frame goes on top. The n = 3 frame waits below it.', line: 2, value: 2, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'active' }], output: ['Learning recursion'] },
+    { phase: 'PRINT', action: 'Print for n = 2', note: 'The active call prints the second message.', line: 6, value: 2, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'active' }], output: ['Learning recursion', 'Learning recursion'] },
+    { phase: 'RECURSE', action: 'Call with n - 1', note: 'The n = 2 call asks the same method to solve n = 1.', line: 7, value: 2, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'active' }], output: ['Learning recursion', 'Learning recursion'] },
+    { phase: 'CALL', action: 'Enter with n = 1', note: 'A new n = 1 frame goes on top. Both older calls are waiting.', line: 2, value: 1, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'active' }], output: ['Learning recursion', 'Learning recursion'] },
+    { phase: 'PRINT', action: 'Print for n = 1', note: 'The active call prints the third and final message.', line: 6, value: 1, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'active' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'RECURSE', action: 'Call with n - 1', note: 'The n = 1 call asks the same method to solve n = 0.', line: 7, value: 1, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'active' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'BASE CHECK', action: 'Enter with n = 0', note: 'The n = 0 frame reaches the stopping condition at the top of the stack.', line: 2, value: 0, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'waiting' }, { n: 0, state: 'base' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'BASE CASE', action: 'Return without another call', note: 'n <= 0 is true. Java returns immediately and the n = 0 frame is popped.', line: 3, value: 0, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'waiting' }, { n: 0, state: 'base' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'RETURN', action: 'Resume n = 1', note: 'The newest waiting call resumes first. It has no work left and completes.', line: 8, value: 1, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'waiting' }, { n: 1, state: 'returning' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'RETURN', action: 'Resume n = 2', note: 'The n = 1 frame is popped, so n = 2 becomes the top frame and completes.', line: 8, value: 2, frames: [{ n: 3, state: 'waiting' }, { n: 2, state: 'returning' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'RETURN', action: 'Resume n = 3', note: 'The n = 2 frame is popped. The original call resumes and completes.', line: 8, value: 3, frames: [{ n: 3, state: 'returning' }], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+    { phase: 'COMPLETE', action: 'Dry run complete', note: 'All recursive frames are gone. main resumes after three messages were printed.', line: 8, value: null, frames: [], output: ['Learning recursion', 'Learning recursion', 'Learning recursion'] },
+  ];
+
+  document.querySelectorAll<HTMLElement>('[data-recursion-lab]').forEach((lab) => {
+    const phase = lab.querySelector<HTMLElement>('[data-recursion-phase]');
+    const action = lab.querySelector<HTMLElement>('[data-recursion-action]');
+    const note = lab.querySelector<HTMLElement>('[data-recursion-note]');
+    const frames = lab.querySelector<HTMLElement>('[data-recursion-frames]');
+    const empty = lab.querySelector<HTMLElement>('[data-recursion-empty]');
+    const output = lab.querySelector<HTMLElement>('[data-recursion-output]');
+    const outputCount = lab.querySelector<HTMLElement>('[data-recursion-output-count]');
+    const depth = lab.querySelector<HTMLElement>('[data-recursion-depth]');
+    const value = lab.querySelector<HTMLElement>('[data-recursion-value]');
+    const counter = lab.querySelector<HTMLElement>('[data-recursion-counter]');
+    const progress = lab.querySelector<HTMLElement>('[data-recursion-progress]');
+    const previous = lab.querySelector<HTMLButtonElement>('[data-recursion-previous]');
+    const next = lab.querySelector<HTMLButtonElement>('[data-recursion-next]');
+    const play = lab.querySelector<HTMLButtonElement>('[data-recursion-play]');
+    const reset = lab.querySelector<HTMLButtonElement>('[data-recursion-reset]');
+    const codeLines = [...lab.querySelectorAll<HTMLElement>('[data-recursion-line]')];
+
+    if (!phase || !action || !note || !frames || !empty || !output || !outputCount || !depth || !value || !counter || !progress || !previous || !next || !play || !reset) return;
+
+    let current = 0;
+    let timer: number | undefined;
+
+    const stop = () => {
+      if (timer !== undefined) {
+        window.clearInterval(timer);
+        timer = undefined;
+      }
+      play.textContent = 'Play ▶';
+      play.setAttribute('aria-label', 'Play the dry run');
+    };
+
+    const render = () => {
+      const step = steps[current];
+      phase.textContent = step.phase;
+      phase.dataset.phase = step.phase.toLowerCase().replace(' ', '-');
+      action.textContent = step.action;
+      note.textContent = step.note;
+      depth.textContent = `${step.frames.length} recursive ${step.frames.length === 1 ? 'frame' : 'frames'}`;
+      value.textContent = step.value === null ? 'n = —' : `n = ${step.value}`;
+      outputCount.textContent = `${step.output.length} ${step.output.length === 1 ? 'line' : 'lines'}`;
+      counter.textContent = `Step ${current} of ${steps.length - 1}`;
+      progress.style.transform = `scaleX(${current / (steps.length - 1)})`;
+      previous.disabled = current === 0;
+      next.disabled = current === steps.length - 1;
+
+      codeLines.forEach((codeLine) => {
+        const isCurrent = Number(codeLine.dataset.recursionLine) === step.line;
+        codeLine.classList.toggle('is-current', isCurrent);
+        codeLine.toggleAttribute('aria-current', isCurrent);
+        const arrow = codeLine.querySelector('b');
+        if (arrow) arrow.textContent = isCurrent ? '→' : ' ';
+      });
+
+      frames.replaceChildren();
+      empty.hidden = step.frames.length > 0;
+      [...step.frames].reverse().forEach((frame, index) => {
+        const element = document.createElement('div');
+        element.className = `recursion-frame is-${frame.state}`;
+        const header = document.createElement('div');
+        header.className = 'recursion-frame-header';
+        const state = document.createElement('span');
+        state.className = 'recursion-frame-state';
+        state.textContent = index === 0 ? frame.state.toUpperCase() : 'WAITING';
+        const position = document.createElement('small');
+        position.textContent = index === 0 ? 'TOP FRAME' : `FRAME ${step.frames.length - index}`;
+        header.append(state, position);
+
+        const call = document.createElement('div');
+        call.className = 'recursion-frame-call';
+        const method = document.createElement('span');
+        method.className = 'recursion-frame-method';
+        method.textContent = 'printNTimes';
+        const open = document.createElement('span');
+        open.className = 'recursion-frame-paren';
+        open.textContent = '(';
+        const parameter = document.createElement('span');
+        parameter.className = 'recursion-frame-value';
+        parameter.textContent = `n = ${frame.n}`;
+        const close = document.createElement('span');
+        close.className = 'recursion-frame-paren';
+        close.textContent = ')';
+        call.append(method, open, parameter, close);
+
+        element.append(header, call);
+        frames.append(element);
+      });
+
+      output.replaceChildren();
+      if (step.output.length === 0) {
+        const outputEmpty = document.createElement('i');
+        outputEmpty.textContent = 'Nothing printed yet';
+        output.append(outputEmpty);
+      } else {
+        step.output.forEach((line, index) => {
+          const element = document.createElement('span');
+          element.textContent = `${index + 1}  ${line}`;
+          output.append(element);
+        });
+      }
+      if (current === steps.length - 1) stop();
+    };
+
+    previous.addEventListener('click', () => { stop(); current = Math.max(0, current - 1); render(); });
+    next.addEventListener('click', () => { stop(); current = Math.min(steps.length - 1, current + 1); render(); });
+    reset.addEventListener('click', () => { stop(); current = 0; render(); });
+    play.addEventListener('click', () => {
+      if (timer !== undefined) { stop(); return; }
+      if (current === steps.length - 1) current = 0;
+      play.textContent = 'Pause ‖';
+      play.setAttribute('aria-label', 'Pause the dry run');
+      render();
+      timer = window.setInterval(() => { current = Math.min(steps.length - 1, current + 1); render(); }, 1700);
+    });
+    render();
+  });
+</script>
+
+<style>
+  .recursion-lab {
+    --lab-navy: #15233e; --lab-blue: #315dd8; --lab-cyan: #0f8c92; --lab-green: #17845c; --lab-amber: #c47a15;
+    margin: 3rem 0 1rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border-strong) 78%, var(--lab-blue)); border-radius: 1.45rem;
+    background: linear-gradient(color-mix(in srgb, var(--surface) 95%, transparent), color-mix(in srgb, var(--surface) 95%, transparent)), repeating-linear-gradient(0deg, transparent 0 27px, color-mix(in srgb, var(--lab-blue) 8%, transparent) 28px), repeating-linear-gradient(90deg, transparent 0 27px, color-mix(in srgb, var(--lab-blue) 8%, transparent) 28px);
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .recursion-lab-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; padding: 1.4rem 1.5rem 1.3rem; border-bottom: 1px solid var(--border); }
+  .recursion-lab-heading > div > span, .recursion-stack-heading > div > span, .recursion-current-value span, .recursion-output-panel > div:first-child > span { color: var(--lab-blue); font-family: var(--font-mono); font-size: .67rem; font-weight: 800; letter-spacing: .13em; }
+  .recursion-lab-heading h3 { margin: .25rem 0 0; color: var(--heading); font-size: clamp(1.3rem, 3vw, 1.85rem); line-height: 1.15; }
+  .recursion-lab-heading p { max-width: 22rem; margin: 0; color: var(--muted); font-size: .9rem; text-align: right; }
+  .recursion-lab-heading code { color: var(--lab-blue); font-weight: 750; }
+  .recursion-workspace { display: grid; grid-template-columns: minmax(22rem, 1.15fr) minmax(16rem, .85fr) minmax(17rem, .8fr); min-height: 31rem; }
+  .recursion-code-panel, .recursion-stack-panel, .recursion-explanation { min-width: 0; padding: 1.25rem; }
+  .recursion-stack-panel, .recursion-explanation { border-left: 1px solid var(--border); }
+  .recursion-code-panel { background: color-mix(in srgb, var(--lab-navy) 96%, #000); }
+  .recursion-panel-heading { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; color: #dce7ff; font-family: var(--font-mono); font-size: .72rem; }
+  .recursion-panel-heading > div { display: flex; gap: .35rem; }
+  .recursion-panel-heading small { justify-self: end; color: #91a3c7; }
+  .panel-dot { display: block; width: .58rem; height: .58rem; border-radius: 50%; }
+  .panel-dot-red { background: #ff6b68; } .panel-dot-yellow { background: #ffc04a; } .panel-dot-green { background: #3fd08c; }
+  .recursion-code { overflow-x: auto; margin: 1.35rem -.4rem 0; padding: .5rem 0; border: 0; background: transparent; color: #eef4ff; font-family: var(--font-mono); font-size: clamp(.72rem, 1.25vw, .83rem); line-height: 2.15; }
+  .recursion-code code { display: block; min-width: 30rem; }
+  .code-line { display: grid; grid-template-columns: 1.8rem 1.3rem 1fr; align-items: center; min-height: 2rem; padding: 0 .65rem; border-left: 3px solid transparent; transition: background 180ms ease, border-color 180ms ease; }
+  .code-line > i { color: #6f82a8; font-style: normal; text-align: right; }
+  .code-line > b { color: #6ee7e2; font-weight: 900; text-align: center; }
+  .code-line > span { white-space: pre; } .code-line em { color: #b9a7ff; font-style: normal; } .code-line q { color: #ffd37b; }
+  .code-line.is-current { border-left-color: #69e7e1; background: linear-gradient(90deg, rgba(55,184,208,.2), rgba(55,184,208,.03)); box-shadow: inset 0 0 0 1px rgba(105,231,225,.08); }
+  .recursion-current-value { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.35rem; padding: .8rem .9rem; border: 1px solid rgba(129,161,221,.22); border-radius: .8rem; background: rgba(255,255,255,.055); }
+  .recursion-current-value span { color: #8da3cd; } .recursion-current-value strong { color: #6ee7e2; font-family: var(--font-mono); font-size: .95rem; }
+  .recursion-stack-panel { background: color-mix(in srgb, var(--surface-raised) 82%, transparent); }
+  .recursion-stack-heading { display: flex; align-items: start; justify-content: space-between; gap: .75rem; }
+  .recursion-stack-heading h4 { margin: .2rem 0 0; color: var(--heading); font-size: .95rem; line-height: 1.2; }
+  .recursion-stack-heading small { color: var(--muted); font-family: var(--font-mono); font-size: .64rem; text-align: right; }
+  .stack-top-marker { display: flex; align-items: center; gap: .5rem; margin: 1rem 0 .4rem; color: var(--lab-blue); font-family: var(--font-mono); font-size: .62rem; font-weight: 850; letter-spacing: .12em; }
+  .stack-top-marker i { flex: 1; height: 1px; background: linear-gradient(90deg, var(--lab-blue), transparent); }
+  .recursion-stack-shell { display: flex; flex-direction: column; justify-content: end; min-height: 22rem; padding: .75rem .65rem 0; border-right: 3px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); border-left: 3px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); background: linear-gradient(90deg, color-mix(in srgb, var(--lab-blue) 4%, transparent), transparent 18% 82%, color-mix(in srgb, var(--lab-blue) 4%, transparent)); }
+  .recursion-stack-empty { display: grid; place-content: center; flex: 1; min-height: 7rem; color: var(--muted); text-align: center; }
+  .recursion-stack-empty[hidden] { display: none; } .recursion-stack-empty span { color: var(--heading); font-weight: 750; } .recursion-stack-empty small { margin-top: .2rem; font-size: .7rem; }
+  .recursion-stack-frames { display: flex; flex-direction: column; gap: .36rem; }
+  .recursion-frame, .recursion-main-frame { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: .45rem; padding: .56rem .65rem; border: 1px solid var(--border-strong); border-radius: .6rem; background: var(--surface); box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 7%, transparent); }
+  .recursion-frame > span, .recursion-main-frame > span { grid-column: 1 / -1; margin-bottom: .1rem; color: var(--muted); font-family: var(--font-mono); font-size: .52rem; font-weight: 850; letter-spacing: .1em; }
+  .recursion-frame strong, .recursion-main-frame strong { color: var(--heading); font-family: var(--font-mono); font-size: .76rem; }
+  .recursion-frame code { padding: .18rem .38rem; border-radius: .35rem; background: var(--surface-muted); color: var(--lab-blue); font-size: .7rem; font-weight: 800; }
+  .recursion-frame.is-active { border-color: color-mix(in srgb, var(--lab-blue) 72%, var(--border)); background: color-mix(in srgb, var(--lab-blue) 9%, var(--surface)); box-shadow: 0 7px 18px color-mix(in srgb, var(--lab-blue) 18%, transparent); }
+  .recursion-frame.is-base { border-color: color-mix(in srgb, var(--lab-amber) 70%, var(--border)); background: color-mix(in srgb, var(--lab-amber) 10%, var(--surface)); }
+  .recursion-frame.is-returning { border-color: color-mix(in srgb, var(--lab-green) 70%, var(--border)); background: color-mix(in srgb, var(--lab-green) 10%, var(--surface)); }
+  .recursion-main-frame { margin-top: .4rem; border-radius: .55rem .55rem 0 0; background: color-mix(in srgb, var(--lab-navy) 92%, var(--surface)); }
+  .recursion-main-frame span { color: #8fa3c8; } .recursion-main-frame strong { color: #f1f5ff; } .recursion-main-frame small { color: #adbbd6; font-family: var(--font-mono); font-size: .58rem; }
+  .stack-bottom-marker { padding: .4rem; border-radius: 0 0 .45rem .45rem; background: color-mix(in srgb, var(--lab-navy) 92%, var(--surface)); color: #9caed0; font-family: var(--font-mono); font-size: .55rem; font-weight: 800; letter-spacing: .13em; text-align: center; }
+  .recursion-explanation { display: flex; flex-direction: column; background: color-mix(in srgb, var(--surface) 86%, transparent); }
+  .recursion-phase { align-self: flex-start; padding: .3rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--lab-blue) 12%, var(--surface)); color: var(--lab-blue); font-family: var(--font-mono); font-size: .62rem; font-weight: 850; letter-spacing: .1em; }
+  .recursion-phase[data-phase='base-check'], .recursion-phase[data-phase='base-case'] { background: color-mix(in srgb, var(--lab-amber) 13%, var(--surface)); color: var(--lab-amber); }
+  .recursion-phase[data-phase='return'], .recursion-phase[data-phase='complete'] { background: color-mix(in srgb, var(--lab-green) 13%, var(--surface)); color: var(--lab-green); }
+  .recursion-explanation h4 { margin: .8rem 0 .45rem; color: var(--heading); font-size: 1.08rem; }
+  .recursion-explanation > p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.65; }
+  .recursion-legend { display: flex; flex-wrap: wrap; gap: .55rem .8rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .recursion-legend span { display: flex; align-items: center; gap: .3rem; color: var(--muted); font-size: .65rem; } .recursion-legend i { width: .48rem; height: .48rem; border-radius: 50%; }
+  .legend-active { background: var(--lab-blue); } .legend-waiting { background: #8b98ac; } .legend-returning { background: var(--lab-green); }
+  .recursion-output-panel { margin-top: auto; padding-top: 1.3rem; }
+  .recursion-output-panel > div:first-child { display: flex; justify-content: space-between; margin-bottom: .45rem; } .recursion-output-panel > div:first-child small { color: var(--muted); font-family: var(--font-mono); font-size: .62rem; }
+  .recursion-output { min-height: 7.2rem; padding: .75rem; border: 1px solid rgba(129,161,221,.18); border-radius: .7rem; background: color-mix(in srgb, var(--lab-navy) 96%, #000); color: #dff6ec; font-family: var(--font-mono); font-size: .7rem; line-height: 1.8; }
+  .recursion-output span { display: block; } .recursion-output i { color: #8092b6; font-style: normal; }
+  .recursion-controls { display: flex; justify-content: center; gap: .6rem; padding: 1.05rem 1.25rem .9rem; border-top: 1px solid var(--border); }
+  .recursion-controls button { min-height: 2.55rem; padding: .58rem .86rem; border: 1px solid var(--border-strong); border-radius: .7rem; background: var(--surface); color: var(--heading); font: 750 .76rem var(--font-sans); cursor: pointer; transition: transform 150ms ease, border-color 150ms ease, background 150ms ease; }
+  .recursion-controls button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--lab-blue); } .recursion-controls button:focus-visible { outline: 3px solid color-mix(in srgb, var(--lab-blue) 32%, transparent); outline-offset: 2px; } .recursion-controls button:disabled { cursor: not-allowed; opacity: .42; }
+  .recursion-controls .recursion-play { min-width: 5.5rem; border-color: var(--lab-blue); background: var(--lab-blue); color: white; }
+  .recursion-step-line { display: flex; align-items: center; gap: .75rem; padding: 0 1.25rem 1.15rem; }
+  .recursion-step-line > div { flex: 1; overflow: hidden; height: .32rem; border-radius: 999px; background: color-mix(in srgb, var(--lab-blue) 12%, var(--surface-muted)); }
+  .recursion-step-line i { display: block; width: 100%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--lab-blue), var(--lab-cyan)); transform: scaleX(0); transform-origin: left; transition: transform 240ms ease; }
+  .recursion-step-line span { min-width: 5.2rem; color: var(--muted); font-family: var(--font-mono); font-size: .66rem; text-align: right; }
+  @media (max-width: 1120px) {
+    .recursion-workspace { grid-template-columns: minmax(22rem, 1.15fr) minmax(17rem, .85fr); }
+    .recursion-explanation { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(12rem, .7fr) minmax(18rem, 1.3fr); column-gap: 1.5rem; border-top: 1px solid var(--border); border-left: 0; }
+    .recursion-explanation .recursion-phase, .recursion-explanation h4, .recursion-explanation > p, .recursion-legend { grid-column: 1; }
+    .recursion-output-panel { grid-column: 2; grid-row: 1 / 5; margin-top: 0; padding-top: 0; }
+  }
+  @media (max-width: 760px) {
+    .recursion-lab { margin-inline: -.35rem; border-radius: 1rem; } .recursion-lab-heading { align-items: start; flex-direction: column; gap: .55rem; padding: 1.15rem; } .recursion-lab-heading p { max-width: none; text-align: left; }
+    .recursion-workspace { display: block; } .recursion-code-panel, .recursion-stack-panel, .recursion-explanation { padding: 1rem; } .recursion-stack-panel, .recursion-explanation { border-top: 1px solid var(--border); border-left: 0; }
+    .recursion-explanation { display: flex; } .recursion-output-panel { margin-top: 1.3rem; padding-top: 0; } .recursion-stack-shell { min-height: 18rem; }
+    .recursion-controls { display: grid; grid-template-columns: 1fr 1fr; padding-inline: 1rem; } .recursion-controls .recursion-play, .recursion-controls [data-recursion-next] { order: -1; } .recursion-controls .recursion-play { min-width: 0; } .recursion-step-line { padding-inline: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .code-line, .recursion-controls button, .recursion-step-line i { transition: none; } }
+
+  /* The playground lives inside an article column, so its own width decides the layout. */
+  .recursion-lab {
+    --border: var(--line);
+    --border-strong: var(--line-strong);
+    --heading: var(--text);
+    --muted: var(--text-soft);
+    --ink: var(--text);
+    --surface-muted: var(--surface-strong);
+    --font-sans: var(--font-body);
+    container: recursion-playground / inline-size;
+  }
+
+  .recursion-workspace {
+    grid-template-areas:
+      'code stack'
+      'explanation explanation';
+    grid-template-columns: minmax(0, 1.18fr) minmax(17rem, .82fr);
+    min-height: 0;
+  }
+
+  .recursion-code-panel { grid-area: code; }
+  .recursion-stack-panel { grid-area: stack; }
+  .recursion-explanation {
+    grid-area: explanation;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(15rem, .8fr);
+    gap: 1.5rem;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .recursion-explanation-copy {
+    min-width: 0;
+  }
+
+  .recursion-explanation-copy > p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: .86rem;
+    line-height: 1.65;
+  }
+
+  .recursion-explanation-copy h4 {
+    margin: .8rem 0 .45rem;
+    color: var(--text);
+    font-size: 1.08rem;
+  }
+
+  .recursion-output-panel {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  pre.recursion-code {
+    margin: 1.1rem -.35rem 0;
+    padding: .5rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    line-height: 2.15;
+  }
+
+  .recursion-code code {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .stack-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .45rem;
+    margin-top: 1rem;
+  }
+
+  .stack-flow span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    min-width: 0;
+    padding: .42rem .35rem;
+    border: 1px solid var(--line);
+    border-radius: .48rem;
+    font-family: var(--font-mono);
+    font-size: .56rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .stack-flow b { font-size: .88rem; }
+  .stack-flow-call { color: var(--lab-blue); background: color-mix(in srgb, var(--lab-blue) 7%, var(--surface)); }
+  .stack-flow-return { color: var(--lab-green); background: color-mix(in srgb, var(--lab-green) 7%, var(--surface)); }
+  .stack-top-marker { margin-top: .65rem; }
+  .recursion-stack-shell { min-height: 19.5rem; }
+
+  .recursion-stack-frames :global(.recursion-frame) {
+    display: block;
+    width: 100%;
+    padding: .65rem .72rem .7rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .68rem;
+    background: var(--surface-strong);
+    box-shadow: 0 5px 12px color-mix(in srgb, var(--text) 7%, transparent);
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .65rem;
+    margin-bottom: .42rem;
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-state),
+  .recursion-stack-frames :global(.recursion-frame-header small) {
+    margin: 0;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .52rem;
+    font-weight: 750;
+    letter-spacing: .1em;
+    line-height: 1.2;
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-call) {
+    display: flex;
+    align-items: center;
+    gap: .15rem;
+    min-width: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-method) {
+    overflow: hidden;
+    color: var(--text);
+    text-overflow: ellipsis;
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-paren) {
+    color: var(--text-faint);
+  }
+
+  .recursion-stack-frames :global(.recursion-frame-value) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.8rem;
+    margin-inline: .05rem;
+    padding: .25rem .42rem;
+    border: 1px solid var(--line);
+    border-radius: .38rem;
+    background: var(--surface);
+    color: var(--lab-blue);
+    font-weight: 800;
+  }
+
+  .recursion-stack-frames :global(.recursion-frame.is-active) {
+    border-color: color-mix(in srgb, var(--lab-blue) 72%, var(--line));
+    background: color-mix(in srgb, var(--lab-blue) 9%, var(--surface-strong));
+    box-shadow: 0 7px 18px color-mix(in srgb, var(--lab-blue) 18%, transparent);
+  }
+
+  .recursion-stack-frames :global(.recursion-frame.is-active .recursion-frame-state) { color: var(--lab-blue); }
+
+  .recursion-stack-frames :global(.recursion-frame.is-base) {
+    border-color: color-mix(in srgb, var(--lab-amber) 70%, var(--line));
+    background: color-mix(in srgb, var(--lab-amber) 10%, var(--surface-strong));
+  }
+
+  .recursion-stack-frames :global(.recursion-frame.is-base .recursion-frame-state) { color: var(--lab-amber); }
+
+  .recursion-stack-frames :global(.recursion-frame.is-returning) {
+    border-color: color-mix(in srgb, var(--lab-green) 70%, var(--line));
+    background: color-mix(in srgb, var(--lab-green) 10%, var(--surface-strong));
+  }
+
+  .recursion-stack-frames :global(.recursion-frame.is-returning .recursion-frame-state),
+  .recursion-stack-frames :global(.recursion-frame.is-returning .recursion-frame-value) { color: var(--lab-green); }
+
+  .recursion-output :global(span) { display: block; }
+  .recursion-output :global(i) { color: #8092b6; font-style: normal; }
+
+  @container recursion-playground (max-width: 680px) {
+    .recursion-lab-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .recursion-lab-heading p {
+      max-width: none;
+      text-align: left;
+    }
+
+    .recursion-workspace { display: block; }
+    .recursion-stack-panel,
+    .recursion-explanation { border-top: 1px solid var(--line); border-left: 0; }
+    .recursion-explanation { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    .recursion-stack-shell { min-height: 18rem; }
+  }
+
+  @container recursion-playground (max-width: 430px) {
+    .recursion-lab-heading,
+    .recursion-code-panel,
+    .recursion-stack-panel,
+    .recursion-explanation { padding: .9rem; }
+
+    .recursion-panel-heading { grid-template-columns: auto 1fr; }
+    .recursion-panel-heading strong { justify-self: end; }
+    .recursion-panel-heading small { display: none; }
+    .recursion-code { font-size: .68rem; }
+    .code-line { grid-template-columns: 1.35rem 1rem 1fr; padding-inline: .3rem; }
+    .recursion-current-value { margin-top: .8rem; }
+    .recursion-stack-heading { align-items: flex-start; flex-direction: column; }
+    .recursion-stack-heading small { text-align: left; }
+    .recursion-stack-frames :global(.recursion-frame-call) { font-size: .73rem; }
+    .recursion-controls { grid-template-columns: 1fr 1fr; padding-inline: .9rem; }
+    .recursion-step-line { padding-inline: .9rem; }
+  }
+</style>

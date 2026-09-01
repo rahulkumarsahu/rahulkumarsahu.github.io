@@ -3,6 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import PostCard from '../components/PostCard.astro';
+import RecursionCallStack from '../components/RecursionCallStack.astro';
 import { SITE } from '../data/site';
 import { DSA_SECTIONS } from '../data/learningPaths';
 import type { Post } from '../lib/posts';
@@ -33,6 +34,8 @@ const dsaSection = topic.slug === 'dsa' && post.data.series
 const parentHref = dsaSection ? `/dsa/${dsaSection.slug}/` : `/topics/${topic.slug}/`;
 const parentLabel = dsaSection?.title ?? topic.shortTitle;
 const postSlug = getPostSlug(post);
+const interactive = post.data.interactive
+  ?? (postSlug === 'recursion-in-java-beginners-guide' ? 'recursion-call-stack' : undefined);
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3).slice(0, 36);
 const description = post.data.description || `Practical notes and examples for ${post.data.title}.`;
 const articleUrl = `${SITE.url}/posts/${postSlug}/`;
@@ -113,6 +116,7 @@ const jsonLd = {
       {hasContent ? (
         <div class="article-content">
           <slot />
+          {interactive === 'recursion-call-stack' && <RecursionCallStack />}
         </div>
       ) : (
         <div class="article-empty-state">
@@ -199,7 +203,7 @@ const jsonLd = {
       progress.style.transform = `scaleX(${value})`;
     };
 
-    document.querySelectorAll('.article-content pre').forEach((pre) => {
+    document.querySelectorAll('.article-content pre:not(.recursion-code)').forEach((pre) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'code-copy-button';

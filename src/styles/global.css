@@ -2432,6 +2432,44 @@ a {
   font-weight: 600;
 }
 
+.article-content figure {
+  margin: 34px 0;
+}
+
+.article-content .recursion-stack-figure picture {
+  display: block;
+}
+
+.article-content .recursion-stack-figure img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.article-content figure img,
+.article-content > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.article-content figcaption {
+  margin-top: 10px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .article-content .recursion-stack-figure img {
+    aspect-ratio: 4 / 5;
+  }
+}
+
 .article-content blockquote {
   margin: 30px 0;
   padding: 20px 24px;
@@ -2450,7 +2488,7 @@ a {
   font-size: 0.86em;
 }
 
-.article-content pre {
+.article-content pre:not(.recursion-code) {
   position: relative;
   overflow-x: auto;
   margin: 28px 0;
@@ -2463,7 +2501,7 @@ a {
   line-height: 1.75;
 }
 
-.article-content pre code {
+.article-content pre:not(.recursion-code) code {
   font-family: inherit;
 }
 
