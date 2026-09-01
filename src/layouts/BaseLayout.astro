@@ -49,7 +49,7 @@ const defaultJsonLd = {
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
-    <meta name="theme-color" content="#07101d" />
+    <meta name="theme-color" content="#172033" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
@@ -77,7 +77,9 @@ const defaultJsonLd = {
     <script is:inline>
       const storedTheme = localStorage.getItem('atlas-theme');
       const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      document.documentElement.dataset.theme = storedTheme || preferredTheme;
+      const selectedTheme = storedTheme || preferredTheme;
+      document.documentElement.dataset.theme = selectedTheme;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', selectedTheme === 'light' ? '#f5f6f2' : '#172033');
       document.documentElement.classList.add('js');
     </script>
     <slot name="head" />
@@ -108,6 +110,7 @@ const defaultJsonLd = {
         const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = nextTheme;
         localStorage.setItem('atlas-theme', nextTheme);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'light' ? '#f5f6f2' : '#172033');
       });
 
       menuToggle?.addEventListener('click', () => {

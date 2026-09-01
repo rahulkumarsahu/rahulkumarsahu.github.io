@@ -2,16 +2,16 @@
 
 :root {
   color-scheme: dark;
-  --bg: #07101d;
-  --bg-soft: #0a1424;
-  --surface: rgba(14, 25, 43, 0.82);
-  --surface-strong: #111d31;
-  --surface-raised: #16233a;
-  --text: #f5f7fb;
-  --text-soft: #a8b5c8;
-  --text-faint: #6f7e93;
-  --line: rgba(154, 174, 205, 0.15);
-  --line-strong: rgba(154, 174, 205, 0.28);
+  --bg: #172033;
+  --bg-soft: #1d2940;
+  --surface: rgba(37, 51, 78, 0.86);
+  --surface-strong: #263652;
+  --surface-raised: #304362;
+  --text: #f8faff;
+  --text-soft: #c2ccdc;
+  --text-faint: #91a0b7;
+  --line: rgba(190, 204, 228, 0.18);
+  --line-strong: rgba(190, 204, 228, 0.32);
   --indigo: #8b8dff;
   --indigo-strong: #6d6ff7;
   --amber: #f4b860;
@@ -20,7 +20,7 @@
   --green: #79d39e;
   --rose: #ff91b5;
   --orange: #ff9b71;
-  --shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
+  --shadow: 0 30px 80px rgba(7, 12, 24, 0.27);
   --font-display: 'Space Grotesk', 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
