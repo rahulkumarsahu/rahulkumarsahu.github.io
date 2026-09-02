@@ -20,7 +20,7 @@ const posts = defineCollection({
     image: z.string().optional(),
     math: z.boolean().optional(),
     mermaid: z.boolean().optional(),
-    interactive: z.enum(['recursion-call-stack']).optional(),
+    interactive: z.enum(['recursion-call-stack', 'subsets-backtracking']).optional(),
     draft: z.boolean().default(false),
   }),
 });

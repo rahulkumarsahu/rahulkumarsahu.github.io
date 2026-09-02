@@ -1,0 +1,819 @@
+<section class="subset-lab" data-subset-lab aria-labelledby="subset-lab-title">
+  <header class="subset-lab-heading">
+    <div>
+      <span>INTERACTIVE BACKTRACKING TRACE</span>
+      <h3 id="subset-lab-title">Watch one subset grow and shrink</h3>
+    </div>
+    <p>Step through <code>buildSubsets(0, [])</code> for <code>[1, 2, 3]</code>.</p>
+  </header>
+
+  <div class="subset-workspace">
+    <section class="subset-code-panel" aria-labelledby="subset-code-title">
+      <div class="subset-panel-heading">
+        <strong id="subset-code-title">Solution.java</strong>
+        <span>Java</span>
+      </div>
+
+      <pre class="subset-code" aria-label="Backtracking code being executed"><code><span class="subset-code-line is-current" data-subset-line="1" aria-current="step"><i>1</i><b>→</b><span>buildSubsets(startIndex, currentSubset) &#123;</span></span>
+<span class="subset-code-line" data-subset-line="2"><i>2</i><b> </b><span>  allSubsets.add(copy(currentSubset));</span></span>
+<span class="subset-code-line" data-subset-line="3"><i>3</i><b> </b><span>  for (index = startIndex; index &lt; n; index++) &#123;</span></span>
+<span class="subset-code-line" data-subset-line="4"><i>4</i><b> </b><span>    currentSubset.add(numbers.get(index));</span></span>
+<span class="subset-code-line" data-subset-line="5"><i>5</i><b> </b><span>    buildSubsets(index + 1, currentSubset);</span></span>
+<span class="subset-code-line" data-subset-line="6"><i>6</i><b> </b><span>    currentSubset.remove(last);</span></span>
+<span class="subset-code-line" data-subset-line="7"><i>7</i><b> </b><span>  &#125;</span></span>
+<span class="subset-code-line" data-subset-line="8"><i>8</i><b> </b><span>&#125;</span></span></code></pre>
+    </section>
+
+    <section class="subset-state-panel" aria-labelledby="subset-state-title">
+      <div class="subset-panel-heading">
+        <strong id="subset-state-title">Backtracking state</strong>
+        <span data-subset-depth>0 frames</span>
+      </div>
+
+      <div class="subset-values" aria-label="Input values">
+        <small>INPUT</small>
+        <div>
+          <span data-subset-value="1">1</span>
+          <span data-subset-value="2">2</span>
+          <span data-subset-value="3">3</span>
+        </div>
+      </div>
+
+      <div class="subset-current">
+        <small>CURRENT SUBSET</small>
+        <div data-subset-current aria-live="polite"><i>empty</i></div>
+      </div>
+
+      <div class="subset-state-grid">
+        <div class="subset-stack">
+          <div><small>CALL STACK</small><span>newest first</span></div>
+          <div data-subset-stack><i>No active calls</i></div>
+        </div>
+
+        <div class="subset-results">
+          <div><small>SAVED COPIES</small><span data-subset-result-count>0 / 8</span></div>
+          <div data-subset-results><i>No subsets saved</i></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="subset-explanation" aria-live="polite">
+    <span data-subset-phase>READY</span>
+    <div>
+      <strong data-subset-action>Ready to explore</strong>
+      <p data-subset-note>Press Next or Play. The code, path, stack and saved result will move together.</p>
+    </div>
+  </div>
+
+  <div class="subset-controls" aria-label="Subset dry run controls">
+    <button type="button" data-subset-reset>↺ Reset</button>
+    <button type="button" data-subset-previous>← Previous</button>
+    <button class="subset-play" type="button" data-subset-play>Play ▶</button>
+    <button type="button" data-subset-next>Next →</button>
+  </div>
+
+  <div class="subset-progress">
+    <div><i data-subset-progress></i></div>
+    <span data-subset-counter>Step 0</span>
+  </div>
+</section>
+
+<script>
+  type FrameState = 'active' | 'waiting' | 'returning';
+  type Frame = { start: number; path: number[]; state: FrameState };
+  type Step = {
+    phase: string;
+    action: string;
+    note: string;
+    line: number;
+    path: number[];
+    frames: Frame[];
+    results: number[][];
+    focusValue?: number;
+    focusAction?: 'choose' | 'remove';
+  };
+
+  const values = [1, 2, 3];
+
+  const createSteps = (): Step[] => {
+    const generated: Step[] = [{
+      phase: 'READY',
+      action: 'Ready to explore',
+      note: 'Press Next or Play. The code, path, stack and saved result will move together.',
+      line: 1,
+      path: [],
+      frames: [],
+      results: [],
+    }];
+    const saved: number[][] = [];
+
+    const addStep = (step: Omit<Step, 'results'>) => {
+      generated.push({
+        ...step,
+        path: [...step.path],
+        // Every frame points to the same mutable currentSubset list in Java.
+        frames: step.frames.map((frame) => ({ ...frame, path: [...step.path] })),
+        results: saved.map((subset) => [...subset]),
+      });
+    };
+
+    const visit = (start: number, path: number[], parents: Frame[]) => {
+      const active: Frame = { start, path: [...path], state: 'active' };
+      const activeFrames = [...parents, active];
+
+      addStep({
+        phase: 'CALL',
+        action: `Enter buildSubsets(${start}, ${formatSubset(path)})`,
+        note: 'A new call owns the current path and the next index it is allowed to choose.',
+        line: 1,
+        path,
+        frames: activeFrames,
+      });
+
+      saved.push([...path]);
+      addStep({
+        phase: 'SAVE',
+        action: `Save ${formatSubset(path)}`,
+        note: 'The current path is already a valid subset, so Java stores a separate copy.',
+        line: 2,
+        path,
+        frames: activeFrames,
+      });
+
+      for (let index = start; index < values.length; index++) {
+        const chosenValue = values[index];
+        const chosenPath = [...path, chosenValue];
+
+        addStep({
+          phase: 'CHOOSE',
+          action: `Choose ${chosenValue}`,
+          note: `Add ${chosenValue} to the working list before exploring the branch below it.`,
+          line: 4,
+          path: chosenPath,
+          frames: activeFrames,
+          focusValue: chosenValue,
+          focusAction: 'choose',
+        });
+
+        addStep({
+          phase: 'RECURSE',
+          action: `Explore from index ${index + 1}`,
+          note: `The current call pauses while buildSubsets(${index + 1}, ${formatSubset(chosenPath)}) runs.`,
+          line: 5,
+          path: chosenPath,
+          frames: activeFrames,
+          focusValue: chosenValue,
+          focusAction: 'choose',
+        });
+
+        const waitingParents = activeFrames.map((frame) => ({
+          ...frame,
+          path: [...frame.path],
+          state: 'waiting' as FrameState,
+        }));
+        visit(index + 1, chosenPath, waitingParents);
+
+        addStep({
+          phase: 'UNDO',
+          action: `Remove ${chosenValue}`,
+          note: `The child branch is complete. Remove ${chosenValue} so the next sibling starts from ${formatSubset(path)}.`,
+          line: 6,
+          path,
+          frames: activeFrames,
+          focusValue: chosenValue,
+          focusAction: 'remove',
+        });
+      }
+
+      addStep({
+        phase: 'RETURN',
+        action: `Return from buildSubsets(${start}, ${formatSubset(path)})`,
+        note: 'There are no more values available at this level, so its stack frame can return.',
+        line: 8,
+        path,
+        frames: [...parents, { ...active, state: 'returning' }],
+      });
+    };
+
+    visit(0, [], []);
+    generated.push({
+      phase: 'COMPLETE',
+      action: 'All 8 subsets are saved',
+      note: 'The root loop is finished, the call stack is empty and the power set is complete.',
+      line: 8,
+      path: [],
+      frames: [],
+      results: saved.map((subset) => [...subset]),
+    });
+
+    return generated;
+  };
+
+  function formatSubset(subset: number[]) {
+    return `[${subset.join(', ')}]`;
+  }
+
+  const steps = createSteps();
+
+  document.querySelectorAll<HTMLElement>('[data-subset-lab]').forEach((lab) => {
+    const phase = lab.querySelector<HTMLElement>('[data-subset-phase]');
+    const action = lab.querySelector<HTMLElement>('[data-subset-action]');
+    const note = lab.querySelector<HTMLElement>('[data-subset-note]');
+    const depth = lab.querySelector<HTMLElement>('[data-subset-depth]');
+    const currentSubset = lab.querySelector<HTMLElement>('[data-subset-current]');
+    const stack = lab.querySelector<HTMLElement>('[data-subset-stack]');
+    const results = lab.querySelector<HTMLElement>('[data-subset-results]');
+    const resultCount = lab.querySelector<HTMLElement>('[data-subset-result-count]');
+    const counter = lab.querySelector<HTMLElement>('[data-subset-counter]');
+    const progress = lab.querySelector<HTMLElement>('[data-subset-progress]');
+    const previous = lab.querySelector<HTMLButtonElement>('[data-subset-previous]');
+    const next = lab.querySelector<HTMLButtonElement>('[data-subset-next]');
+    const play = lab.querySelector<HTMLButtonElement>('[data-subset-play]');
+    const reset = lab.querySelector<HTMLButtonElement>('[data-subset-reset]');
+    const codeLines = [...lab.querySelectorAll<HTMLElement>('[data-subset-line]')];
+    const valueChips = [...lab.querySelectorAll<HTMLElement>('[data-subset-value]')];
+
+    if (!phase || !action || !note || !depth || !currentSubset || !stack || !results || !resultCount || !counter || !progress || !previous || !next || !play || !reset) return;
+
+    let current = 0;
+    let timer: number | undefined;
+
+    const stop = () => {
+      if (timer !== undefined) {
+        window.clearInterval(timer);
+        timer = undefined;
+      }
+      play.textContent = 'Play ▶';
+      play.setAttribute('aria-label', 'Play the subset dry run');
+    };
+
+    const makeSubset = (subset: number[]) => {
+      const element = document.createElement('span');
+      element.className = 'subset-list-value';
+      element.textContent = formatSubset(subset);
+      return element;
+    };
+
+    const render = () => {
+      const step = steps[current];
+      phase.textContent = step.phase;
+      phase.dataset.phase = step.phase.toLowerCase();
+      action.textContent = step.action;
+      note.textContent = step.note;
+      depth.textContent = `${step.frames.length} ${step.frames.length === 1 ? 'frame' : 'frames'}`;
+      resultCount.textContent = `${step.results.length} / 8`;
+      counter.textContent = `Step ${current} of ${steps.length - 1}`;
+      progress.style.transform = `scaleX(${current / (steps.length - 1)})`;
+      previous.disabled = current === 0;
+      next.disabled = current === steps.length - 1;
+
+      codeLines.forEach((line) => {
+        const isCurrent = Number(line.dataset.subsetLine) === step.line;
+        line.classList.toggle('is-current', isCurrent);
+        line.toggleAttribute('aria-current', isCurrent);
+        const arrow = line.querySelector('b');
+        if (arrow) arrow.textContent = isCurrent ? '→' : ' ';
+      });
+
+      valueChips.forEach((chip) => {
+        const value = Number(chip.dataset.subsetValue);
+        chip.classList.toggle('is-chosen', step.path.includes(value));
+        chip.classList.toggle('is-focus', value === step.focusValue);
+        chip.classList.toggle('is-removing', value === step.focusValue && step.focusAction === 'remove');
+      });
+
+      currentSubset.replaceChildren();
+      if (step.path.length === 0) {
+        const empty = document.createElement('i');
+        empty.textContent = '[] empty subset';
+        currentSubset.append(empty);
+      } else {
+        step.path.forEach((value) => {
+          const chip = document.createElement('span');
+          chip.textContent = String(value);
+          currentSubset.append(chip);
+        });
+      }
+
+      stack.replaceChildren();
+      if (step.frames.length === 0) {
+        const empty = document.createElement('i');
+        empty.textContent = 'No active calls';
+        stack.append(empty);
+      } else {
+        [...step.frames].reverse().forEach((frame, index) => {
+          const element = document.createElement('div');
+          element.className = `subset-frame is-${frame.state}`;
+
+          const state = document.createElement('span');
+          state.textContent = index === 0 ? frame.state.toUpperCase() : 'WAITING';
+
+          const call = document.createElement('code');
+          call.textContent = `buildSubsets(start=${frame.start}, current=${formatSubset(frame.path)})`;
+
+          element.append(state, call);
+          stack.append(element);
+        });
+      }
+
+      results.replaceChildren();
+      if (step.results.length === 0) {
+        const empty = document.createElement('i');
+        empty.textContent = 'No subsets saved';
+        results.append(empty);
+      } else {
+        step.results.forEach((subset) => results.append(makeSubset(subset)));
+      }
+    };
+
+    previous.addEventListener('click', () => {
+      stop();
+      current = Math.max(0, current - 1);
+      render();
+    });
+
+    next.addEventListener('click', () => {
+      stop();
+      current = Math.min(steps.length - 1, current + 1);
+      render();
+    });
+
+    reset.addEventListener('click', () => {
+      stop();
+      current = 0;
+      render();
+    });
+
+    play.addEventListener('click', () => {
+      if (timer !== undefined) {
+        stop();
+        return;
+      }
+
+      if (current === steps.length - 1) current = 0;
+      play.textContent = 'Pause ❚❚';
+      play.setAttribute('aria-label', 'Pause the subset dry run');
+      render();
+
+      timer = window.setInterval(() => {
+        if (current >= steps.length - 1) {
+          stop();
+          return;
+        }
+        current += 1;
+        render();
+      }, 1050);
+    });
+
+    render();
+  });
+</script>
+
+<style>
+  .subset-lab {
+    container: subset-lab / inline-size;
+    margin-top: 2.6rem;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    box-shadow: var(--shadow);
+  }
+
+  .subset-lab-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 1.2rem 1.3rem;
+    border-bottom: 1px solid var(--line);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--cyan) 9%, transparent), transparent 55%),
+      var(--surface-strong);
+  }
+
+  .subset-lab-heading > div > span,
+  .subset-panel-heading span,
+  .subset-values small,
+  .subset-current small,
+  .subset-stack small,
+  .subset-results small {
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: .56rem;
+    font-weight: 600;
+    letter-spacing: .11em;
+  }
+
+  .subset-lab-heading h3 {
+    margin: .25rem 0 0;
+    font-size: 1.45rem;
+  }
+
+  .subset-lab-heading p {
+    max-width: 18rem;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: .78rem;
+    line-height: 1.55;
+    text-align: right;
+  }
+
+  .subset-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  }
+
+  .subset-code-panel {
+    min-width: 0;
+    border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg-soft) 70%, var(--surface));
+  }
+
+  .subset-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .8rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .subset-panel-heading strong {
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: .7rem;
+  }
+
+  pre.subset-code {
+    overflow-x: auto;
+    margin: 0;
+    padding: .8rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-soft);
+    font-family: var(--font-mono);
+    font-size: .67rem;
+    line-height: 2.05;
+  }
+
+  .subset-code code {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .subset-code-line {
+    display: grid;
+    grid-template-columns: 1.55rem 1rem minmax(max-content, 1fr);
+    padding: 0 .8rem;
+    transition: background 150ms ease, color 150ms ease;
+  }
+
+  .subset-code-line i,
+  .subset-code-line b {
+    color: var(--text-faint);
+    font-style: normal;
+    font-weight: 400;
+    text-align: right;
+  }
+
+  .subset-code-line b {
+    color: transparent;
+  }
+
+  .subset-code-line.is-current {
+    background: color-mix(in srgb, var(--indigo) 13%, transparent);
+    color: var(--text);
+  }
+
+  .subset-code-line.is-current b {
+    color: var(--indigo);
+  }
+
+  .subset-state-panel {
+    min-width: 0;
+  }
+
+  .subset-values,
+  .subset-current {
+    padding: .9rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .subset-values > div,
+  .subset-current > div {
+    display: flex;
+    min-height: 2.7rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: .45rem;
+  }
+
+  .subset-values > div > span,
+  .subset-current > div :global(span) {
+    display: inline-grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-content: center;
+    border: 1px solid var(--line-strong);
+    border-radius: .55rem;
+    background: var(--surface-strong);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    font-weight: 600;
+  }
+
+  .subset-values > div > span.is-chosen {
+    border-color: color-mix(in srgb, var(--green) 72%, var(--line));
+    background: color-mix(in srgb, var(--green) 13%, var(--surface-strong));
+    color: var(--green);
+  }
+
+  .subset-values > div > span.is-focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--indigo) 25%, transparent);
+  }
+
+  .subset-values > div > span.is-removing {
+    border-color: color-mix(in srgb, var(--amber) 72%, var(--line));
+    color: var(--amber);
+  }
+
+  .subset-current > div :global(i),
+  .subset-stack > div:last-child :global(> i),
+  .subset-results > div:last-child :global(> i) {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .68rem;
+    font-style: normal;
+  }
+
+  .subset-state-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 15.5rem;
+  }
+
+  .subset-stack,
+  .subset-results {
+    min-width: 0;
+    padding: .9rem 1rem 1rem;
+  }
+
+  .subset-stack {
+    border-right: 1px solid var(--line);
+  }
+
+  .subset-stack > div:first-child,
+  .subset-results > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+  }
+
+  .subset-stack > div:first-child span,
+  .subset-results > div:first-child span {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .56rem;
+  }
+
+  .subset-stack > div:last-child,
+  .subset-results > div:last-child {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: .65rem;
+  }
+
+  .subset-stack > div:last-child {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .subset-stack :global(.subset-frame) {
+    display: grid;
+    gap: .28rem;
+    padding: .52rem .58rem;
+    border: 1px solid var(--line);
+    border-radius: .52rem;
+    background: var(--surface-strong);
+  }
+
+  .subset-stack :global(.subset-frame > span) {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .48rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+  }
+
+  .subset-stack :global(.subset-frame > code) {
+    overflow: hidden;
+    color: var(--text-soft);
+    font-family: var(--font-mono);
+    font-size: .56rem;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .subset-stack :global(.subset-frame.is-active) {
+    border-color: color-mix(in srgb, var(--indigo) 70%, var(--line));
+    background: color-mix(in srgb, var(--indigo) 9%, var(--surface-strong));
+  }
+
+  .subset-stack :global(.subset-frame.is-active > span) { color: var(--indigo); }
+  .subset-stack :global(.subset-frame.is-returning) {
+    border-color: color-mix(in srgb, var(--green) 70%, var(--line));
+    background: color-mix(in srgb, var(--green) 9%, var(--surface-strong));
+  }
+  .subset-stack :global(.subset-frame.is-returning > span) { color: var(--green); }
+
+  .subset-results :global(.subset-list-value) {
+    padding: .3rem .42rem;
+    border: 1px solid var(--line);
+    border-radius: .42rem;
+    background: var(--surface-strong);
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: .58rem;
+  }
+
+  .subset-explanation {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .85rem;
+    padding: 1rem 1.15rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-strong) 75%, transparent);
+  }
+
+  .subset-explanation > span {
+    align-self: start;
+    padding: .25rem .45rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--indigo) 13%, var(--surface));
+    color: var(--indigo);
+    font-family: var(--font-mono);
+    font-size: .55rem;
+    font-weight: 600;
+    letter-spacing: .09em;
+  }
+
+  .subset-explanation > span[data-phase='save'] { color: var(--cyan); }
+  .subset-explanation > span[data-phase='undo'],
+  .subset-explanation > span[data-phase='return'] { color: var(--green); }
+
+  .subset-explanation strong {
+    display: block;
+    color: var(--text);
+    font-size: .84rem;
+  }
+
+  .subset-explanation p {
+    margin: .2rem 0 0;
+    color: var(--text-soft);
+    font-size: .76rem;
+    line-height: 1.55;
+  }
+
+  .subset-controls {
+    display: flex;
+    justify-content: center;
+    gap: .55rem;
+    padding: .9rem 1rem .75rem;
+  }
+
+  .subset-controls button {
+    min-height: 2.55rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .62rem;
+    background: var(--surface-strong);
+    color: var(--text);
+    font-size: .72rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .subset-controls button:disabled {
+    cursor: not-allowed;
+    opacity: .42;
+  }
+
+  .subset-controls .subset-play {
+    min-width: 5.4rem;
+    border-color: var(--indigo);
+    background: var(--indigo-strong);
+    color: white;
+  }
+
+  .subset-progress {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 0 1rem .9rem;
+  }
+
+  .subset-progress > div {
+    flex: 1;
+    overflow: hidden;
+    height: .3rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--indigo) 12%, var(--surface-strong));
+  }
+
+  .subset-progress i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms ease;
+  }
+
+  .subset-progress span {
+    min-width: 6.2rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .58rem;
+    text-align: right;
+  }
+
+  @container subset-lab (max-width: 680px) {
+    .subset-lab-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .subset-lab-heading p {
+      max-width: none;
+      text-align: left;
+    }
+
+    .subset-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .subset-code-panel {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  @container subset-lab (max-width: 440px) {
+    .subset-lab-heading,
+    .subset-values,
+    .subset-current,
+    .subset-stack,
+    .subset-results,
+    .subset-explanation {
+      padding-inline: .85rem;
+    }
+
+    .subset-state-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .subset-stack {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .subset-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .subset-controls button {
+      min-height: 2.8rem;
+    }
+
+    .subset-controls .subset-play,
+    .subset-controls [data-subset-next] {
+      order: -1;
+    }
+
+    .subset-code-line {
+      padding-inline: .5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .subset-code-line,
+    .subset-progress i {
+      transition: none;
+    }
+  }
+</style>
