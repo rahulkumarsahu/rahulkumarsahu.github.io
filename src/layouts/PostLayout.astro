@@ -1,15 +1,18 @@
 ---
 import type { MarkdownHeading } from 'astro';
+import { getImage } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import JDoodlePractice from '../components/JDoodlePractice.astro';
 import PostCard from '../components/PostCard.astro';
+import PostBanner from '../components/PostBanner.astro';
 import RecursionCallStack from '../components/RecursionCallStack.astro';
 import SubsetBacktracking from '../components/SubsetBacktracking.astro';
 import { SITE } from '../data/site';
 import { DSA_SECTIONS } from '../data/learningPaths';
 import type { Post } from '../lib/posts';
 import { estimateReadTime, formatDate, formatDifficulty, getPostSlug, getTopicForPost } from '../lib/posts';
+import { getPostBanner } from '../lib/postBanners';
 
 interface Props {
   post: Post;
@@ -39,9 +42,16 @@ const postSlug = getPostSlug(post);
 const interactive = post.data.interactive
   ?? (postSlug === 'recursion-in-java-beginners-guide' ? 'recursion-call-stack' : undefined);
 const isSubsetsPractice = interactive === 'subsets-backtracking';
-const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3).slice(0, 36);
+const sectionHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+// Keep every major section reachable in long guides without crowding the sidebar.
+const tocHeadings = sectionHeadings.length > 36
+  ? sectionHeadings.filter((heading) => heading.depth === 2)
+  : sectionHeadings;
 const description = post.data.description || `Practical notes and examples for ${post.data.title}.`;
 const articleUrl = `${SITE.url}/posts/${postSlug}/`;
+const banner = getPostBanner(post);
+const coverImage = await getImage({ src: banner.image, width: 1200, format: 'webp', quality: 85 });
+const socialImage = post.data.image ?? coverImage.src;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -50,6 +60,7 @@ const jsonLd = {
   datePublished: post.data.date.toISOString(),
   dateModified: (post.data.updated ?? post.data.date).toISOString(),
   mainEntityOfPage: articleUrl,
+  image: new URL(socialImage, Astro.site ?? SITE.url).href,
   author: {
     '@type': 'Person',
     name: SITE.author,
@@ -66,7 +77,8 @@ const jsonLd = {
 <BaseLayout
   title={post.data.title}
   description={description}
-  image={post.data.image ?? null}
+  image={socialImage}
+  imageAlt={banner.alt}
   type="article"
   bodyClass="article-page"
   jsonLd={jsonLd}
@@ -109,6 +121,7 @@ const jsonLd = {
           </div>
           <button type="button" class="share-button" data-copy-link>Copy link</button>
         </div>
+        <PostBanner {post} variant="hero" />
       </header>
 
       <div class="article-divider">

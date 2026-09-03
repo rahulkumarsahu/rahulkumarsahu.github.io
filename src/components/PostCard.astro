@@ -1,6 +1,7 @@
 ---
 import type { Post } from '../lib/posts';
 import { estimateReadTime, formatDate, getPostSlug, getTopicForPost } from '../lib/posts';
+import PostBanner from './PostBanner.astro';
 
 interface Props {
   post: Post;
@@ -14,11 +15,7 @@ const slug = getPostSlug(post);
 
 <article class:list={['post-card', `post-card-${topic.accent}`, { 'post-card-featured': featured }]}>
   <a class="post-card-link" href={`/posts/${slug}/`} aria-label={`Read ${post.data.title}`}></a>
-  <div class="post-card-art" aria-hidden="true">
-    <span class="post-card-topic">{topic.number} / {topic.shortTitle}</span>
-    <div class="post-card-shape"></div>
-    <div class="post-card-grid"></div>
-  </div>
+  <PostBanner {post} />
   <div class="post-card-body">
     <div class="post-card-meta">
       <span>{formatDate(post.data.date)}</span>

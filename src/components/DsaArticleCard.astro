@@ -1,19 +1,25 @@
 ---
 import type { Post } from '../lib/posts';
 import { estimateReadTime, formatDifficulty, getPostSlug } from '../lib/posts';
+import PostBanner from './PostBanner.astro';
 
 const { post } = Astro.props as { post: Post };
 ---
 
 <article class="dsa-article-card">
-  <div class="dsa-article-meta">
-    <span class={`difficulty difficulty-${post.data.difficulty ?? 'basics'}`}>
-      {formatDifficulty(post.data.difficulty)}
-    </span>
-    <span>{post.data.contentType ?? 'concept'}</span>
-    <span>{estimateReadTime(post)} min</span>
+  <a class="dsa-article-cover-link" href={`/posts/${getPostSlug(post)}/`} tabindex="-1" aria-hidden="true">
+    <PostBanner {post} />
+  </a>
+  <div class="dsa-article-card-body">
+    <div class="dsa-article-meta">
+      <span class={`difficulty difficulty-${post.data.difficulty ?? 'basics'}`}>
+        {formatDifficulty(post.data.difficulty)}
+      </span>
+      <span>{post.data.contentType ?? 'concept'}</span>
+      <span>{estimateReadTime(post)} min</span>
+    </div>
+    <h3><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a></h3>
+    <p>{post.data.description}</p>
+    <a class="dsa-article-link" href={`/posts/${getPostSlug(post)}/`}>Read article <span>→</span></a>
   </div>
-  <h3><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a></h3>
-  <p>{post.data.description}</p>
-  <a class="dsa-article-link" href={`/posts/${getPostSlug(post)}/`}>Read article <span>→</span></a>
 </article>

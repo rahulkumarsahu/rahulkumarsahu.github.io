@@ -1,0 +1,323 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getBannerArt } from '../data/banners';
+import type { Topic } from '../data/site';
+import portraitImage from '../assets/banners/rahul-educator-v2.png';
+import portraitMaskImage from '../assets/banners/rahul-educator-mask.png';
+import '../styles/topic-banners.css';
+
+interface Props {
+  topic: Topic['slug'];
+  title: string;
+  label: string;
+  section?: string;
+  group?: string;
+  size?: 'card' | 'hero';
+  heading?: 'h1' | 'h2' | 'h3';
+  portrait?: boolean;
+  eager?: boolean;
+}
+
+const {
+  topic, title, label, section, group,
+  size = 'card', heading: Heading = 'h3',
+  portrait = !section, eager = false,
+} = Astro.props;
+const art = getBannerArt(topic, section, group);
+const portraitMask = portrait
+  ? await getImage({ src: portraitMaskImage, width: 640, format: 'png' })
+  : undefined;
+---
+
+<div
+  class:list={['topic-banner', `topic-banner--${size}`, { 'topic-banner--portrait': portrait }]}
+  style={`--banner-accent: ${art.accent}`}
+  data-banner-topic={topic}
+  data-banner-section={section}
+  data-banner-art={art.family}
+>
+  <Image
+    class="topic-banner-art"
+    src={art.image}
+    alt=""
+    width={size === 'hero' ? 1600 : 1200}
+    widths={size === 'hero' ? [640, 960, 1600] : [400, 800, 1200]}
+    sizes={size === 'hero' ? '(max-width: 1280px) 100vw, 1280px' : '(max-width: 600px) 100vw, 50vw'}
+    format="webp"
+    quality={82}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding="async"
+  />
+  <div class="topic-banner-shade" aria-hidden="true"></div>
+  {portrait && (
+    <Image
+      class="topic-banner-portrait"
+      style={`--portrait-mask: url("${portraitMask?.src}")`}
+      src={portraitImage}
+      alt=""
+      width={size === 'hero' ? 640 : 360}
+      widths={[240, 360, 640]}
+      sizes={size === 'hero' ? '(max-width: 600px) 40vw, 420px' : '(max-width: 600px) 42vw, 220px'}
+      format="webp"
+      quality={85}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  )}
+  {!portrait && <span class="topic-banner-label">{label}</span>}
+  <div class="topic-banner-copy">
+    {portrait && <span class="topic-banner-label">{label}</span>}
+    <Heading class="topic-banner-title">{title}</Heading>
+    <span class="topic-banner-byline">{portrait ? 'WITH RAHUL KUMAR' : 'THE SYSTEM DESIGN ATLAS'}</span>
+  </div>
+</div>
+
+<style>
+  .topic-banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #132839;
+    color: #f9faf6;
+  }
+
+  .topic-banner .topic-banner-art {
+    position: absolute;
+    z-index: -3;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+
+  .topic-banner-shade {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(9, 24, 40, .1) 0%, rgba(9, 24, 40, .06) 28%, rgba(9, 24, 40, .78) 100%);
+  }
+
+  .topic-banner--portrait .topic-banner-shade {
+    background: linear-gradient(90deg, rgba(9, 24, 40, .15), transparent 78%), linear-gradient(180deg, transparent 25%, rgba(9, 24, 40, .76) 100%);
+  }
+
+  .topic-banner--card.topic-banner--portrait {
+    min-height: 300px;
+    aspect-ratio: 16 / 11;
+  }
+
+  .topic-banner--portrait .topic-banner-art {
+    width: 85%;
+    height: auto;
+    object-fit: contain;
+    object-position: left top;
+    -webkit-mask-image: linear-gradient(90deg, #000 78%, transparent), linear-gradient(#000 70%, transparent);
+    mask-image: linear-gradient(90deg, #000 78%, transparent), linear-gradient(#000 70%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    filter: brightness(1.12);
+  }
+
+  .topic-banner .topic-banner-portrait {
+    position: absolute;
+    z-index: -1;
+    right: 1%;
+    bottom: -4%;
+    width: 34%;
+    height: auto;
+    object-fit: contain;
+    object-position: right bottom;
+    /* Keep the original portrait pixels; hide only the background silhouette. */
+    -webkit-mask-image: var(--portrait-mask);
+    mask-image: var(--portrait-mask);
+    mask-mode: luminance;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .topic-banner-label {
+    position: absolute;
+    top: 20px;
+    left: 23px;
+    max-width: calc(100% - 46px);
+    padding: 6px 9px;
+    border: 1px solid rgba(230, 244, 255, .25);
+    border-radius: 5px;
+    background: rgba(10, 24, 37, .72);
+    color: #e0eaf0;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: .09em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .topic-banner-copy {
+    width: 90%;
+    min-width: 0;
+    padding: 76px 23px 24px;
+  }
+
+  .topic-banner--portrait .topic-banner-copy {
+    width: 76%;
+  }
+
+  .topic-banner--portrait .topic-banner-label {
+    position: static;
+    display: table;
+    max-width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .topic-banner--card.topic-banner--portrait .topic-banner-title {
+    font-size: clamp(23px, 2vw, 28px);
+  }
+
+  .topic-banner .topic-banner-title {
+    max-width: none;
+    margin: 0;
+    color: #f9faf6;
+    font-family: var(--font-display);
+    font-size: clamp(23px, 2.1vw, 31px);
+    font-weight: 700;
+    letter-spacing: -.04em;
+    line-height: 1.04;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    text-shadow: 0 2px 20px rgba(6, 21, 36, .6);
+  }
+
+  .topic-banner-byline {
+    display: block;
+    margin-top: 14px;
+    color: var(--banner-accent);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: .11em;
+    line-height: 1.6;
+  }
+
+  .topic-banner--hero {
+    min-height: 340px;
+    aspect-ratio: 3.4 / 1;
+    border: 1px solid rgba(184, 211, 231, .25);
+    border-radius: 22px;
+  }
+
+  .topic-banner--hero .topic-banner-copy {
+    width: 75%;
+    padding: 110px 42px 38px;
+  }
+
+  .topic-banner--hero.topic-banner--portrait .topic-banner-copy {
+    width: 68%;
+  }
+
+  .topic-banner--hero .topic-banner-title {
+    font-size: clamp(34px, 4.7vw, 64px);
+    line-height: 1.03;
+  }
+
+  .topic-banner--hero .topic-banner-label {
+    top: 30px;
+    left: 42px;
+    font-size: 10px;
+  }
+
+  .topic-banner--hero .topic-banner-byline {
+    margin-top: 21px;
+    font-size: 10px;
+  }
+
+  .topic-banner--hero .topic-banner-portrait {
+    right: 1%;
+    bottom: -4%;
+    width: 27%;
+    height: auto;
+  }
+
+  .topic-banner--hero.topic-banner--portrait {
+    min-height: 460px;
+  }
+
+  .topic-banner--hero.topic-banner--portrait .topic-banner-art {
+    width: 52%;
+  }
+
+  @media (max-width: 600px) {
+    .topic-banner--card {
+      min-height: 218px;
+    }
+
+    .topic-banner--card .topic-banner-title {
+      font-size: clamp(25px, 7vw, 34px);
+    }
+
+    .topic-banner--card.topic-banner--portrait .topic-banner-copy {
+      width: 78%;
+    }
+
+    .topic-banner--hero {
+      min-height: 300px;
+      aspect-ratio: auto;
+      border-radius: 15px;
+    }
+
+    .topic-banner--hero .topic-banner-copy,
+    .topic-banner--hero.topic-banner--portrait .topic-banner-copy {
+      width: 87%;
+      padding: 105px 22px 28px;
+    }
+
+    .topic-banner--hero.topic-banner--portrait {
+      min-height: 360px;
+    }
+
+    .topic-banner--hero.topic-banner--portrait .topic-banner-copy {
+      width: 80%;
+      padding-top: 160px;
+    }
+
+    .topic-banner--hero.topic-banner--portrait .topic-banner-art {
+      width: 78%;
+    }
+
+    .topic-banner--hero.topic-banner--portrait .topic-banner-title {
+      font-size: clamp(28px, 6vw, 36px);
+    }
+
+    .topic-banner--hero .topic-banner-title {
+      font-size: clamp(31px, 8.5vw, 44px);
+    }
+
+    .topic-banner--hero .topic-banner-label {
+      top: 22px;
+      left: 22px;
+      max-width: calc(100% - 44px);
+      font-size: 8px;
+    }
+
+    .topic-banner--hero .topic-banner-portrait {
+      width: 32%;
+      height: auto;
+      right: 0;
+      bottom: -2%;
+    }
+
+    .topic-banner--hero .topic-banner-byline {
+      font-size: 8px;
+    }
+  }
+</style>

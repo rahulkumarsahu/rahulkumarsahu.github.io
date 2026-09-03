@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import { getPostBanner } from '../lib/postBanners';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  variant?: 'card' | 'hero';
+}
+
+const { post, variant = 'card' } = Astro.props;
+const banner = getPostBanner(post);
+const isHero = variant === 'hero';
+---
+
+<div
+  class:list={['post-banner', `post-banner--${variant}`]}
+  style={`--cover-accent: ${banner.accent}`}
+  data-post-banner={variant}
+  data-banner-art={banner.custom ? 'custom' : banner.family}
+  aria-hidden={isHero ? undefined : 'true'}
+>
+  <Image
+    class="post-banner-image"
+    src={banner.image}
+    alt={isHero ? banner.alt : ''}
+    width={isHero ? 1200 : 800}
+    widths={isHero ? [480, 800, 1200] : [320, 480, 800]}
+    sizes={isHero
+      ? '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 680px, (max-width: 1120px) 60vw, 820px'
+      : '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 50vw, 400px'}
+    format="webp"
+    quality={85}
+    loading={isHero ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+  {isHero && (
+    <div class="post-banner-caption">
+      <span>{banner.label}</span>
+      <span>The System Design Atlas</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .post-banner {
+    min-width: 0;
+    overflow: hidden;
+    background: #102338;
+  }
+
+  .post-banner .post-banner-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Keep the entire diagram visible, including on narrow screens. */
+    object-fit: contain;
+  }
+
+  .post-banner--card {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-banner--hero {
+    margin-top: 32px;
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+  }
+
+  .post-banner-caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding: 15px 20px;
+    border-top: 1px solid #ffffff1f;
+    color: var(--cover-accent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .post-banner-caption span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .post-banner-caption span:last-child {
+    color: #cedae5;
+  }
+
+  @media (max-width: 600px) {
+    .post-banner--hero {
+      margin-top: 24px;
+      border-radius: 10px;
+    }
+
+    .post-banner-caption {
+      padding: 12px 14px;
+    }
+  }
+</style>

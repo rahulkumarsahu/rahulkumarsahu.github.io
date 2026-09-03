@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DsaArticleCard from '../../components/DsaArticleCard.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
+import TopicBanner from '../../components/TopicBanner.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
 import { getPostsForSeries } from '../../lib/posts';
 
@@ -26,11 +27,18 @@ const groupCopy = {
 ---
 
 <BaseLayout title={section.title} description={section.description}>
-  <section class="page-hero dsa-section-hero section-wrap">
+  <section class="page-hero dsa-section-hero banner-page-hero section-wrap">
     <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: section.title }]} />
-    <p class="section-index">SECTION {section.number} / DSA</p>
-    <h1>{section.title}</h1>
-    <p>{section.description}</p>
+    <TopicBanner
+      topic="dsa"
+      section={section.slug}
+      title={section.title}
+      label={`DSA / SECTION ${section.number}`}
+      size="hero"
+      heading="h1"
+      eager
+    />
+    <div class="banner-page-intro"><p>{section.description}</p></div>
     <div class="dsa-topic-pills">
       {section.topics.map((topic) => <span>{topic}</span>)}
     </div>

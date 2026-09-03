@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TopicCard from '../../components/TopicCard.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
 import { getPostsForSeries } from '../../lib/posts';
 
@@ -16,20 +17,24 @@ const posts = await getCollection('posts');
     <p>Each section starts with the basic idea, then moves through patterns and practice problems grouped by difficulty.</p>
   </section>
 
-  <section class="dsa-section-directory section-wrap">
+  <section class="topic-cover-directory section-wrap">
+    <div class="topic-cover-grid">
     {DSA_SECTIONS.map((section) => {
       const count = getPostsForSeries(posts, section.slug).length;
       return (
-        <a class="dsa-section-row" href={`/dsa/${section.slug}/`}>
-          <span>{section.number}</span>
-          <div>
-            <small>{count ? `${count} ARTICLES AVAILABLE` : 'CURRICULUM READY'}</small>
-            <h2>{section.title}</h2>
-            <p>{section.description}</p>
-          </div>
-          <i aria-hidden="true">→</i>
-        </a>
+        <TopicCard
+          topic="dsa"
+          section={section.slug}
+          title={section.title}
+          description={section.description}
+          href={`/dsa/${section.slug}/`}
+          label={`DSA / ${section.number}`}
+          {count}
+          keywords={section.topics}
+          heading="h2"
+        />
       );
     })}
+    </div>
   </section>
 </BaseLayout>

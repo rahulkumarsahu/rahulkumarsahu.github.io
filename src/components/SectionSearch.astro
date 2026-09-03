@@ -54,7 +54,10 @@ const {
       let visible = 0;
 
       items.forEach((item) => {
-        const matches = !query || (item.textContent || '').toLowerCase().includes(query);
+        const searchableText = item instanceof HTMLElement
+          ? item.dataset.searchText || item.textContent || ''
+          : item.textContent || '';
+        const matches = !query || searchableText.toLowerCase().includes(query);
         if (item instanceof HTMLElement) item.hidden = !matches;
         if (matches) visible++;
       });

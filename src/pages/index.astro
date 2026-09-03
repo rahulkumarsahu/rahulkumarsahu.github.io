@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
+import TopicCard from '../components/TopicCard.astro';
 import { SITE, TOPICS } from '../data/site';
 import { getPostsForTopic, getSortedPosts } from '../lib/posts';
 
@@ -138,14 +139,16 @@ const roadmap = [
       <div><p class="section-index">02 / PATHS &amp; COLLECTIONS</p><h2>Pick the route you need today.</h2></div>
       <p>Follow a structured path or open a collection that matches the problem in front of you. You can always move between topics as your questions change.</p>
     </div>
-    <div class="track-grid">
-      {TOPICS.map((topic, index) => (
-        <a class={`track-card track-${topic.accent}`} href={`/topics/${topic.slug}/`} data-reveal style={`--reveal-delay: ${index * 70}ms`}>
-          <div class="track-topline"><span>{topic.number}</span><span class="track-arrow" aria-hidden="true">↗</span></div>
-          <h3>{topic.title}</h3>
-          <p>{topic.description}</p>
-          <div class="track-meta"><span>{topicCounts.get(topic.slug)} {topicCounts.get(topic.slug) === 1 ? 'note' : 'notes'}</span><span class="track-status"><i></i> Explore</span></div>
-        </a>
+    <div class="topic-cover-grid topic-cover-grid--major">
+      {TOPICS.map((topic) => (
+        <TopicCard
+          topic={topic.slug}
+          title={topic.title}
+          description={topic.description}
+          href={`/topics/${topic.slug}/`}
+          label={`${topic.number} / ${topic.meta}`}
+          count={topicCounts.get(topic.slug) ?? 0}
+        />
       ))}
     </div>
   </section>

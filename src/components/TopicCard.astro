@@ -1,0 +1,41 @@
+---
+import TopicBanner from './TopicBanner.astro';
+import type { Topic } from '../data/site';
+
+interface Props {
+  topic: Topic['slug'];
+  title: string;
+  description: string;
+  href: string;
+  label: string;
+  count: number;
+  section?: string;
+  group?: string;
+  keywords?: readonly string[];
+  heading?: 'h2' | 'h3';
+  levels?: { name: string; count: number }[];
+}
+
+const { topic, title, description, href, label, count, section, group, keywords = [], heading = 'h3', levels } = Astro.props;
+---
+
+<a
+  class:list={['topic-cover-card', { 'has-articles': count > 0 }]}
+  href={href}
+  data-search-text={[title, description, label, ...keywords].join(' ')}
+>
+  <TopicBanner {topic} {title} {label} {section} {group} {heading} />
+  <div class="topic-cover-body">
+    <p>{description}</p>
+    {keywords.length > 0 && <div class="topic-cover-keywords">{keywords.slice(0, 3).map((keyword) => <span>{keyword}</span>)}</div>}
+    {levels && (
+      <div class="topic-cover-levels" aria-label="Articles by difficulty">
+        {levels.map((level) => <span><small>{level.name}</small><strong>{level.count}</strong></span>)}
+      </div>
+    )}
+    <div class="topic-cover-footer">
+      <span>{count ? `${count} ${count === 1 ? 'article' : 'articles'}` : 'Curriculum ready'}</span>
+      <strong>{section ? 'Open section' : 'Explore topic'} <i aria-hidden="true">↗</i></strong>
+    </div>
+  </div>
+</a>
