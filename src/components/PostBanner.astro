@@ -20,20 +20,32 @@ const isHero = variant === 'hero';
   data-banner-art={banner.custom ? 'custom' : banner.family}
   aria-hidden={isHero ? undefined : 'true'}
 >
-  <Image
-    class="post-banner-image"
-    src={banner.image}
-    alt={isHero ? banner.alt : ''}
-    width={isHero ? 1200 : 800}
-    widths={isHero ? [480, 800, 1200] : [320, 480, 800]}
-    sizes={isHero
-      ? '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 680px, (max-width: 1120px) 60vw, 820px'
-      : '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 50vw, 400px'}
-    format="webp"
-    quality={85}
-    loading={isHero ? 'eager' : 'lazy'}
-    decoding="async"
-  />
+  {banner.custom ? (
+    <Image
+      class="post-banner-image"
+      src={banner.image}
+      alt={isHero ? banner.alt : ''}
+      width={isHero ? 1200 : 800}
+      widths={isHero ? [480, 800, 1200] : [320, 480, 800]}
+      sizes={isHero
+        ? '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 680px, (max-width: 1120px) 60vw, 820px'
+        : '(max-width: 600px) calc(100vw - 30px), (max-width: 840px) 50vw, 400px'}
+      format="webp"
+      quality={85}
+      loading={isHero ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  ) : (
+    <img
+      class="post-banner-image"
+      src={banner.imageUrl}
+      alt={isHero ? banner.alt : ''}
+      width="1600"
+      height="900"
+      loading={isHero ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  )}
   {isHero && (
     <div class="post-banner-caption">
       <span>{banner.label}</span>

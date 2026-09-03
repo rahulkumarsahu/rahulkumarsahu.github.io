@@ -1,0 +1,363 @@
+<section class="move-zeroes-trace" data-move-zeroes-trace aria-labelledby="move-zeroes-trace-title">
+  <header class="trace-header">
+    <div>
+      <span>INTERACTIVE DRY RUN</span>
+      <h2 id="move-zeroes-trace-title">Watch the read and write positions</h2>
+    </div>
+    <p>Try a small array, then move one operation at a time.</p>
+  </header>
+
+  <form class="trace-input" data-trace-form>
+    <label for="move-zeroes-input">Array input</label>
+    <div>
+      <input id="move-zeroes-input" value="0, 1, 0, 3, 12" inputmode="text" data-trace-input aria-describedby="move-zeroes-input-help" />
+      <button type="submit">Load array</button>
+    </div>
+    <small id="move-zeroes-input-help">Enter 1 to 12 integers separated by commas.</small>
+    <p data-trace-error role="alert" hidden></p>
+  </form>
+
+  <div class="trace-workspace">
+    <div class="trace-code-panel">
+      <div class="trace-panel-label"><span>JAVA</span><strong>moveZeroes</strong></div>
+      <pre class="trace-code" aria-label="Move Zeroes Java implementation"><code><span data-code-line="1">int write = 0;</span>
+<span data-code-line="2">for (int read = 0; read &lt; values.length; read++) &#123;</span>
+<span data-code-line="3">    if (values[read] != 0) &#123;</span>
+<span data-code-line="4">        values[write] = values[read];</span>
+<span data-code-line="5">        write++;</span>
+<span data-code-line="6">    &#125;</span>
+<span data-code-line="7">&#125;</span>
+<span data-code-line="8">while (write &lt; values.length) &#123;</span>
+<span data-code-line="9">    values[write] = 0;</span>
+<span data-code-line="10">    write++;</span>
+<span data-code-line="11">&#125;</span></code></pre>
+    </div>
+
+    <div class="trace-state-panel">
+      <div class="trace-panel-label"><span>STATE</span><strong data-trace-step>Step 1 of 1</strong></div>
+      <div class="trace-phase-row">
+        <span data-trace-phase>Ready</span>
+        <span data-trace-pointers>read = 0 · write = 0</span>
+      </div>
+      <div class="trace-array" data-trace-array aria-live="polite"></div>
+      <div class="trace-legend" aria-label="Pointer legend">
+        <span><i class="legend-read"></i> Read position</span>
+        <span><i class="legend-write"></i> Write position</span>
+      </div>
+      <div class="trace-explanation">
+        <span>CURRENT DECISION</span>
+        <p data-trace-explanation>Start with the write position at index 0.</p>
+      </div>
+      <div class="trace-output">
+        <span>OUTPUT</span>
+        <code data-trace-output>Not complete yet</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="trace-controls" aria-label="Dry run controls">
+    <button type="button" data-trace-previous>← Previous</button>
+    <button type="button" data-trace-next>Next →</button>
+    <button type="button" data-trace-play>Play</button>
+    <button type="button" data-trace-pause disabled>Pause</button>
+    <button type="button" data-trace-reset>Reset</button>
+  </div>
+
+  <p class="trace-accessible-description">
+    Each array cell includes its index and value. Text labels identify the read and write positions, so the dry run does not depend on colour.
+  </p>
+</section>
+
+<script>
+  interface MoveZeroesState {
+    values: number[];
+    read: number | null;
+    write: number;
+    line: number;
+    phase: string;
+    explanation: string;
+    complete: boolean;
+  }
+
+  const buildMoveZeroesStates = (input: number[]): MoveZeroesState[] => {
+    const values = [...input];
+    const states: MoveZeroesState[] = [{
+      values: [...values], read: 0, write: 0, line: 1, phase: 'Ready', complete: false,
+      explanation: 'Start with the write position at index 0.',
+    }];
+    let write = 0;
+
+    for (let read = 0; read < values.length; read++) {
+      if (values[read] !== 0) {
+        const current = values[read];
+        values[write] = current;
+        const destination = write;
+        write++;
+        states.push({
+          values: [...values], read, write, line: 4, phase: 'Compact nonzero values', complete: false,
+          explanation: `Value ${current} is nonzero, so copy it from index ${read} to index ${destination}. The next write position is ${write}.`,
+        });
+      } else {
+        states.push({
+          values: [...values], read, write, line: 3, phase: 'Compact nonzero values', complete: false,
+          explanation: `Value 0 at index ${read} is skipped. The write position stays at index ${write}.`,
+        });
+      }
+    }
+
+    while (write < values.length) {
+      const destination = write;
+      values[write] = 0;
+      write++;
+      states.push({
+        values: [...values], read: null, write, line: 9, phase: 'Fill remaining positions', complete: false,
+        explanation: `Write 0 at index ${destination}. Every nonzero value is already in its final relative order.`,
+      });
+    }
+
+    states.push({
+      values: [...values], read: null, write, line: 11, phase: 'Complete', complete: true,
+      explanation: 'The nonzero prefix is stable and every remaining position contains 0.',
+    });
+    return states;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-move-zeroes-trace]').forEach((trace) => {
+    if (trace.dataset.traceReady === 'true') return;
+    trace.dataset.traceReady = 'true';
+
+    const form = trace.querySelector<HTMLFormElement>('[data-trace-form]');
+    const input = trace.querySelector<HTMLInputElement>('[data-trace-input]');
+    const error = trace.querySelector<HTMLElement>('[data-trace-error]');
+    const arrayView = trace.querySelector<HTMLElement>('[data-trace-array]');
+    const stepView = trace.querySelector<HTMLElement>('[data-trace-step]');
+    const phaseView = trace.querySelector<HTMLElement>('[data-trace-phase]');
+    const pointerView = trace.querySelector<HTMLElement>('[data-trace-pointers]');
+    const explanationView = trace.querySelector<HTMLElement>('[data-trace-explanation]');
+    const outputView = trace.querySelector<HTMLElement>('[data-trace-output]');
+    const previous = trace.querySelector<HTMLButtonElement>('[data-trace-previous]');
+    const next = trace.querySelector<HTMLButtonElement>('[data-trace-next]');
+    const play = trace.querySelector<HTMLButtonElement>('[data-trace-play]');
+    const pause = trace.querySelector<HTMLButtonElement>('[data-trace-pause]');
+    const reset = trace.querySelector<HTMLButtonElement>('[data-trace-reset]');
+    if (!form || !input || !arrayView || !stepView || !phaseView || !pointerView || !explanationView || !outputView) return;
+
+    let states = buildMoveZeroesStates([0, 1, 0, 3, 12]);
+    let currentIndex = 0;
+    let timer: number | undefined;
+
+    const stop = () => {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+      if (play) play.disabled = currentIndex >= states.length - 1;
+      if (pause) pause.disabled = true;
+    };
+
+    const render = () => {
+      const state = states[currentIndex];
+      stepView.textContent = `Step ${currentIndex + 1} of ${states.length}`;
+      phaseView.textContent = state.phase;
+      pointerView.textContent = `read = ${state.read ?? 'done'} · write = ${state.write}`;
+      explanationView.textContent = state.explanation;
+      outputView.textContent = state.complete ? `[${state.values.join(', ')}]` : 'Not complete yet';
+
+      arrayView.replaceChildren(...state.values.map((value, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'trace-cell';
+        const labels: string[] = [];
+        if (state.read === index) labels.push('READ');
+        if (state.write === index && !state.complete) labels.push('WRITE');
+        if (state.read === index) cell.classList.add('is-read');
+        if (state.write === index && !state.complete) cell.classList.add('is-write');
+        cell.setAttribute('aria-label', `Index ${index}, value ${value}${labels.length ? `, ${labels.join(' and ')} position` : ''}`);
+        cell.innerHTML = `<small>${labels.join(' + ') || `INDEX ${index}`}</small><strong>${value}</strong><span>${labels.length ? `index ${index}` : ''}</span>`;
+        return cell;
+      }));
+
+      trace.querySelectorAll<HTMLElement>('[data-code-line]').forEach((line) => {
+        const active = Number(line.dataset.codeLine) === state.line;
+        line.classList.toggle('is-active', active);
+        if (active) line.setAttribute('aria-current', 'step');
+        else line.removeAttribute('aria-current');
+      });
+
+      if (previous) previous.disabled = currentIndex === 0;
+      if (next) next.disabled = currentIndex === states.length - 1;
+      if (play && timer === undefined) play.disabled = currentIndex === states.length - 1;
+    };
+
+    const parseInput = () => {
+      const normalized = input.value.trim().replace(/^\[/, '').replace(/\]$/, '');
+      const parts = normalized.split(',').map((value) => value.trim());
+      if (!normalized || parts.some((value) => !/^-?\d+$/.test(value))) {
+        throw new Error('Enter integers separated by commas, for example: 0, 1, 0, 3, 12.');
+      }
+      if (parts.length > 12) throw new Error('Use at most 12 values so every step remains readable.');
+      return parts.map(Number);
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      stop();
+      try {
+        states = buildMoveZeroesStates(parseInput());
+        currentIndex = 0;
+        if (error) error.hidden = true;
+        render();
+      } catch (problem) {
+        if (error) {
+          error.textContent = problem instanceof Error ? problem.message : 'Use a valid integer array.';
+          error.hidden = false;
+        }
+      }
+    });
+
+    previous?.addEventListener('click', () => { stop(); currentIndex = Math.max(0, currentIndex - 1); render(); });
+    next?.addEventListener('click', () => { stop(); currentIndex = Math.min(states.length - 1, currentIndex + 1); render(); });
+    reset?.addEventListener('click', () => { stop(); currentIndex = 0; render(); });
+    play?.addEventListener('click', () => {
+      if (currentIndex >= states.length - 1) currentIndex = 0;
+      if (play) play.disabled = true;
+      if (pause) pause.disabled = false;
+      render();
+      timer = window.setInterval(() => {
+        if (currentIndex >= states.length - 1) { stop(); render(); return; }
+        currentIndex++;
+        render();
+      }, 900);
+    });
+    pause?.addEventListener('click', () => { stop(); render(); });
+
+    render();
+  });
+</script>
+
+<style>
+  .move-zeroes-trace {
+    margin: 2.2rem 0;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .trace-header,
+  .trace-input,
+  .trace-controls,
+  .trace-accessible-description { padding: 1rem 1.2rem; }
+
+  .trace-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--cyan) 9%, transparent), transparent 52%);
+  }
+
+  .trace-header span,
+  .trace-panel-label span,
+  .trace-explanation span,
+  .trace-output span {
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: .56rem;
+    font-weight: 650;
+    letter-spacing: .1em;
+  }
+
+  .trace-header h2 { margin: .25rem 0 0; padding: 0; border: 0; font-size: 1.25rem; }
+  .trace-header p { max-width: 18rem; margin: 0; color: var(--text-faint); font-size: .72rem; text-align: right; }
+
+  .trace-input { border-bottom: 1px solid var(--line); }
+  .trace-input label { display: block; margin-bottom: .4rem; color: var(--text); font-size: .68rem; font-weight: 650; }
+  .trace-input > div { display: flex; gap: .5rem; }
+  .trace-input input {
+    min-width: 0;
+    min-height: 2.55rem;
+    flex: 1;
+    padding: .55rem .7rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .55rem;
+    background: var(--surface-strong);
+    color: var(--text);
+    font-family: var(--font-mono);
+  }
+  .trace-input button,
+  .trace-controls button {
+    min-height: 2.55rem;
+    padding: .52rem .75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .55rem;
+    background: var(--surface-strong);
+    color: var(--text);
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .trace-input button { border-color: color-mix(in srgb, var(--indigo) 58%, var(--line)); background: var(--indigo); color: white; }
+  .trace-input small { display: block; margin-top: .35rem; color: var(--text-faint); font-size: .6rem; }
+  .trace-input [role='alert'] { margin: .5rem 0 0; color: #c84a3a; font-size: .68rem; }
+
+  .trace-workspace { display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(20rem, 1.1fr); }
+  .trace-code-panel { min-width: 0; background: #10182a; color: #dbe6f8; }
+  .trace-state-panel { min-width: 0; padding: 1rem 1.2rem; border-left: 1px solid var(--line); }
+  .trace-panel-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .trace-panel-label strong { color: inherit; font-size: .68rem; }
+  .trace-code-panel .trace-panel-label { padding: .78rem 1rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .trace-code { overflow-x: auto; margin: 0; padding: .9rem 0 1rem; border: 0; border-radius: 0; background: transparent; font-size: .67rem; line-height: 1.85; }
+  .trace-code code > span { display: block; min-width: max-content; padding: 0 1rem; border-left: 3px solid transparent; }
+  .trace-code code > span.is-active { border-left-color: #72ded2; background: rgba(114,222,210,.12); color: white; }
+
+  .trace-phase-row { display: flex; justify-content: space-between; gap: .7rem; margin-top: .9rem; color: var(--text-soft); font-family: var(--font-mono); font-size: .6rem; }
+  .trace-array { display: flex; flex-wrap: wrap; gap: .48rem; margin-top: 1rem; }
+  .trace-cell {
+    display: grid;
+    width: 4rem;
+    min-height: 4.3rem;
+    place-items: center;
+    padding: .35rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .65rem;
+    background: var(--surface-strong);
+  }
+  .trace-cell small { color: var(--text-faint); font-family: var(--font-mono); font-size: .46rem; line-height: 1.2; text-align: center; }
+  .trace-cell strong { color: var(--text); font-size: 1.1rem; }
+  .trace-cell span { min-height: .65rem; color: var(--text-faint); font-size: .5rem; }
+  .trace-cell.is-read { border-color: var(--amber); }
+  .trace-cell.is-write { box-shadow: inset 0 -3px var(--cyan); }
+  .trace-cell.is-read.is-write { border-color: var(--amber); box-shadow: inset 0 -3px var(--cyan); }
+  .trace-legend { display: flex; flex-wrap: wrap; gap: .85rem; margin-top: .7rem; color: var(--text-faint); font-size: .55rem; }
+  .trace-legend span { display: inline-flex; align-items: center; gap: .3rem; }
+  .trace-legend i { width: .8rem; height: .22rem; border-radius: 1rem; }
+  .legend-read { background: var(--amber); }
+  .legend-write { background: var(--cyan); }
+  .trace-explanation,
+  .trace-output { margin-top: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .65rem; background: color-mix(in srgb, var(--surface-strong) 82%, transparent); }
+  .trace-explanation p { min-height: 3.2rem; margin: .35rem 0 0; color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
+  .trace-output { display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
+  .trace-output code { color: var(--text); font-size: .66rem; }
+
+  .trace-controls { display: flex; flex-wrap: wrap; gap: .45rem; border-top: 1px solid var(--line); }
+  .trace-controls button:disabled { opacity: .42; cursor: not-allowed; }
+  .trace-controls :is(button):focus-visible,
+  .trace-input :is(input, button):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .trace-accessible-description { margin: 0; border-top: 1px solid var(--line); color: var(--text-faint); font-size: .62rem; line-height: 1.5; }
+
+  @media (max-width: 760px) {
+    .trace-header { align-items: start; flex-direction: column; }
+    .trace-header p { text-align: left; }
+    .trace-workspace { grid-template-columns: 1fr; }
+    .trace-state-panel { border-top: 1px solid var(--line); border-left: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .trace-input > div { align-items: stretch; flex-direction: column; }
+    .trace-controls button { flex: 1 1 calc(50% - .45rem); }
+    .trace-cell { width: 3.35rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .move-zeroes-trace * { scroll-behavior: auto !important; transition: none !important; }
+  }
+</style>

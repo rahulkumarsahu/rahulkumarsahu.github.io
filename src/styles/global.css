@@ -4210,7 +4210,7 @@ a {
 
 .learning-method-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
@@ -4218,7 +4218,7 @@ a {
 .learning-method-grid article {
   position: relative;
   display: flex;
-  min-height: 280px;
+  min-height: 350px;
   flex-direction: column;
   padding: 28px;
   border-right: 1px solid var(--line);
@@ -4239,6 +4239,7 @@ a {
 
 .learning-method-grid article:nth-child(2) { --method-accent: var(--amber); }
 .learning-method-grid article:nth-child(3) { --method-accent: var(--cyan); }
+.learning-method-grid article:nth-child(4) { --method-accent: var(--rose); }
 
 .learning-method-grid article:hover {
   background: color-mix(in srgb, var(--surface-raised) 72%, transparent);
@@ -4248,14 +4249,14 @@ a {
 .learning-method-grid article > span {
   color: var(--method-accent, var(--indigo));
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 
 .learning-method-grid article > strong {
   margin-top: 52px;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.03em;
 }
@@ -4263,8 +4264,8 @@ a {
 .learning-method-grid article > p {
   margin: 14px 0 0;
   color: var(--text-soft);
-  font-size: 12px;
-  line-height: 1.72;
+  font-size: 16px;
+  line-height: 1.62;
 }
 
 .learning-method-grid article > small {
@@ -4272,7 +4273,7 @@ a {
   padding-top: 28px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .tracks {
@@ -4373,6 +4374,10 @@ a {
 
   .atlas-portrait-wrap {
     right: 150px;
+  }
+
+  .learning-method-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -5046,6 +5051,11 @@ a {
 
 .curriculum-available {
   border-top: 1px solid var(--line);
+}
+
+.curriculum-available + .curriculum-planned {
+  border-top: 1px solid var(--line);
+  opacity: 0.78;
 }
 
 .curriculum-available .post-grid > [data-curriculum-item] {

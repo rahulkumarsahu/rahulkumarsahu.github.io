@@ -1,6 +1,8 @@
 ---
 title: "Subsets in Java: From Brute Force to Optimal"
 date: 2026-09-02 09:00:00 +0530
+lastReviewed: 2026-09-03 09:00:00 +0530
+javaVersion: "Java 21+"
 description: "Generate every subset of a distinct integer set in Java using bitmasks and backtracking, with a visual dry run and honest complexity analysis."
 categories: [Data Structures and Algorithms]
 tags: [dsa, java, recursion, backtracking]

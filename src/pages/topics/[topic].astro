@@ -3,12 +3,13 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import PostCard from '../../components/PostCard.astro';
+import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { DSA_SECTIONS, getLearningPath } from '../../data/learningPaths';
 import { TOPICS } from '../../data/site';
-import { getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
+import { getPostSlug, getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
 
 export function getStaticPaths() {
   return TOPICS.map((topic) => ({
@@ -24,6 +25,45 @@ const isDsa = topic.slug === 'dsa';
 const isNotes = topic.slug === 'engineering-notes';
 const curriculum = getLearningPath(topic.slug);
 const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
+const startHereSlugs = [
+  'array-fundamentals',
+  'largest-element-in-array',
+  'check-array-sorted',
+  'move-zeroes-to-end',
+  'recursion-in-java-beginners-guide',
+  'subsets-in-java',
+];
+const startHerePosts = startHereSlugs
+  .map((slug) => allPosts.find((post) => !post.data.draft && getPostSlug(post) === slug))
+  .filter((post) => Boolean(post));
+const dsaDirectory = DSA_SECTIONS.map((section) => ({
+  section,
+  posts: getPostsForSeries(allPosts, section.slug),
+}));
+const unpublishedDsaSections = dsaDirectory.filter((item) => item.posts.length === 0);
+const dsaDirectoryGroups = [
+  {
+    key: 'available',
+    eyebrow: 'PUBLISHED AND AVAILABLE',
+    title: 'Learn from articles you can open now',
+    description: 'These sections already contain complete lessons or practice problems.',
+    items: dsaDirectory.filter((item) => item.posts.length > 0),
+  },
+  {
+    key: 'coming',
+    eyebrow: 'COMING NEXT',
+    title: 'The next sections being prepared',
+    description: 'These topics are closest to the front of the publishing queue.',
+    items: unpublishedDsaSections.slice(0, 3),
+  },
+  {
+    key: 'planned',
+    eyebrow: 'PLANNED FOR LATER',
+    title: 'The complete DSA map',
+    description: 'These sections remain visible so you can understand where the learning path is going.',
+    items: unpublishedDsaSections.slice(3),
+  },
+];
 ---
 
 <BaseLayout title={topic.title} description={topic.description}>
@@ -45,51 +85,82 @@ const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
     />
     <div class="banner-page-intro">
       <p>{topic.description}</p>
-      <a class="button button-primary" href={isDsa ? '#dsa-sections' : '#curriculum'}>
-        {isDsa ? 'Browse DSA topics' : isNotes ? 'Browse note collections' : 'Browse sections'}
+      <a class="button button-primary" href={isDsa ? '#start-here' : '#curriculum'}>
+        {isDsa ? 'Start the beginner path' : isNotes ? 'Browse note collections' : 'Browse sections'}
       </a>
     </div>
   </section>
 
   {isDsa ? (
-    <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
-      <div class="section-heading section-heading-notes">
-        <div>
-          <p class="section-index">DSA TOPICS / {String(DSA_SECTIONS.length).padStart(2, '0')}</p>
-          <h2>Choose a topic, then practice by difficulty.</h2>
+    <>
+      <section class="dsa-start-here section-wrap" id="start-here">
+        <div class="section-heading section-heading-notes">
+          <div>
+            <p class="section-index">START HERE / BEGINNER PATH</p>
+            <h2>Six lessons that build on each other.</h2>
+          </div>
+          <p>This path begins with array mechanics, adds a few small problems, then introduces recursion before your first backtracking problem.</p>
         </div>
-        <p>Every topic opens into separate Basics, Easy, Medium, and Hard question lists. Start with Arrays or Binary Search, then move through the topics in order.</p>
-      </div>
+        <ol class="dsa-start-list">
+          {startHerePosts.map((post, index) => post && (
+            <li data-start-here-item data-post-slug={getPostSlug(post)}>
+              <a href={`/posts/${getPostSlug(post)}/`}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div><strong>{post.data.title}</strong><small>{post.data.difficulty ?? 'basics'} · {post.data.contentType ?? 'concept'}</small></div>
+                <i data-start-status>Not started</i>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <ProgressSummary postSlugs={startHerePosts.map((post) => post ? getPostSlug(post) : '').filter(Boolean)} label="Your progress on the beginner path" />
+      </section>
 
-      <SectionSearch
-        placeholder="Search DSA topics, patterns, or data structures"
-        scopeSelector="#dsa-topic-list"
-        itemSelector=".topic-cover-card"
-        itemLabel="topics"
-      />
+      <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
+        <div class="section-heading section-heading-notes">
+          <div>
+            <p class="section-index">DSA TOPICS / {String(DSA_SECTIONS.length).padStart(2, '0')}</p>
+            <h2>Choose a topic, then practice by difficulty.</h2>
+          </div>
+          <p>Published sections come first. Every section opens into separate Basics, Easy, Medium and Hard article lists.</p>
+        </div>
 
-      <div class="topic-cover-grid" id="dsa-topic-list">
-        {DSA_SECTIONS.map((section) => {
-          const sectionPosts = getPostsForSeries(allPosts, section.slug);
-          return (
-            <TopicCard
-              topic="dsa"
-              section={section.slug}
-              title={section.title}
-              description={section.description}
-              href={`/dsa/${section.slug}/`}
-              label={`DSA / ${section.number}`}
-              count={sectionPosts.length}
-              keywords={section.topics}
-              levels={difficultyLevels.map((level) => ({
-                name: level,
-                count: sectionPosts.filter((post) => (post.data.difficulty ?? 'basics') === level).length,
-              }))}
-            />
-          );
-        })}
-      </div>
-    </section>
+        <SectionSearch
+          placeholder="Search DSA topics, patterns, or data structures"
+          scopeSelector="#dsa-topic-list"
+          itemSelector=".topic-cover-card"
+          itemLabel="topics"
+        />
+
+        <div class="dsa-directory-groups" id="dsa-topic-list">
+          {dsaDirectoryGroups.map((directoryGroup) => directoryGroup.items.length > 0 && (
+            <section class:list={['dsa-directory-group', `dsa-directory-${directoryGroup.key}`]} data-filter-group>
+              <div class="dsa-directory-heading">
+                <div><span>{directoryGroup.eyebrow}</span><h3>{directoryGroup.title}</h3></div>
+                <p>{directoryGroup.description}</p>
+              </div>
+              <div class="topic-cover-grid">
+                {directoryGroup.items.map(({ section, posts: sectionPosts }) => (
+                  <TopicCard
+                    topic="dsa"
+                    section={section.slug}
+                    title={section.title}
+                    description={section.description}
+                    href={`/dsa/${section.slug}/`}
+                    label={`DSA / ${section.number}`}
+                    count={sectionPosts.length}
+                    keywords={section.topics}
+                    levels={difficultyLevels.map((level) => ({
+                      name: level,
+                      count: sectionPosts.filter((post) => (post.data.difficulty ?? 'basics') === level).length,
+                    }))}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
+    </>
   ) : curriculum ? (
     <>
       <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
@@ -151,4 +222,84 @@ const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
       )}
     </>
   ) : null}
+
+  {isDsa && (
+    <script>
+    const START_PROGRESS_KEY = 'atlas-progress:v1';
+    const progressLabels: Record<string, string> = {
+      'not-started': 'Not started',
+      attempted: 'Attempted',
+      solved: 'Solved',
+      revisit: 'Revisit',
+    };
+
+    const updateStartHere = () => {
+      let progress: Record<string, string> = {};
+      try {
+        progress = JSON.parse(window.localStorage.getItem(START_PROGRESS_KEY) || '{}');
+      } catch {
+        progress = {};
+      }
+      document.querySelectorAll<HTMLElement>('[data-start-here-item]').forEach((item) => {
+        const state = progress[item.dataset.postSlug || ''] || 'not-started';
+        const status = item.querySelector<HTMLElement>('[data-start-status]');
+        if (status) status.textContent = progressLabels[state] || 'Not started';
+        item.dataset.learningState = state;
+      });
+    };
+
+    updateStartHere();
+    window.addEventListener('storage', updateStartHere);
+    window.addEventListener('atlas-learning-state-changed', updateStartHere);
+    </script>
+  )}
 </BaseLayout>
+
+<style>
+  .dsa-start-here { padding-top: 4.5rem; }
+  .dsa-start-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .65rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dsa-start-list li { min-width: 0; }
+  .dsa-start-list a {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: center;
+    gap: .7rem;
+    min-height: 5.2rem;
+    padding: .8rem;
+    border: 1px solid var(--line);
+    border-radius: .75rem;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .dsa-start-list a:hover { border-color: color-mix(in srgb, var(--indigo) 52%, var(--line)); transform: translateY(-2px); }
+  .dsa-start-list a > span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: .62rem; }
+  .dsa-start-list div { display: grid; gap: .28rem; min-width: 0; }
+  .dsa-start-list strong { font-size: .74rem; line-height: 1.35; }
+  .dsa-start-list small { color: var(--text-faint); font-size: .58rem; text-transform: capitalize; }
+  .dsa-start-list i { color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; font-style: normal; white-space: nowrap; }
+  .dsa-start-list [data-learning-state='solved'] i { color: #21835f; }
+  .dsa-directory-groups { display: grid; gap: 3rem; margin-top: 1.5rem; }
+  .dsa-directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .dsa-directory-heading span { color: var(--amber); font-family: var(--font-mono); font-size: .57rem; font-weight: 650; letter-spacing: .1em; }
+  .dsa-directory-heading h3 { margin: .3rem 0 0; font-size: 1.15rem; }
+  .dsa-directory-heading p { max-width: 28rem; margin: 0; color: var(--text-faint); font-size: .72rem; line-height: 1.55; text-align: right; }
+  .dsa-directory-coming,
+  .dsa-directory-planned { opacity: .84; }
+  .dsa-directory-planned { opacity: .68; }
+  @media (max-width: 900px) { .dsa-start-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) {
+    .dsa-start-here { padding-top: 3rem; }
+    .dsa-start-list { grid-template-columns: 1fr; }
+    .dsa-directory-heading { align-items: start; flex-direction: column; }
+    .dsa-directory-heading p { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) { .dsa-start-list a { transition: none; } .dsa-start-list a:hover { transform: none; } }
+</style>

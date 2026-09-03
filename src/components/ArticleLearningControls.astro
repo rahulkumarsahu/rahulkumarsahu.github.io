@@ -1,0 +1,267 @@
+---
+import type { Post } from '../lib/posts';
+import { estimateReadTime, formatDate, getPostSlug, getTopicForPost } from '../lib/posts';
+import { SITE } from '../data/site';
+
+interface Props {
+  post: Post;
+  sectionLabel: string;
+}
+
+const { post, sectionLabel } = Astro.props;
+const slug = getPostSlug(post);
+const topic = getTopicForPost(post);
+const reviewedOn = post.data.lastReviewed ?? post.data.updated ?? post.data.date;
+const reportSubject = encodeURIComponent(`Correction for: ${post.data.title}`);
+const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWhat should be corrected?\n`);
+---
+
+<section class="article-learning-controls" data-learning-controls data-post-slug={slug} aria-labelledby="article-details-title">
+  <div class="article-learning-heading">
+    <div>
+      <span>LEARNING DETAILS</span>
+      <h2 id="article-details-title">Plan your reading</h2>
+    </div>
+    <p data-learning-message aria-live="polite">Progress is saved only in this browser.</p>
+  </div>
+
+  <dl class="article-facts">
+    <div><dt>Difficulty</dt><dd>{post.data.difficulty ?? 'Field note'}</dd></div>
+    <div><dt>Topic</dt><dd>{topic.shortTitle}</dd></div>
+    <div><dt>Section</dt><dd>{sectionLabel}</dd></div>
+    <div><dt>Reading time</dt><dd>{estimateReadTime(post)} min</dd></div>
+    {post.data.javaVersion && <div><dt>Java</dt><dd>{post.data.javaVersion}</dd></div>}
+    <div><dt>Last reviewed</dt><dd>{formatDate(reviewedOn)}</dd></div>
+  </dl>
+
+  <div class="article-learning-actions">
+    <label>
+      <span>My progress</span>
+      <select data-progress-select aria-label={`Learning progress for ${post.data.title}`}>
+        <option value="not-started">Not started</option>
+        <option value="attempted">Attempted</option>
+        <option value="solved">Solved</option>
+        <option value="revisit">Revisit</option>
+      </select>
+    </label>
+    <button type="button" data-bookmark-button aria-pressed="false">
+      <span aria-hidden="true" data-bookmark-icon>☆</span>
+      <span data-bookmark-label>Bookmark</span>
+    </button>
+    <a href={`mailto:${SITE.email}?subject=${reportSubject}&body=${reportBody}`}>Report a mistake</a>
+  </div>
+</section>
+
+<script>
+  const PROGRESS_STORAGE_KEY = 'atlas-progress:v1';
+  const BOOKMARK_STORAGE_KEY = 'atlas-bookmarks:v1';
+  const VALID_PROGRESS = new Set(['not-started', 'attempted', 'solved', 'revisit']);
+
+  const readLearningRecord = (key: string): Record<string, string | boolean> => {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(key) || '{}');
+      return value && typeof value === 'object' ? value : {};
+    } catch {
+      return {};
+    }
+  };
+
+  const writeLearningRecord = (key: string, value: Record<string, string | boolean>) => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-learning-controls]').forEach((controls) => {
+    if (controls.dataset.learningReady === 'true') return;
+    controls.dataset.learningReady = 'true';
+
+    const slug = controls.dataset.postSlug;
+    const progressSelect = controls.querySelector<HTMLSelectElement>('[data-progress-select]');
+    const bookmarkButton = controls.querySelector<HTMLButtonElement>('[data-bookmark-button]');
+    const bookmarkIcon = controls.querySelector<HTMLElement>('[data-bookmark-icon]');
+    const bookmarkLabel = controls.querySelector<HTMLElement>('[data-bookmark-label]');
+    const message = controls.querySelector<HTMLElement>('[data-learning-message]');
+    if (!slug || !progressSelect || !bookmarkButton) return;
+
+    const progress = readLearningRecord(PROGRESS_STORAGE_KEY);
+    const savedProgress = progress[slug];
+    if (typeof savedProgress === 'string' && VALID_PROGRESS.has(savedProgress)) {
+      progressSelect.value = savedProgress;
+    }
+
+    const renderBookmark = (bookmarked: boolean) => {
+      bookmarkButton.setAttribute('aria-pressed', String(bookmarked));
+      if (bookmarkIcon) bookmarkIcon.textContent = bookmarked ? '★' : '☆';
+      if (bookmarkLabel) bookmarkLabel.textContent = bookmarked ? 'Bookmarked' : 'Bookmark';
+    };
+    renderBookmark(readLearningRecord(BOOKMARK_STORAGE_KEY)[slug] === true);
+
+    const announce = (text: string, stored: boolean) => {
+      if (message) message.textContent = stored ? text : 'Browser storage is unavailable. The page still works, but this change was not saved.';
+      window.dispatchEvent(new CustomEvent('atlas-learning-state-changed'));
+    };
+
+    progressSelect.addEventListener('change', () => {
+      const nextProgress = readLearningRecord(PROGRESS_STORAGE_KEY);
+      nextProgress[slug] = progressSelect.value;
+      announce(`Progress updated to ${progressSelect.options[progressSelect.selectedIndex].text}.`, writeLearningRecord(PROGRESS_STORAGE_KEY, nextProgress));
+    });
+
+    bookmarkButton.addEventListener('click', () => {
+      const bookmarks = readLearningRecord(BOOKMARK_STORAGE_KEY);
+      const bookmarked = bookmarks[slug] !== true;
+      bookmarks[slug] = bookmarked;
+      renderBookmark(bookmarked);
+      announce(bookmarked ? 'Article bookmarked.' : 'Bookmark removed.', writeLearningRecord(BOOKMARK_STORAGE_KEY, bookmarks));
+    });
+  });
+</script>
+
+<style>
+  .article-learning-controls {
+    margin-top: 1.2rem;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: .85rem;
+    background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  }
+
+  .article-learning-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .article-learning-heading span {
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: .56rem;
+    font-weight: 650;
+    letter-spacing: .12em;
+  }
+
+  .article-learning-heading h2 {
+    margin: .2rem 0 0;
+    font-size: .95rem;
+  }
+
+  .article-learning-heading p {
+    max-width: 20rem;
+    margin: 0;
+    color: var(--text-faint);
+    font-size: .66rem;
+    line-height: 1.45;
+    text-align: right;
+  }
+
+  .article-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    margin: 0;
+  }
+
+  .article-facts > div {
+    min-width: 0;
+    padding: .75rem 1rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .article-facts dt {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .53rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .article-facts dd {
+    margin: .28rem 0 0;
+    color: var(--text);
+    font-size: .72rem;
+    font-weight: 650;
+    text-transform: capitalize;
+  }
+
+  .article-learning-actions {
+    display: flex;
+    align-items: end;
+    gap: .6rem;
+    padding: .8rem 1rem;
+  }
+
+  .article-learning-actions label {
+    display: grid;
+    gap: .3rem;
+  }
+
+  .article-learning-actions label > span {
+    color: var(--text-faint);
+    font-size: .6rem;
+  }
+
+  .article-learning-actions select,
+  .article-learning-actions button,
+  .article-learning-actions a {
+    min-height: 2.35rem;
+    padding: .48rem .68rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .55rem;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: .68rem;
+  }
+
+  .article-learning-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    cursor: pointer;
+  }
+
+  .article-learning-actions button[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--amber) 55%, var(--line));
+    color: var(--amber);
+  }
+
+  .article-learning-actions a {
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    text-decoration: none;
+  }
+
+  .article-learning-actions :is(select, button, a):focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .article-learning-heading {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .article-learning-heading p {
+      text-align: left;
+    }
+
+    .article-learning-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .article-learning-actions a {
+      justify-content: center;
+      margin-left: 0;
+    }
+  }
+</style>

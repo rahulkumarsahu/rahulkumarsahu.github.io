@@ -6,7 +6,12 @@ import PostBanner from './PostBanner.astro';
 const { post } = Astro.props as { post: Post };
 ---
 
-<article class="dsa-article-card">
+<article
+  class="dsa-article-card"
+  data-post-slug={getPostSlug(post)}
+  data-filter-difficulty={post.data.difficulty ?? 'basics'}
+  data-filter-content-type={post.data.contentType ?? 'concept'}
+>
   <a class="dsa-article-cover-link" href={`/posts/${getPostSlug(post)}/`} tabindex="-1" aria-hidden="true">
     <PostBanner {post} />
   </a>

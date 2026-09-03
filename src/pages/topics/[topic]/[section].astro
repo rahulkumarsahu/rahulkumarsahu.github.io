@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import PostCard from '../../../components/PostCard.astro';
+import ProgressSummary from '../../../components/ProgressSummary.astro';
 import SectionSearch from '../../../components/SectionSearch.astro';
 import TopicBanner from '../../../components/TopicBanner.astro';
 import { LEARNING_PATHS } from '../../../data/learningPaths';
-import { getPostsForLearningSection } from '../../../lib/posts';
+import { getPostSlug, getPostsForLearningSection } from '../../../lib/posts';
 
 export function getStaticPaths() {
   return LEARNING_PATHS.flatMap((path) =>
@@ -58,6 +59,7 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
       <span>{String(posts.length).padStart(2, '0')} articles available</span>
       <a href={`/topics/${path.slug}/#${group.slug}`}>Back to {group.title} ↑</a>
     </div>
+    {posts.length > 0 && <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />}
   </section>
 
   <nav class="curriculum-local-nav section-wrap" aria-label={`${group.title} subsections`}>
@@ -75,20 +77,42 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
       scopeSelector="#curriculum-section-content"
       itemSelector="[data-curriculum-item]"
       itemLabel="results"
+      showDifficulty
+      showContentType
+      showCompletion
     />
   </div>
 
   <div class="curriculum-section-content section-wrap" id="curriculum-section-content">
+    {posts.length > 0 && (
+      <section class="curriculum-available" data-filter-group>
+        <div class="curriculum-content-heading">
+          <div><p class="section-index">PUBLISHED AND AVAILABLE</p><h2>Start with articles you can read now</h2></div>
+          <p>Published material appears first so you never have to search through placeholders before finding a lesson.</p>
+        </div>
+        <div class="post-grid">
+          {posts.map((post) => (
+            <div
+              data-curriculum-item
+              data-post-slug={getPostSlug(post)}
+              data-filter-difficulty={post.data.difficulty ?? 'basics'}
+              data-filter-content-type={post.data.contentType ?? 'concept'}
+            ><PostCard {post} /></div>
+          ))}
+        </div>
+      </section>
+    )}
+
     <section class="curriculum-planned" data-filter-group>
       <div class="curriculum-content-heading">
-        <div><p class="section-index">{isNotes ? 'IDEA MAP' : 'CONCEPT MAP'}</p><h2>Topics in this {isNotes ? 'collection' : 'subsection'}</h2></div>
+        <div><p class="section-index">{isNotes ? 'PLANNED NOTES' : 'PLANNED FOR LATER'}</p><h2>Topics in this {isNotes ? 'collection' : 'subsection'}</h2></div>
         <p>{isNotes
           ? 'Each idea can become an independent deep dive. The collection keeps related investigations easy to find as the library grows.'
-          : 'Each topic will become a focused guide. The structure is ready now so new articles always have a predictable home.'}</p>
+          : 'These concepts remain visible as a preview of the learning path, but they stay quieter than published articles.'}</p>
       </div>
       <div class="curriculum-concept-grid">
         {section.topics.map((topic, index) => (
-          <article data-curriculum-item>
+          <article data-curriculum-item data-filter-content-type="planned">
             <span>{String(index + 1).padStart(2, '0')}</span>
             <div><small>{isNotes ? 'PLANNED NOTE' : 'PLANNED CONCEPT'}</small><h3>{topic}</h3></div>
             <i aria-hidden="true">○</i>
@@ -96,18 +120,6 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
         ))}
       </div>
     </section>
-
-    {posts.length > 0 && (
-      <section class="curriculum-available" data-filter-group>
-        <div class="curriculum-content-heading">
-          <div><p class="section-index">AVAILABLE NOW</p><h2>Articles in this subsection</h2></div>
-          <p>Start here while the rest of the subsection is being written.</p>
-        </div>
-        <div class="post-grid">
-          {posts.map((post) => <div data-curriculum-item><PostCard {post} /></div>)}
-        </div>
-      </section>
-    )}
   </div>
 
   <nav class="curriculum-pagination section-wrap" aria-label="Previous and next subsection">

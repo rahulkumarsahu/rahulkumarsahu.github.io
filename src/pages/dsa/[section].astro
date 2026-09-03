@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DsaArticleCard from '../../components/DsaArticleCard.astro';
+import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
-import { getPostsForSeries } from '../../lib/posts';
+import { getPostSlug, getPostsForSeries } from '../../lib/posts';
 
 export function getStaticPaths() {
   return DSA_SECTIONS.map((section) => ({
@@ -42,6 +43,7 @@ const groupCopy = {
     <div class="dsa-topic-pills">
       {section.topics.map((topic) => <span>{topic}</span>)}
     </div>
+    <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />
   </section>
 
   <div class="section-search-wrap section-wrap">
@@ -50,6 +52,9 @@ const groupCopy = {
       scopeSelector="#difficulty-list"
       itemSelector=".dsa-article-card"
       itemLabel="articles"
+      showDifficulty
+      showContentType
+      showCompletion
     />
   </div>
 

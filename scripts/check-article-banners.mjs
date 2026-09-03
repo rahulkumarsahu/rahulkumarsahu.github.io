@@ -39,7 +39,9 @@ async function checkBanner(tag, variant, page) {
   const img = attributes(tag);
   // Astro serializes an empty alt attribute as `alt` without quotes.
   if (!('alt' in img) && /\salt(?=\s|\/?>)/.test(tag)) img.alt = '';
-  assert(img.src && img.srcset && img.sizes, `${page}: responsive banner missing`);
+  assert(img.src, `${page}: banner source missing`);
+  const isSvg = img.src.endsWith('.svg');
+  if (!isSvg) assert(img.srcset && img.sizes, `${page}: responsive raster banner missing`);
   assert.equal(img.loading, variant === 'hero' ? 'eager' : 'lazy');
   assert(variant === 'hero' ? Boolean(img.alt) : img.alt === '', `${page}: inappropriate alt text`);
   const file = localFile(img.src);
@@ -48,7 +50,7 @@ async function checkBanner(tag, variant, page) {
   assert.equal(dimensions.width, Number(img.width), `${page}: incorrect banner width`);
   assert.equal(dimensions.height, Number(img.height), `${page}: incorrect banner height`);
   assets.add(file);
-  for (const candidate of img.srcset.split(',')) {
+  for (const candidate of (img.srcset ?? '').split(',').filter(Boolean)) {
     const [src, width] = candidate.trim().split(/\s+/);
     const candidateFile = localFile(src);
     assert(existsSync(candidateFile), `${page}: missing responsive variant ${src}`);
@@ -97,7 +99,11 @@ for (const page of pages) {
     const articlePath = card.match(/href="(\/posts\/[^"?#]+)"/)?.[1];
     const cover = coverForArticle.get(articlePath);
     assert(cover, `${page}: card links to a missing article`);
-    assert.equal(img.src.split('_').slice(0, -1).join('_'), cover.src.split('_').slice(0, -1).join('_'), `${page}: card artwork differs from its article`);
+    if (img.src.endsWith('.svg')) {
+      assert.equal(img.src, cover.src, `${page}: card artwork differs from its article`);
+    } else {
+      assert.equal(img.src.split('_').slice(0, -1).join('_'), cover.src.split('_').slice(0, -1).join('_'), `${page}: card artwork differs from its article`);
+    }
     cardCount++;
   }
 }

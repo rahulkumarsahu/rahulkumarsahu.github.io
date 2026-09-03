@@ -1,11 +1,14 @@
 ---
 title: Move Zeroes to the End
 date: 2026-08-07 09:00:00 +0530
+lastReviewed: 2026-09-03 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Move every zero to the end while preserving the order of nonzero values.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, easy, two-pointers, in-place]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: easy
 contentType: problem
 order: 14

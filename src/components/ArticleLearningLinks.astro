@@ -1,0 +1,41 @@
+---
+import type { ArticleLearningLinks as LearningLinks } from '../data/articleLearningLinks';
+
+const { links } = Astro.props as { links: LearningLinks };
+---
+
+<section class="article-learning-links" aria-labelledby="learning-links-title">
+  <div class="learning-links-heading">
+    <span>KEEP LEARNING</span>
+    <h2 id="learning-links-title">Prepare, then practice the pattern again</h2>
+  </div>
+  <div class="learning-links-grid">
+    <div>
+      <h3>Prerequisites</h3>
+      {links.prerequisites.map((link) => (
+        <a href={link.href}><strong>{link.title}</strong><small>{link.note}</small></a>
+      ))}
+    </div>
+    <div>
+      <h3>Practice next</h3>
+      {links.practiceNext.map((link) => (
+        <a href={link.href}><strong>{link.title}</strong><small>{link.note}</small></a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .article-learning-links { margin: 2rem 0; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .learning-links-heading span { color: var(--amber); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .1em; }
+  .learning-links-heading h2 { margin: .35rem 0 0; padding: 0; border: 0; font-size: 1.05rem; }
+  .learning-links-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .9rem; }
+  .learning-links-grid > div { padding: .9rem; border: 1px solid var(--line); border-radius: .7rem; background: color-mix(in srgb, var(--surface-strong) 78%, transparent); }
+  .learning-links-grid h3 { margin: 0 0 .55rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; }
+  .learning-links-grid a { display: grid; gap: .2rem; padding: .55rem 0; color: var(--text); text-decoration: none; }
+  .learning-links-grid a + a { border-top: 1px solid var(--line); }
+  .learning-links-grid a:hover strong { color: var(--indigo); }
+  .learning-links-grid strong { font-size: .72rem; }
+  .learning-links-grid small { color: var(--text-faint); font-size: .62rem; line-height: 1.45; }
+  @media (max-width: 600px) { .learning-links-grid { grid-template-columns: 1fr; } }
+</style>

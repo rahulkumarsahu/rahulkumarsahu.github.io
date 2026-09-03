@@ -1,11 +1,14 @@
 ---
 title: Find the Largest Element in an Array
 date: 2026-08-02 09:00:00 +0530
+lastReviewed: 2026-09-03 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Learn the running maximum pattern with a simple one pass Java solution.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, easy, traversal]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: easy
 contentType: problem
 order: 10

@@ -4,6 +4,9 @@ interface Props {
   scopeSelector: string;
   itemSelector: string;
   itemLabel?: string;
+  showDifficulty?: boolean;
+  showContentType?: boolean;
+  showCompletion?: boolean;
 }
 
 const {
@@ -11,7 +14,11 @@ const {
   scopeSelector,
   itemSelector,
   itemLabel = 'items',
+  showDifficulty = false,
+  showContentType = false,
+  showCompletion = false,
 } = Astro.props;
+const hasFilters = showDifficulty || showContentType || showCompletion;
 ---
 
 <div
@@ -26,6 +33,44 @@ const {
     <input type="search" placeholder={placeholder} aria-label={placeholder} autocomplete="off" data-section-search-input />
     <button type="button" data-section-search-clear hidden>Clear</button>
   </div>
+  {hasFilters && (
+    <div class="section-filter-row" aria-label="Filter this section">
+      {showDifficulty && (
+        <label>Difficulty
+          <select data-section-filter="difficulty">
+            <option value="">All levels</option>
+            <option value="basics">Basics</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+      )}
+      {showContentType && (
+        <label>Content type
+          <select data-section-filter="contentType">
+            <option value="">All content</option>
+            <option value="concept">Concept</option>
+            <option value="pattern">Pattern</option>
+            <option value="problem">Problem</option>
+            <option value="case-study">Case study</option>
+          </select>
+        </label>
+      )}
+      {showCompletion && (
+        <label>My progress
+          <select data-section-filter="completion">
+            <option value="">All progress</option>
+            <option value="not-started">Not started</option>
+            <option value="attempted">Attempted</option>
+            <option value="solved">Solved</option>
+            <option value="revisit">Revisit</option>
+          </select>
+        </label>
+      )}
+      <button type="button" class="section-filter-reset" data-section-filter-reset>Reset filters</button>
+    </div>
+  )}
   <p class="section-search-status" aria-live="polite" data-section-search-status></p>
   <div class="section-search-empty" data-section-search-empty hidden>
     <strong>No matching content</strong>
@@ -34,6 +79,17 @@ const {
 </div>
 
 <script>
+  const SECTION_PROGRESS_KEY = 'atlas-progress:v1';
+
+  const readSectionProgress = (): Record<string, string> => {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(SECTION_PROGRESS_KEY) || '{}');
+      return value && typeof value === 'object' ? value : {};
+    } catch {
+      return {};
+    }
+  };
+
   document.querySelectorAll('[data-section-search]').forEach((search) => {
     if (!(search instanceof HTMLElement)) return;
 
@@ -41,6 +97,8 @@ const {
     const clear = search.querySelector('[data-section-search-clear]');
     const status = search.querySelector('[data-section-search-status]');
     const empty = search.querySelector('[data-section-search-empty]');
+    const reset = search.querySelector('[data-section-filter-reset]');
+    const filters = Array.from(search.querySelectorAll<HTMLSelectElement>('[data-section-filter]'));
     const scope = document.querySelector(search.dataset.scopeSelector || '');
     const itemSelector = search.dataset.itemSelector || '';
     const itemLabel = search.dataset.itemLabel || 'items';
@@ -51,24 +109,39 @@ const {
 
     const filter = () => {
       const query = input.value.trim().toLowerCase();
+      const progress = readSectionProgress();
+      const hasActiveFilters = filters.some((control) => Boolean(control.value));
       let visible = 0;
 
       items.forEach((item) => {
         const searchableText = item instanceof HTMLElement
           ? item.dataset.searchText || item.textContent || ''
           : item.textContent || '';
-        const matches = !query || searchableText.toLowerCase().includes(query);
+        const matchesQuery = !query || searchableText.toLowerCase().includes(query);
+        const matchesFilters = item instanceof HTMLElement && filters.every((control) => {
+          if (!control.value) return true;
+          const filterName = control.dataset.sectionFilter;
+          if (filterName === 'completion') {
+            const slug = item.dataset.postSlug;
+            const state = slug ? progress[slug] ?? 'not-started' : 'unavailable';
+            return state === control.value;
+          }
+          const dataName = filterName === 'contentType' ? 'filterContentType' : 'filterDifficulty';
+          return item.dataset[dataName] === control.value;
+        });
+        const matches = matchesQuery && matchesFilters;
         if (item instanceof HTMLElement) item.hidden = !matches;
         if (matches) visible++;
       });
 
       scope.querySelectorAll('[data-filter-group]').forEach((group) => {
         if (!(group instanceof HTMLElement)) return;
-        group.hidden = Boolean(query) && group.querySelectorAll(`${itemSelector}:not([hidden])`).length === 0;
+        group.hidden = (Boolean(query) || filters.some((control) => Boolean(control.value)))
+          && group.querySelectorAll(`${itemSelector}:not([hidden])`).length === 0;
       });
 
       if (status) {
-        status.textContent = query
+        status.textContent = query || hasActiveFilters
           ? `${visible} ${visible === 1 ? itemLabel.replace(/s$/, '') : itemLabel} found`
           : `${items.length} ${itemLabel} available`;
       }
@@ -77,11 +150,71 @@ const {
     };
 
     input.addEventListener('input', filter);
+    filters.forEach((control) => control.addEventListener('change', filter));
     clear?.addEventListener('click', () => {
       input.value = '';
       filter();
       input.focus();
     });
+    reset?.addEventListener('click', () => {
+      input.value = '';
+      filters.forEach((control) => { control.value = ''; });
+      filter();
+      input.focus();
+    });
+    window.addEventListener('storage', filter);
+    window.addEventListener('atlas-learning-state-changed', filter);
     filter();
   });
 </script>
+
+<style>
+  .section-filter-row {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: .65rem;
+    margin-top: .75rem;
+  }
+
+  .section-filter-row label {
+    display: grid;
+    min-width: 10rem;
+    flex: 1 1 10rem;
+    gap: .28rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: .54rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .section-filter-row select,
+  .section-filter-reset {
+    min-height: 2.45rem;
+    padding: .5rem .65rem;
+    border: 1px solid var(--line-strong);
+    border-radius: .55rem;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: .68rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .section-filter-reset {
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+
+  .section-filter-row :is(select, button):focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 520px) {
+    .section-filter-row { align-items: stretch; flex-direction: column; }
+    .section-filter-row label { min-width: 0; flex: 0 0 auto; }
+  }
+</style>

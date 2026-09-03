@@ -3,12 +3,19 @@ import type { MarkdownHeading } from 'astro';
 import { getImage } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ArticleLearningControls from '../components/ArticleLearningControls.astro';
+import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
+import EngineeringConnection from '../components/EngineeringConnection.astro';
 import JDoodlePractice from '../components/JDoodlePractice.astro';
+import MoveZeroesTrace from '../components/MoveZeroesTrace.astro';
 import PostCard from '../components/PostCard.astro';
 import PostBanner from '../components/PostBanner.astro';
 import RecursionCallStack from '../components/RecursionCallStack.astro';
 import SubsetBacktracking from '../components/SubsetBacktracking.astro';
 import { SITE } from '../data/site';
+import { ENGINEERING_CONNECTIONS } from '../data/engineeringConnections';
+import { ARTICLE_LEARNING_LINKS } from '../data/articleLearningLinks';
+import { getPracticeProblem } from '../data/practiceProblems';
 import { DSA_SECTIONS } from '../data/learningPaths';
 import type { Post } from '../lib/posts';
 import { estimateReadTime, formatDate, formatDifficulty, getPostSlug, getTopicForPost } from '../lib/posts';
@@ -41,7 +48,11 @@ const parentLabel = dsaSection?.title ?? topic.shortTitle;
 const postSlug = getPostSlug(post);
 const interactive = post.data.interactive
   ?? (postSlug === 'recursion-in-java-beginners-guide' ? 'recursion-call-stack' : undefined);
-const isSubsetsPractice = interactive === 'subsets-backtracking';
+const practiceProblem = getPracticeProblem(postSlug);
+const isSubsetsPractice = postSlug === 'subsets-in-java';
+const isMoveZeroesPractice = postSlug === 'move-zeroes-to-end';
+const engineeringConnection = ENGINEERING_CONNECTIONS[postSlug];
+const learningLinks = ARTICLE_LEARNING_LINKS[postSlug];
 const sectionHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 // Keep every major section reachable in long guides without crowding the sidebar.
 const tocHeadings = sectionHeadings.length > 36
@@ -50,8 +61,10 @@ const tocHeadings = sectionHeadings.length > 36
 const description = post.data.description || `Practical notes and examples for ${post.data.title}.`;
 const articleUrl = `${SITE.url}/posts/${postSlug}/`;
 const banner = getPostBanner(post);
-const coverImage = await getImage({ src: banner.image, width: 1200, format: 'webp', quality: 85 });
-const socialImage = post.data.image ?? coverImage.src;
+const coverImage = banner.custom
+  ? await getImage({ src: banner.image, width: 1200, format: 'webp', quality: 85 })
+  : undefined;
+const socialImage = post.data.image ?? coverImage?.src ?? banner.imageUrl;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -122,6 +135,7 @@ const jsonLd = {
           <button type="button" class="share-button" data-copy-link>Copy link</button>
         </div>
         <PostBanner {post} variant="hero" />
+        <ArticleLearningControls {post} sectionLabel={parentLabel} />
       </header>
 
       <div class="article-divider">
@@ -131,23 +145,30 @@ const jsonLd = {
 
       {hasContent ? (
         <div class="article-content">
-          {isSubsetsPractice && <JDoodlePractice />}
-          {isSubsetsPractice ? (
+          {practiceProblem && <JDoodlePractice problem={practiceProblem} />}
+          {practiceProblem ? (
             <details class="practice-solution" data-practice-solution>
               <summary>
                 <span>WHEN YOU ARE READY</span>
-                <strong>Show the explanation and Java solutions</strong>
-                <small>The complete article includes intuition, both approaches, the dry run and edge cases.</small>
+                <strong>Show the explanation and complete solution</strong>
+                <small>Your original article, Java solution, complexity analysis and dry run are preserved here.</small>
               </summary>
               <div class="practice-solution-content">
                 <slot />
+                {isMoveZeroesPractice && <MoveZeroesTrace />}
+                {isSubsetsPractice && <SubsetBacktracking />}
+                {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
+                {learningLinks && <ArticleLearningLinks links={learningLinks} />}
               </div>
             </details>
           ) : (
-            <slot />
+            <>
+              <slot />
+              {interactive === 'recursion-call-stack' && <RecursionCallStack />}
+              {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
+              {learningLinks && <ArticleLearningLinks links={learningLinks} />}
+            </>
           )}
-          {interactive === 'recursion-call-stack' && <RecursionCallStack />}
-          {isSubsetsPractice && <SubsetBacktracking />}
         </div>
       ) : (
         <div class="article-empty-state">
@@ -234,7 +255,7 @@ const jsonLd = {
       progress.style.transform = `scaleX(${value})`;
     };
 
-    document.querySelectorAll('.article-content pre:not(.recursion-code):not(.subset-code):not(.jdoodle-example-code)').forEach((pre) => {
+    document.querySelectorAll('.article-content pre:not(.recursion-code):not(.subset-code):not(.jdoodle-example-code):not(.trace-code)').forEach((pre) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'code-copy-button';
