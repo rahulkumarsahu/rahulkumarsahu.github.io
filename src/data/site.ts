@@ -12,6 +12,7 @@ export const SITE = {
   linkedin: 'https://www.linkedin.com/in/rahul-kumar-techie',
   portfolio: 'https://rahulkumarsahu.github.io/personal-portfolio/',
   scalableStack: 'https://thescalablestack.substack.com/',
+  medium: 'https://medium.com/@rahulkumar060995',
   topmate: 'https://topmate.io/rahul_kumar_295',
   locale: 'en_IN',
 } as const;

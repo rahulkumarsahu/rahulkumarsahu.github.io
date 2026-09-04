@@ -3,21 +3,44 @@ import { SITE } from '../data/site';
 ---
 
 <footer class="site-footer section-wrap">
-  <a class="brand footer-brand" href="/">
-    <span class="brand-avatar" aria-hidden="true">
-      <img src="/images/rahul-avatar.png" alt="" width="40" height="40" loading="lazy" />
-    </span>
-    <span class="brand-copy">
-      <strong>{SITE.name}</strong>
-      <small>{SITE.tagline}</small>
-    </span>
-  </a>
-  <p>Designed and written by {SITE.author} · India</p>
-  <div class="footer-links">
-    <a href="/topics/">Topics</a>
-    <a href="/about/">About</a>
-    <a href="/rss.xml">RSS</a>
-    <a href={SITE.github}>GitHub</a>
+  <div class="footer-intro">
+    <a class="brand footer-brand" href="/">
+      <span class="brand-avatar" aria-hidden="true">
+        <img src="/images/rahul-avatar.png" alt="" width="40" height="40" loading="lazy" />
+      </span>
+      <span class="brand-copy">
+        <strong>{SITE.name}</strong>
+        <small>{SITE.tagline}</small>
+      </span>
+    </a>
+    <p>Practical notes from algorithms and Java to distributed systems and production engineering.</p>
+  </div>
+
+  <div class="footer-link-groups">
+    <nav class="footer-links" aria-label="Explore the Atlas">
+      <span>Explore</span>
+      <a href="/topics/">Learning paths</a>
+      <a href="/projects/production-url-shortener/">Connected project</a>
+      <a href="/about/">About Rahul</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+    <nav class="footer-links" aria-label="Read Rahul elsewhere">
+      <span>Read elsewhere</span>
+      <a href={SITE.scalableStack}>The Scalable Stack <span aria-hidden="true">↗</span></a>
+      <a href={SITE.medium}>Medium <span aria-hidden="true">↗</span></a>
+      <a href={SITE.portfolio}>Portfolio <span aria-hidden="true">↗</span></a>
+    </nav>
+    <nav class="footer-links" aria-label="Contact Rahul">
+      <span>Connect</span>
+      <a href={SITE.linkedin}>LinkedIn <span aria-hidden="true">↗</span></a>
+      <a href={SITE.github}>GitHub <span aria-hidden="true">↗</span></a>
+      <a href={`mailto:${SITE.email}?subject=Hello%20Rahul`}>Email</a>
+      <a href={SITE.topmate}>Topmate <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <p>Designed and written by {SITE.author} · India</p>
     <a href="#main-content">Back to top ↑</a>
   </div>
 </footer>

@@ -112,6 +112,36 @@ import { SITE } from '../data/site';
     </div>
   </section>
 
+  <section class="about-writing section-wrap">
+    <div class="section-heading section-heading-notes">
+      <div>
+        <p class="section-index">WHERE ELSE I WRITE</p>
+        <h2>Different places for different kinds of notes.</h2>
+      </div>
+      <p>The Atlas is my structured learning library. These are the other places where I share engineering work and ideas.</p>
+    </div>
+    <div class="about-writing-grid">
+      <article>
+        <span>LONGER ESSAYS</span>
+        <h3>The Scalable Stack</h3>
+        <p>Deep dives into Java, Low Level Design, System Design, AI, and the lessons behind scalable software.</p>
+        <a href={SITE.scalableStack}>Read on Substack <span aria-hidden="true">↗</span></a>
+      </article>
+      <article>
+        <span>SELECTED ARTICLES</span>
+        <h3>Medium</h3>
+        <p>A separate collection of practical backend engineering articles and ideas I have published over time.</p>
+        <a href={SITE.medium}>Visit my Medium profile <span aria-hidden="true">↗</span></a>
+      </article>
+      <article>
+        <span>WORK AND EXPERIENCE</span>
+        <h3>Personal portfolio</h3>
+        <p>A concise view of my experience, engineering focus, projects, and the systems I enjoy working on.</p>
+        <a href={SITE.portfolio}>Explore my portfolio <span aria-hidden="true">↗</span></a>
+      </article>
+    </div>
+  </section>
+
   <section class="about-connect section-wrap">
     <div class="about-connect-card">
       <p class="section-index">LET’S CONNECT</p>
@@ -119,9 +149,22 @@ import { SITE } from '../data/site';
       <p>I enjoy conversations about distributed systems, Java, cloud platforms, developer productivity, practical AI tooling, and engineering careers.</p>
       <div class="about-page-actions">
         <a class="button button-primary" href={SITE.linkedin}>Connect on LinkedIn</a>
-        <a class="button button-secondary" href={SITE.scalableStack}>Read The Scalable Stack</a>
+        <a class="button button-secondary" href={`mailto:${SITE.email}?subject=Hello%20Rahul`}>Send me an email</a>
         <a class="button button-secondary" href={SITE.topmate}>Book a conversation</a>
+        <a class="button button-secondary" href={SITE.github}>Follow my work on GitHub</a>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .about-writing { padding-block: 4rem; }
+  .about-writing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin-top: 1.3rem; }
+  .about-writing-grid article { display: flex; min-width: 0; flex-direction: column; padding: 1.15rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
+  .about-writing-grid article > span { color: var(--amber); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .08em; }
+  .about-writing-grid h3 { margin: .65rem 0 0; font-size: 1rem; }
+  .about-writing-grid p { margin: .55rem 0 1rem; color: var(--text-soft); font-size: .7rem; line-height: 1.6; }
+  .about-writing-grid a { margin-top: auto; color: var(--indigo); font-size: .66rem; font-weight: 650; }
+  .about-writing-grid a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
+  @media (max-width: 760px) { .about-writing-grid { grid-template-columns: 1fr; } }
+</style>
