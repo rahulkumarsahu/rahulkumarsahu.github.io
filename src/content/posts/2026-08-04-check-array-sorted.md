@@ -1,13 +1,17 @@
 ---
 title: Check Whether an Array Is Sorted
 date: 2026-08-04 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Verify nondecreasing order by checking each adjacent pair once.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, easy, traversal]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: easy
 contentType: problem
+patterns: [array-traversal]
 order: 12
 ---
 

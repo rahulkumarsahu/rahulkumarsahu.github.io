@@ -7,6 +7,8 @@ interface Props {
   showDifficulty?: boolean;
   showContentType?: boolean;
   showCompletion?: boolean;
+  showPattern?: boolean;
+  patterns?: Array<{ value: string; label: string }>;
 }
 
 const {
@@ -17,8 +19,10 @@ const {
   showDifficulty = false,
   showContentType = false,
   showCompletion = false,
+  showPattern = false,
+  patterns = [],
 } = Astro.props;
-const hasFilters = showDifficulty || showContentType || showCompletion;
+const hasFilters = showDifficulty || showContentType || showCompletion || showPattern;
 ---
 
 <div
@@ -65,6 +69,14 @@ const hasFilters = showDifficulty || showContentType || showCompletion;
             <option value="attempted">Attempted</option>
             <option value="solved">Solved</option>
             <option value="revisit">Revisit</option>
+          </select>
+        </label>
+      )}
+      {showPattern && patterns.length > 0 && (
+        <label>Pattern
+          <select data-section-filter="pattern">
+            <option value="">All patterns</option>
+            {patterns.map((pattern) => <option value={pattern.value}>{pattern.label}</option>)}
           </select>
         </label>
       )}
@@ -125,6 +137,9 @@ const hasFilters = showDifficulty || showContentType || showCompletion;
             const slug = item.dataset.postSlug;
             const state = slug ? progress[slug] ?? 'not-started' : 'unavailable';
             return state === control.value;
+          }
+          if (filterName === 'pattern') {
+            return (item.dataset.filterPatterns || '').split(/\s+/).includes(control.value);
           }
           const dataName = filterName === 'contentType' ? 'filterContentType' : 'filterDifficulty';
           return item.dataset[dataName] === control.value;

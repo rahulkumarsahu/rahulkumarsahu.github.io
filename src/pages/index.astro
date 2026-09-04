@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ConnectedProjectCard from '../components/ConnectedProjectCard.astro';
 import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import { SITE, TOPICS } from '../data/site';
@@ -24,7 +25,7 @@ const roadmap = [
     <div class="home-hero-copy">
       <div class="eyebrow-pill">
         <span class="status-dot"></span>
-        Rahul's field notes for backend engineers
+        Engineering ideas, mapped from code to scale
       </div>
       <p class="home-hero-kicker">FROM YOUR FIRST ARRAY TO PRODUCTION SYSTEMS</p>
       <h1>Learn the code. See the <span>system</span> behind it.</h1>
@@ -190,6 +191,10 @@ const roadmap = [
     <div class="post-grid home-post-grid">
       {posts.slice(0, 3).map((post) => <PostCard {post} />)}
     </div>
+  </section>
+
+  <section class="home-connected-project section-wrap" data-reveal>
+    <ConnectedProjectCard />
   </section>
 
   <section class="about section-wrap" id="about" data-reveal>

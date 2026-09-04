@@ -1,13 +1,17 @@
 ---
 title: Rotate an Array to the Left
 date: 2026-08-06 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Rotate an array by k positions in place with the reversal technique.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, medium, rotation, in-place]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: medium
 contentType: problem
+patterns: [reversal]
 order: 20
 ---
 

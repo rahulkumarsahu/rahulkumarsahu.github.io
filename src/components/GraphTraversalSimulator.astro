@@ -1,0 +1,145 @@
+---
+import SimulatorShell from './SimulatorShell.astro';
+---
+
+<SimulatorShell id="graph-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Graph traversal simulator" description="Follow BFS or DFS while the frontier and visited set make every decision visible.">
+  <div slot="setup" class="sim-fields">
+    <label>Traversal
+      <select data-graph-mode aria-label="Graph traversal strategy"><option value="bfs">Breadth first</option><option value="dfs">Depth first</option></select>
+    </label>
+    <label>Undirected edges
+      <input data-graph-input value="A-B, A-C, B-D, C-E, D-E" aria-describedby="graph-input-help" />
+    </label>
+    <button type="button" data-graph-apply>Build trace</button>
+    <small id="graph-input-help">Use A-B pairs separated by commas. Maximum 8 nodes and 12 edges.</small>
+  </div>
+  <div slot="visual">
+    <div class="graph-canvas" data-graph-canvas aria-label="Graph nodes"></div>
+    <div class="graph-edges"><span>Edges</span><p data-graph-edges></p></div>
+    <div class="graph-legend"><span><i class="is-current"></i>Current</span><span><i class="is-frontier"></i>Frontier</span><span><i class="is-visited"></i>Visited</span></div>
+  </div>
+  <dl slot="state">
+    <div><dt>Current code or rule</dt><dd><code data-graph-line>Choose BFS or DFS.</code></dd></div>
+    <div><dt>Current node</dt><dd data-graph-current>None</dd></div>
+    <div><dt data-graph-frontier-label>Queue</dt><dd data-graph-frontier>Empty</dd></div>
+    <div><dt>Visited set</dt><dd data-graph-visited>Empty</dd></div>
+    <div><dt>Traversal order</dt><dd data-graph-order>Empty</dd></div>
+    <div><dt>Explanation</dt><dd data-graph-explanation>Build the trace to begin.</dd></div>
+    <div><dt>Final result</dt><dd data-graph-result>Complete the trace to reveal the order.</dd></div>
+  </dl>
+</SimulatorShell>
+
+<script>
+  type GraphStep = { current: string | null; frontier: string[]; visited: string[]; order: string[]; line: string; explanation: string; final?: boolean };
+  document.querySelectorAll<HTMLElement>('#graph-traversal-simulator').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('[data-graph-input]');
+    const mode = root.querySelector<HTMLSelectElement>('[data-graph-mode]');
+    const apply = root.querySelector<HTMLButtonElement>('[data-graph-apply]');
+    const canvas = root.querySelector<HTMLElement>('[data-graph-canvas]');
+    const error = root.querySelector<HTMLElement>('[data-simulator-error]');
+    const get = (selector: string) => root.querySelector<HTMLElement>(selector);
+    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
+    let nodes: string[] = [];
+    let edgeLabels: string[] = [];
+    let steps: GraphStep[] = [];
+    let stepIndex = 0;
+    let timer: number | undefined;
+
+    const parse = () => {
+      const parts = (input?.value || '').split(',').map((part) => part.trim()).filter(Boolean);
+      if (parts.length < 1 || parts.length > 12) throw new Error('Enter between 1 and 12 edges.');
+      const adjacency = new Map<string, string[]>();
+      const labels: string[] = [];
+      parts.forEach((part) => {
+        const match = part.match(/^([A-Za-z0-9]{1,3})\s*-\s*([A-Za-z0-9]{1,3})$/);
+        if (!match || match[1] === match[2]) throw new Error('Use pairs such as A-B. Self-edges are not supported in this small simulator.');
+        const left = match[1].toUpperCase();
+        const right = match[2].toUpperCase();
+        adjacency.set(left, Array.from(new Set([...(adjacency.get(left) || []), right])));
+        adjacency.set(right, Array.from(new Set([...(adjacency.get(right) || []), left])));
+        labels.push(`${left}–${right}`);
+      });
+      if (adjacency.size > 8) throw new Error('Keep the graph to 8 nodes or fewer so the trace stays readable.');
+      return { adjacency, labels };
+    };
+
+    const makeSteps = (adjacency: Map<string, string[]>) => {
+      const start = Array.from(adjacency.keys())[0];
+      const frontier = [start];
+      const discovered = new Set([start]);
+      const visited: string[] = [];
+      const trace: GraphStep[] = [{ current: null, frontier: [...frontier], visited: [], order: [], line: `frontier.add(${start});`, explanation: `Begin at ${start}. It is discovered, but not processed yet.` }];
+      while (frontier.length) {
+        const current = mode?.value === 'bfs' ? frontier.shift()! : frontier.pop()!;
+        visited.push(current);
+        const neighbors = adjacency.get(current) || [];
+        const candidates = mode?.value === 'dfs' ? [...neighbors].reverse() : neighbors;
+        candidates.forEach((neighbor) => {
+          if (!discovered.has(neighbor)) {
+            discovered.add(neighbor);
+            frontier.push(neighbor);
+          }
+        });
+        trace.push({ current, frontier: [...frontier], visited: Array.from(discovered), order: [...visited], line: mode?.value === 'bfs' ? 'node = queue.remove(); enqueue(unvisitedNeighbors);' : 'node = stack.pop(); push(unvisitedNeighbors);', explanation: `Process ${current}. Add only neighbors that have not already been discovered.` });
+      }
+      trace.push({ current: null, frontier: [], visited: Array.from(discovered), order: [...visited], line: 'frontier is empty; traversal complete;', explanation: 'No discovered node remains to process.', final: true });
+      return trace;
+    };
+
+    const render = () => {
+      const state = steps[stepIndex];
+      if (!state || !canvas) return;
+      canvas.innerHTML = '';
+      nodes.forEach((nodeName) => {
+        const node = document.createElement('div');
+        node.className = 'graph-node';
+        node.textContent = nodeName;
+        if (state.visited.includes(nodeName)) node.classList.add('is-visited');
+        if (state.frontier.includes(nodeName)) node.classList.add('is-frontier');
+        if (state.current === nodeName) node.classList.add('is-current');
+        node.setAttribute('aria-label', `${nodeName}, ${state.current === nodeName ? 'current' : state.frontier.includes(nodeName) ? 'frontier' : state.visited.includes(nodeName) ? 'visited' : 'waiting'}`);
+        canvas.appendChild(node);
+      });
+      const values: Record<string, string> = {
+        '[data-graph-line]': state.line,
+        '[data-graph-current]': state.current || 'None',
+        '[data-graph-frontier]': state.frontier.length ? state.frontier.join(' → ') : 'Empty',
+        '[data-graph-visited]': state.visited.length ? state.visited.join(', ') : 'Empty',
+        '[data-graph-order]': state.order.length ? state.order.join(' → ') : 'Empty',
+        '[data-graph-explanation]': state.explanation,
+        '[data-graph-result]': state.final ? state.order.join(' → ') : 'Complete the trace to reveal the order.',
+      };
+      Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
+      const label = get('[data-graph-frontier-label]'); if (label) label.textContent = mode?.value === 'bfs' ? 'Queue, front first' : 'Stack, top last';
+      const edgeText = get('[data-graph-edges]'); if (edgeText) edgeText.textContent = edgeLabels.join('  ·  ');
+      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
+      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
+      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+    };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
+    const rebuild = () => { stop(); try { const parsed = parse(); edgeLabels = parsed.labels; nodes = Array.from(parsed.adjacency.keys()); steps = makeSteps(parsed.adjacency); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Enter a small graph using A-B pairs.'; } } };
+    apply?.addEventListener('click', rebuild); mode?.addEventListener('change', rebuild);
+    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
+    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
+    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
+    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
+    action('pause')?.addEventListener('click', stop);
+    rebuild();
+  });
+</script>
+
+<style>
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .graph-canvas { display: grid; grid-template-columns: repeat(4, minmax(3rem, 1fr)); gap: 1.2rem; align-items: center; min-height: 13rem; }
+  .graph-node { display: grid; width: 3.2rem; height: 3.2rem; place-self: center; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--text); font-family: var(--font-mono); font-weight: 700; }
+  .graph-node.is-visited, .graph-legend i.is-visited { border-style: dashed; border-color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
+  .graph-node.is-frontier, .graph-legend i.is-frontier { border-color: var(--indigo); box-shadow: 0 0 0 3px color-mix(in srgb, var(--indigo) 16%, transparent); }
+  .graph-node.is-current, .graph-legend i.is-current { border-style: solid; border-color: var(--amber); outline: 3px double color-mix(in srgb, var(--amber) 40%, transparent); background: color-mix(in srgb, var(--amber) 14%, var(--surface)); }
+  .graph-edges { margin-top: .8rem; padding: .65rem; border: 1px solid var(--line); border-radius: .55rem; }
+  .graph-edges span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; text-transform: uppercase; }
+  .graph-edges p { margin: .3rem 0 0; color: var(--text-soft); font-size: .65rem; line-height: 1.5; }
+  .graph-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .58rem; }
+  .graph-legend span { display: flex; align-items: center; gap: .3rem; }
+  .graph-legend i { width: .72rem; height: .72rem; border: 2px solid var(--line-strong); border-radius: 50%; }
+  @media (max-width: 440px) { .graph-canvas { grid-template-columns: repeat(3, 1fr); gap: .7rem; } }
+</style>

@@ -1,0 +1,148 @@
+---
+import SimulatorShell from './SimulatorShell.astro';
+---
+
+<SimulatorShell id="cache-simulator" eyebrow="SYSTEM BEHAVIOUR" title="LRU cache simulator" description="See how recency changes after every request and why capacity forces an eviction.">
+  <div slot="setup" class="sim-fields">
+    <label>Capacity
+      <input type="number" min="1" max="6" value="3" data-cache-capacity aria-label="Cache capacity" />
+    </label>
+    <label>Incoming keys
+      <input value="A, B, C, A, D, B, E" data-cache-input aria-describedby="cache-input-help" />
+    </label>
+    <button type="button" data-cache-apply>Build trace</button>
+    <small id="cache-input-help">Use 1 to 15 short keys separated by commas. Capacity may be 1 to 6.</small>
+  </div>
+  <div slot="visual">
+    <div class="cache-request"><span>Incoming key</span><strong data-cache-incoming>None</strong><i data-cache-outcome>Waiting</i></div>
+    <div class="cache-order-label"><span>MOST RECENTLY USED</span><span>LEAST RECENTLY USED</span></div>
+    <div class="cache-slots" data-cache-slots aria-label="Cache contents in recency order"></div>
+    <div class="cache-legend"><span><i class="is-hit"></i>Hit</span><span><i class="is-miss"></i>Miss</span><span><i class="is-evicted"></i>Evicted</span></div>
+  </div>
+  <dl slot="state">
+    <div><dt>Current rule</dt><dd><code data-cache-rule>Read the next key.</code></dd></div>
+    <div><dt>Hit or miss</dt><dd data-cache-status>Waiting</dd></div>
+    <div><dt>Evicted key</dt><dd data-cache-evicted>None</dd></div>
+    <div><dt>MRU to LRU order</dt><dd data-cache-order>Empty</dd></div>
+    <div><dt>Hit rate</dt><dd data-cache-hit-rate>0%</dd></div>
+    <div><dt>Miss rate</dt><dd data-cache-miss-rate>0%</dd></div>
+    <div><dt>Explanation</dt><dd data-cache-explanation>Build the trace to begin.</dd></div>
+    <div><dt>Final result</dt><dd data-cache-result>Complete the trace to see the final cache.</dd></div>
+  </dl>
+</SimulatorShell>
+
+<script>
+  type CacheStep = { key: string | null; cache: string[]; outcome: 'waiting' | 'hit' | 'miss'; evicted: string | null; hits: number; misses: number; explanation: string; final?: boolean };
+  document.querySelectorAll<HTMLElement>('#cache-simulator').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('[data-cache-input]');
+    const capacityInput = root.querySelector<HTMLInputElement>('[data-cache-capacity]');
+    const apply = root.querySelector<HTMLButtonElement>('[data-cache-apply]');
+    const error = root.querySelector<HTMLElement>('[data-simulator-error]');
+    const slots = root.querySelector<HTMLElement>('[data-cache-slots]');
+    const get = (selector: string) => root.querySelector<HTMLElement>(selector);
+    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
+    let capacity = 3;
+    let steps: CacheStep[] = [];
+    let stepIndex = 0;
+    let timer: number | undefined;
+
+    const parse = () => {
+      const nextCapacity = Number(capacityInput?.value);
+      const keys = (input?.value || '').split(',').map((key) => key.trim()).filter(Boolean);
+      if (!Number.isInteger(nextCapacity) || nextCapacity < 1 || nextCapacity > 6) throw new Error('Choose a whole-number capacity from 1 through 6.');
+      if (keys.length < 1 || keys.length > 15 || keys.some((key) => !/^[A-Za-z0-9_-]{1,8}$/.test(key))) throw new Error('Enter 1 to 15 keys. Each key may contain up to 8 letters, numbers, underscores or hyphens.');
+      return { capacity: nextCapacity, keys };
+    };
+
+    const makeSteps = (keys: string[]) => {
+      const cache: string[] = [];
+      let hits = 0;
+      let misses = 0;
+      const trace: CacheStep[] = [{ key: null, cache: [], outcome: 'waiting', evicted: null, hits, misses, explanation: 'The cache is empty. The left side will always be the most recently used position.' }];
+      keys.forEach((key) => {
+        const existing = cache.indexOf(key);
+        let evicted: string | null = null;
+        if (existing >= 0) {
+          hits++;
+          cache.splice(existing, 1);
+          cache.unshift(key);
+          trace.push({ key, cache: [...cache], outcome: 'hit', evicted, hits, misses, explanation: `${key} is already cached. Move it to the most recently used position.` });
+        } else {
+          misses++;
+          if (cache.length >= capacity) evicted = cache.pop() || null;
+          cache.unshift(key);
+          trace.push({ key, cache: [...cache], outcome: 'miss', evicted, hits, misses, explanation: evicted ? `${key} is missing. Add it and evict ${evicted}, the least recently used key.` : `${key} is missing. Add it to the most recently used position.` });
+        }
+      });
+      trace.push({ key: null, cache: [...cache], outcome: 'waiting', evicted: null, hits, misses, explanation: 'Every request has been processed.', final: true });
+      return trace;
+    };
+
+    const rate = (count: number, total: number) => total ? `${Math.round(count / total * 100)}% (${count}/${total})` : '0%';
+    const render = () => {
+      const state = steps[stepIndex];
+      if (!state || !slots) return;
+      slots.innerHTML = '';
+      for (let index = 0; index < capacity; index++) {
+        const slot = document.createElement('div');
+        const value = state.cache[index];
+        slot.className = 'cache-slot';
+        slot.innerHTML = value ? `<span>${index === 0 ? 'MRU' : index === capacity - 1 ? 'LRU' : `#${index + 1}`}</span><strong></strong>` : '<span>EMPTY</span><strong>·</strong>';
+        const strong = slot.querySelector('strong'); if (strong && value) strong.textContent = value;
+        if (value === state.key) slot.classList.add(state.outcome === 'hit' ? 'is-hit' : 'is-miss');
+        slot.setAttribute('aria-label', value ? `Position ${index + 1}, key ${value}${value === state.key ? `, current ${state.outcome}` : ''}` : `Position ${index + 1}, empty`);
+        slots.appendChild(slot);
+      }
+      const total = state.hits + state.misses;
+      const values: Record<string, string> = {
+        '[data-cache-incoming]': state.key || 'None',
+        '[data-cache-outcome]': state.key ? state.outcome.toUpperCase() : state.final ? 'Complete' : 'Waiting',
+        '[data-cache-rule]': state.outcome === 'hit' ? 'move key to MRU' : state.outcome === 'miss' ? 'insert at MRU; evict LRU if full' : state.final ? 'all requests processed' : 'read the next key',
+        '[data-cache-status]': state.key ? state.outcome.toUpperCase() : 'Waiting',
+        '[data-cache-evicted]': state.evicted || 'None',
+        '[data-cache-order]': state.cache.length ? state.cache.join(' → ') : 'Empty',
+        '[data-cache-hit-rate]': rate(state.hits, total),
+        '[data-cache-miss-rate]': rate(state.misses, total),
+        '[data-cache-explanation]': state.explanation,
+        '[data-cache-result]': state.final ? `${state.cache.join(' → ')}; hit rate ${rate(state.hits, total)}` : 'Complete the trace to see the final cache.',
+      };
+      Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
+      const outcome = get('[data-cache-outcome]'); if (outcome) outcome.dataset.outcome = state.outcome;
+      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
+      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
+      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+    };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
+    const rebuild = () => { stop(); try { const parsed = parse(); capacity = parsed.capacity; steps = makeSteps(parsed.keys); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Enter a valid capacity and short key sequence.'; } } };
+    apply?.addEventListener('click', rebuild);
+    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
+    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
+    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
+    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
+    action('pause')?.addEventListener('click', stop);
+    rebuild();
+  });
+</script>
+
+<style>
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .cache-request { display: grid; width: min(12rem, 100%); margin: 0 auto 1.5rem; place-items: center; gap: .25rem; padding: .8rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .cache-request span, .cache-order-label, .cache-slot span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .06em; }
+  .cache-request strong { font-size: 1.35rem; }
+  .cache-request i { padding: .2rem .4rem; border-radius: 999px; background: var(--surface-strong); color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; font-style: normal; }
+  .cache-request i[data-outcome='hit'] { color: #21835f; }
+  .cache-request i[data-outcome='miss'] { color: #a66318; }
+  .cache-order-label { display: flex; justify-content: space-between; margin-bottom: .45rem; }
+  .cache-slots { display: flex; min-height: 6.2rem; gap: .45rem; align-items: stretch; }
+  .cache-slot { display: grid; min-width: 0; flex: 1; place-items: center; align-content: center; gap: .35rem; border: 2px solid var(--line-strong); border-radius: .65rem; background: var(--surface); }
+  .cache-slot strong { overflow: hidden; max-width: 100%; padding: 0 .2rem; font-family: var(--font-mono); font-size: .78rem; text-overflow: ellipsis; }
+  .cache-slot.is-hit { border-style: double; border-color: #21835f; background: color-mix(in srgb, #21835f 10%, var(--surface)); }
+  .cache-slot.is-miss { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, var(--surface)); }
+  .cache-legend { display: flex; justify-content: center; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .56rem; }
+  .cache-legend span { display: flex; align-items: center; gap: .3rem; }
+  .cache-legend i { width: .72rem; height: .72rem; border: 2px solid var(--line-strong); border-radius: .2rem; }
+  .cache-legend i.is-hit { border-style: double; border-color: #21835f; }
+  .cache-legend i.is-miss { border-color: var(--amber); }
+  .cache-legend i.is-evicted { border-style: dashed; border-color: #c45b46; }
+  @media (max-width: 440px) { .cache-slots { gap: .25rem; } .cache-slot { min-height: 5rem; } }
+</style>

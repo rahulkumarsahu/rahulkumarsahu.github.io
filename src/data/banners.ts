@@ -56,6 +56,15 @@ const sectionArt: Record<string, BannerArt> = {
   graphs: 'graphs',
   greedy: 'graphs',
   'dynamic-programming': 'dynamic-programming',
+  'array-traversal': 'linear-structures',
+  'running-answer': 'linear-structures',
+  'two-pointers': 'linear-structures',
+  'in-place-compaction': 'linear-structures',
+  reversal: 'linear-structures',
+  'prefix-sum': 'linear-structures',
+  xor: 'search',
+  recursion: 'recursion',
+  backtracking: 'recursion',
   'object-oriented-java': 'lld',
   'collections-generics-streams': 'linear-structures',
   'jvm-memory-performance': 'linear-structures',
@@ -86,6 +95,7 @@ const sectionArt: Record<string, BannerArt> = {
   'data-pipeline-deep-dives': 'databases',
   'architecture-deep-dives': 'system-design',
   'platform-patterns': 'cloud-native',
+  'production-url-shortener': 'system-design',
 };
 
 export function getBannerArt(topic: Topic['slug'], section?: string, group?: string) {

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ConnectedProjectCard from '../../components/ConnectedProjectCard.astro';
 import PostCard from '../../components/PostCard.astro';
 import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
@@ -115,6 +116,12 @@ const dsaDirectoryGroups = [
         <ProgressSummary postSlugs={startHerePosts.map((post) => post ? getPostSlug(post) : '').filter(Boolean)} label="Your progress on the beginner path" />
       </section>
 
+      <nav class="dsa-learning-tools section-wrap" aria-label="DSA learning tools">
+        <a href="/dsa/patterns/"><span>RECOGNIZE</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
+        <a href="/dsa/revision/"><span>REVISE</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>
+        <a href="/projects/production-url-shortener/"><span>CONNECT</span><strong>Connected Project</strong><small>Carry ideas from code into a production system</small></a>
+      </nav>
+
       <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
         <div class="section-heading section-heading-notes">
           <div>
@@ -163,6 +170,9 @@ const dsaDirectoryGroups = [
     </>
   ) : curriculum ? (
     <>
+      {['java', 'lld', 'system-design', 'cloud-native'].includes(topic.slug) && (
+        <section class="topic-connected-project section-wrap"><ConnectedProjectCard compact /></section>
+      )}
       <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
         <div class="section-heading">
           <div>
@@ -257,6 +267,13 @@ const dsaDirectoryGroups = [
 
 <style>
   .dsa-start-here { padding-top: 4.5rem; }
+  .dsa-learning-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding-top: 1rem; }
+  .dsa-learning-tools a { display: grid; gap: .3rem; padding: .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--text); }
+  .dsa-learning-tools a:hover { border-color: var(--indigo); transform: translateY(-2px); }
+  .dsa-learning-tools span { color: var(--amber); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .08em; }
+  .dsa-learning-tools strong { font-size: .78rem; }
+  .dsa-learning-tools small { color: var(--text-faint); font-size: .58rem; line-height: 1.45; }
+  .topic-connected-project { padding-top: 3rem; }
   .dsa-start-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -298,8 +315,9 @@ const dsaDirectoryGroups = [
   @media (max-width: 620px) {
     .dsa-start-here { padding-top: 3rem; }
     .dsa-start-list { grid-template-columns: 1fr; }
+    .dsa-learning-tools { grid-template-columns: 1fr; }
     .dsa-directory-heading { align-items: start; flex-direction: column; }
     .dsa-directory-heading p { text-align: left; }
   }
-  @media (prefers-reduced-motion: reduce) { .dsa-start-list a { transition: none; } .dsa-start-list a:hover { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .dsa-start-list a, .dsa-learning-tools a { transition: none; } .dsa-start-list a:hover, .dsa-learning-tools a:hover { transform: none; } }
 </style>

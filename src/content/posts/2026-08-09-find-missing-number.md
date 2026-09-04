@@ -1,13 +1,17 @@
 ---
 title: Find the Missing Number
 date: 2026-08-09 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Find the missing value from 1 through n using XOR without overflow.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, easy, xor]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: easy
 contentType: problem
+patterns: [array-traversal, xor]
 order: 15
 ---
 

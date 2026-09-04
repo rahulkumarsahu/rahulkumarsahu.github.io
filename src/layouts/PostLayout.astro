@@ -5,8 +5,10 @@ import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ArticleLearningControls from '../components/ArticleLearningControls.astro';
 import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
+import ApproachComparison from '../components/ApproachComparison.astro';
 import EngineeringConnection from '../components/EngineeringConnection.astro';
 import JDoodlePractice from '../components/JDoodlePractice.astro';
+import KnowledgeCheck from '../components/KnowledgeCheck.astro';
 import MoveZeroesTrace from '../components/MoveZeroesTrace.astro';
 import PostCard from '../components/PostCard.astro';
 import PostBanner from '../components/PostBanner.astro';
@@ -15,6 +17,8 @@ import SubsetBacktracking from '../components/SubsetBacktracking.astro';
 import { SITE } from '../data/site';
 import { ENGINEERING_CONNECTIONS } from '../data/engineeringConnections';
 import { ARTICLE_LEARNING_LINKS } from '../data/articleLearningLinks';
+import { APPROACH_COMPARISONS } from '../data/approachComparisons';
+import { KNOWLEDGE_CHECKS } from '../data/knowledgeChecks';
 import { getPracticeProblem } from '../data/practiceProblems';
 import { DSA_SECTIONS } from '../data/learningPaths';
 import type { Post } from '../lib/posts';
@@ -53,6 +57,8 @@ const isSubsetsPractice = postSlug === 'subsets-in-java';
 const isMoveZeroesPractice = postSlug === 'move-zeroes-to-end';
 const engineeringConnection = ENGINEERING_CONNECTIONS[postSlug];
 const learningLinks = ARTICLE_LEARNING_LINKS[postSlug];
+const knowledgeQuestions = KNOWLEDGE_CHECKS[postSlug];
+const approachComparison = APPROACH_COMPARISONS[postSlug];
 const sectionHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 // Keep every major section reachable in long guides without crowding the sidebar.
 const tocHeadings = sectionHeadings.length > 36
@@ -147,20 +153,30 @@ const jsonLd = {
         <div class="article-content">
           {practiceProblem && <JDoodlePractice problem={practiceProblem} />}
           {practiceProblem ? (
-            <details class="practice-solution" data-practice-solution>
-              <summary>
-                <span>WHEN YOU ARE READY</span>
-                <strong>Show the explanation and complete solution</strong>
-                <small>Your original article, Java solution, complexity analysis and dry run are preserved here.</small>
-              </summary>
-              <div class="practice-solution-content">
-                <slot />
-                {isMoveZeroesPractice && <MoveZeroesTrace />}
-                {isSubsetsPractice && <SubsetBacktracking />}
-                {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
-                {learningLinks && <ArticleLearningLinks links={learningLinks} />}
-              </div>
-            </details>
+            <>
+              <details class="practice-solution" data-practice-solution>
+                <summary>
+                  <span>WHEN YOU ARE READY</span>
+                  <strong>Show the explanation and complete solution</strong>
+                  <small>Your original article, Java solution, complexity analysis and dry run are preserved here.</small>
+                </summary>
+                <div class="practice-solution-content">
+                  <slot />
+                  {isMoveZeroesPractice && <MoveZeroesTrace />}
+                  {isSubsetsPractice && <SubsetBacktracking />}
+                  {approachComparison && <ApproachComparison comparison={approachComparison} />}
+                  {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
+                  {learningLinks && <ArticleLearningLinks links={learningLinks} />}
+                </div>
+              </details>
+              {knowledgeQuestions && <KnowledgeCheck articleSlug={postSlug} questions={knowledgeQuestions} />}
+              <nav class="dsa-learning-destinations" aria-label="DSA learning tools">
+                {post.data.patterns?.slice(0, 2).map((pattern) => (
+                  <a href={`/dsa/patterns/${pattern}/`}>Review {pattern.replaceAll('-', ' ')}</a>
+                ))}
+                <a href="/dsa/revision/">Open revision cards</a>
+              </nav>
+            </>
           ) : (
             <>
               <slot />
@@ -241,6 +257,31 @@ const jsonLd = {
       </div>
     </section>
   )}
+
+  <style>
+    .dsa-learning-destinations {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      margin: 1.2rem 0 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .dsa-learning-destinations a {
+      padding: .52rem .7rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .55rem;
+      background: var(--surface);
+      color: var(--text-soft);
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      text-transform: capitalize;
+    }
+
+    .dsa-learning-destinations a:hover { border-color: var(--indigo); color: var(--indigo); }
+    .dsa-learning-destinations a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  </style>
 
   <script>
     const progress = document.querySelector('[data-reading-progress]');

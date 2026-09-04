@@ -1,13 +1,17 @@
 ---
 title: Union of Two Sorted Arrays
 date: 2026-08-08 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Merge two sorted arrays into a sorted list of distinct values with two pointers.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, medium, two-pointers, merge]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: medium
 contentType: problem
+patterns: [two-pointers]
 order: 21
 ---
 

@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import TopicBanner from '../../../components/TopicBanner.astro';
+import { DSA_PATTERNS } from '../../../data/dsaPatterns';
+import { getPostSlug } from '../../../lib/posts';
+
+const allPosts = (await getCollection('posts')).filter((post) => !post.data.draft && post.data.topic === 'dsa');
+const cards = DSA_PATTERNS.map((pattern) => ({
+  pattern,
+  posts: allPosts.filter((post) => post.data.patterns?.includes(pattern.slug)),
+})).filter((card) => card.posts.length > 0);
+---
+
+<BaseLayout title="DSA Revision Cards" description="Print-friendly DSA pattern cards with recognition signals, invariants, Java templates, complexity and linked practice.">
+  <section class="page-hero banner-page-hero section-wrap revision-hero">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Revision' }]} />
+    <TopicBanner topic="dsa" section="revision" title="DSA Revision Cards" label="DSA / INTERVIEW CHEAT SHEET" size="hero" heading="h1" eager />
+    <div class="banner-page-intro"><p>Use these compact cards before practice or print them as a focused interview revision sheet. Each card points back to complete lessons on the Atlas.</p></div>
+  </section>
+
+  <main class="revision-main section-wrap" data-revision-page>
+    <div class="revision-toolbar" aria-label="Revision card filters">
+      <label>Pattern
+        <select data-revision-filter="pattern"><option value="">All patterns</option>{cards.map(({ pattern }) => <option value={pattern.slug}>{pattern.name}</option>)}</select>
+      </label>
+      <label>Difficulty
+        <select data-revision-filter="difficulty"><option value="">All levels</option><option value="basics">Basics</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select>
+      </label>
+      <button type="button" data-revision-reset>Reset</button>
+      <button type="button" class="revision-print" data-revision-print>Print or save PDF</button>
+      <p aria-live="polite" data-revision-status></p>
+    </div>
+
+    <div class="revision-grid">
+      {cards.map(({ pattern, posts }) => (
+        <article class="revision-card" data-revision-card data-pattern={pattern.slug} data-difficulties={Array.from(new Set(posts.map((post) => post.data.difficulty ?? 'basics'))).join(' ')}>
+          <header><span>DSA PATTERN</span><h2>{pattern.name}</h2><p>{pattern.description}</p></header>
+          <dl>
+            <div><dt>Recognition signals</dt><dd>{pattern.signals.join(' · ')}</dd></div>
+            <div><dt>Core invariant</dt><dd>{pattern.invariant}</dd></div>
+            <div><dt>Typical cost</dt><dd>{pattern.expectedComplexity}; {pattern.auxiliarySpace} auxiliary space</dd></div>
+            <div><dt>Common mistakes</dt><dd>{pattern.mistakes.join(' · ')}</dd></div>
+          </dl>
+          <pre><code>{pattern.javaTemplate}</code></pre>
+          <section><h3>Available on the Atlas</h3><ul>{posts.map((post) => <li><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a><span>{post.data.difficulty ?? 'basics'}</span></li>)}</ul></section>
+        </article>
+      ))}
+    </div>
+    <div class="revision-empty" data-revision-empty hidden>No revision cards match both filters. Reset them to see the full sheet.</div>
+  </main>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-revision-page]').forEach((page) => {
+    const filters = Array.from(page.querySelectorAll<HTMLSelectElement>('[data-revision-filter]'));
+    const cards = Array.from(page.querySelectorAll<HTMLElement>('[data-revision-card]'));
+    const status = page.querySelector<HTMLElement>('[data-revision-status]');
+    const empty = page.querySelector<HTMLElement>('[data-revision-empty]');
+    const update = () => {
+      const pattern = filters.find((filter) => filter.dataset.revisionFilter === 'pattern')?.value || '';
+      const difficulty = filters.find((filter) => filter.dataset.revisionFilter === 'difficulty')?.value || '';
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches = (!pattern || card.dataset.pattern === pattern) && (!difficulty || (card.dataset.difficulties || '').split(' ').includes(difficulty));
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+      if (status) status.textContent = `${visible} revision ${visible === 1 ? 'card' : 'cards'}`;
+      if (empty) empty.hidden = visible > 0;
+    };
+    filters.forEach((filter) => filter.addEventListener('change', update));
+    page.querySelector('[data-revision-reset]')?.addEventListener('click', () => { filters.forEach((filter) => { filter.value = ''; }); update(); filters[0]?.focus(); });
+    page.querySelector('[data-revision-print]')?.addEventListener('click', () => window.print());
+    update();
+  });
+</script>
+
+<style>
+  .revision-main { padding-block: 2rem 6rem; }
+  .revision-toolbar { display: flex; align-items: end; flex-wrap: wrap; gap: .6rem; position: sticky; z-index: 3; top: .6rem; margin-bottom: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .75rem; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(12px); }
+  .revision-toolbar label { display: grid; gap: .25rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .06em; text-transform: uppercase; }
+  .revision-toolbar select, .revision-toolbar button { min-height: 2.3rem; padding: .45rem .65rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font: inherit; font-size: .65rem; cursor: pointer; }
+  .revision-toolbar .revision-print { margin-left: auto; border-color: var(--indigo); background: var(--indigo); color: white; }
+  .revision-toolbar p { width: 100%; margin: 0; color: var(--text-faint); font-size: .6rem; }
+  .revision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+  .revision-card { min-width: 0; break-inside: avoid; padding: 1.1rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
+  .revision-card header > span { color: var(--amber); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .09em; }
+  .revision-card h2 { margin: .35rem 0 0; font-size: 1.2rem; }
+  .revision-card header p { margin: .45rem 0 0; color: var(--text-soft); font-size: .7rem; line-height: 1.5; }
+  .revision-card dl { display: grid; gap: .55rem; margin: .9rem 0; }
+  .revision-card dl div { display: grid; gap: .15rem; }
+  .revision-card dt { color: var(--indigo); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .05em; text-transform: uppercase; }
+  .revision-card dd { margin: 0; color: var(--text-soft); font-size: .65rem; line-height: 1.5; }
+  .revision-card pre { overflow-x: auto; margin: .8rem 0; padding: .75rem; border-radius: .55rem; background: #0b1020; color: #d9e2f2; font-size: .6rem; line-height: 1.6; }
+  .revision-card h3 { margin: .8rem 0 .45rem; font-size: .78rem; }
+  .revision-card ul { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .revision-card li { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; font-size: .62rem; }
+  .revision-card li a { color: var(--text); }
+  .revision-card li span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; text-transform: capitalize; }
+  .revision-empty { padding: 2rem; border: 1px dashed var(--line-strong); border-radius: .75rem; color: var(--text-faint); text-align: center; }
+  .revision-main :is(select, button, a):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 760px) { .revision-grid { grid-template-columns: 1fr; } .revision-toolbar { position: static; } .revision-toolbar .revision-print { width: 100%; margin-left: 0; } }
+  @media print {
+    :global(.site-header), :global(.site-footer), .revision-hero, .revision-toolbar { display: none !important; }
+    .revision-main { max-width: none; padding: 0; }
+    .revision-grid { grid-template-columns: repeat(2, 1fr); }
+    .revision-card { color: #111; background: #fff; border-color: #bbb; }
+    .revision-card pre { color: #111; background: #f2f2f2; white-space: pre-wrap; }
+    .revision-card a { color: #111 !important; text-decoration: none; }
+  }
+</style>

@@ -11,6 +11,7 @@ series: arrays
 learningSection: arrays
 difficulty: easy
 contentType: problem
+patterns: [array-traversal, running-answer]
 order: 10
 ---
 

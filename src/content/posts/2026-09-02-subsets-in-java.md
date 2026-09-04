@@ -11,6 +11,7 @@ series: recursion-backtracking
 learningSection: recursion-backtracking
 difficulty: medium
 contentType: problem
+patterns: [recursion, backtracking]
 order: 2
 mermaid: false
 interactive: subsets-backtracking

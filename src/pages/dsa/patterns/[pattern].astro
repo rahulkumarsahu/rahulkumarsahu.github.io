@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import DsaArticleCard from '../../../components/DsaArticleCard.astro';
+import TopicBanner from '../../../components/TopicBanner.astro';
+import { DSA_PATTERNS } from '../../../data/dsaPatterns';
+
+export function getStaticPaths() {
+  return DSA_PATTERNS.map((pattern) => ({ params: { pattern: pattern.slug }, props: { pattern } }));
+}
+
+const { pattern } = Astro.props;
+const posts = (await getCollection('posts'))
+  .filter((post) => !post.data.draft && post.data.topic === 'dsa' && post.data.patterns?.includes(pattern.slug))
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<BaseLayout title={`${pattern.name} Pattern`} description={pattern.description}>
+  <section class="page-hero banner-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Patterns', href: '/dsa/patterns/' }, { label: pattern.name }]} />
+    <TopicBanner topic="dsa" section={pattern.slug} title={pattern.name} label="DSA / PATTERN" size="hero" heading="h1" eager />
+    <div class="banner-page-intro"><p>{pattern.description}</p></div>
+  </section>
+
+  <main class="pattern-detail section-wrap">
+    <section class="pattern-explainer">
+      <article><span>01 / WHAT IT SOLVES</span><p>{pattern.solves}</p></article>
+      <article><span>02 / HOW TO RECOGNIZE IT</span><ul>{pattern.signals.map((signal) => <li>{signal}</li>)}</ul></article>
+      <article><span>03 / PROTECT THIS INVARIANT</span><p>{pattern.invariant}</p></article>
+      <article><span>04 / EXPECTED COST</span><p>{pattern.expectedComplexity}. Typical auxiliary space: {pattern.auxiliarySpace}.</p></article>
+    </section>
+
+    <section class="pattern-template">
+      <div><p class="section-index">JAVA STARTING POINT</p><h2>A template to adapt, not memorize.</h2></div>
+      <pre><code>{pattern.javaTemplate}</code></pre>
+      <div class="pattern-mistakes"><h3>Common mistakes</h3><ul>{pattern.mistakes.map((mistake) => <li>{mistake}</li>)}</ul></div>
+    </section>
+
+    <section class="pattern-published">
+      <div class="section-heading section-heading-notes">
+        <div><p class="section-index">PUBLISHED / {String(posts.length).padStart(2, '0')}</p><h2>Learn in this order.</h2></div>
+        <p>Available articles always appear before the publishing plan.</p>
+      </div>
+      {posts.length > 0 ? <div class="dsa-article-grid">{posts.map((post) => <DsaArticleCard {post} />)}</div> : <p class="pattern-empty">The first complete lesson for this pattern is being prepared.</p>}
+    </section>
+
+    <section class="pattern-planned">
+      <div><p class="section-index">PLANNED PRACTICE</p><h2>What comes after the published lessons.</h2></div>
+      <ol>{pattern.plannedPractice.map((title) => <li><span aria-hidden="true">○</span><strong>{title}</strong><small>Planned, not yet published</small></li>)}</ol>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .pattern-detail { display: grid; gap: 3.5rem; padding-block: 4rem 6rem; }
+  .pattern-explainer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: .9rem; overflow: hidden; }
+  .pattern-explainer article { min-width: 0; padding: 1.1rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); }
+  .pattern-explainer article:nth-child(2n) { border-right: 0; }
+  .pattern-explainer article:nth-last-child(-n+2) { border-bottom: 0; }
+  .pattern-explainer span { color: var(--amber); font-family: var(--font-mono); font-size: .54rem; letter-spacing: .08em; }
+  .pattern-explainer p, .pattern-explainer li { color: var(--text-soft); font-size: .74rem; line-height: 1.55; }
+  .pattern-explainer ul { margin: .65rem 0 0; padding-left: 1rem; }
+  .pattern-template { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr); gap: 1rem; align-items: start; }
+  .pattern-template h2, .pattern-planned h2 { margin: .35rem 0 0; font-size: 1.35rem; }
+  .pattern-template pre { overflow-x: auto; margin: 0; padding: 1rem; border-radius: .8rem; background: #0b1020; color: #d9e2f2; font-size: .72rem; line-height: 1.7; }
+  .pattern-mistakes { grid-column: 2; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .pattern-mistakes h3 { margin: 0; font-size: .9rem; }
+  .pattern-mistakes ul { margin: .65rem 0 0; padding-left: 1rem; color: var(--text-soft); font-size: .7rem; line-height: 1.6; }
+  .pattern-planned ol { display: grid; gap: .5rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .pattern-planned li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .65rem; padding: .8rem; border: 1px dashed var(--line-strong); border-radius: .65rem; color: var(--text-faint); }
+  .pattern-planned strong { font-size: .72rem; font-weight: 550; }
+  .pattern-planned small { font-family: var(--font-mono); font-size: .5rem; }
+  .pattern-empty { padding: 1rem; border: 1px dashed var(--line-strong); border-radius: .7rem; color: var(--text-faint); }
+  @media (max-width: 720px) { .pattern-explainer, .pattern-template { grid-template-columns: 1fr; } .pattern-explainer article { border-right: 0; border-bottom: 1px solid var(--line) !important; } .pattern-explainer article:last-child { border-bottom: 0 !important; } .pattern-mistakes { grid-column: auto; } .pattern-planned li { grid-template-columns: auto 1fr; } .pattern-planned small { grid-column: 2; } }
+</style>

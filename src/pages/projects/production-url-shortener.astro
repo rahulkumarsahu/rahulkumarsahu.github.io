@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TopicBanner from '../../components/TopicBanner.astro';
+import { URL_SHORTENER_MILESTONES } from '../../data/connectedProject';
+---
+
+<BaseLayout title="Build a Production URL Shortener" description="A connected engineering project spanning LLD, Java, Spring Boot, system design, Docker, Kubernetes and observability.">
+  <section class="page-hero banner-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Projects' }, { label: 'Production URL shortener' }]} />
+    <TopicBanner topic="system-design" section="production-url-shortener" title="Production URL Shortener" label="CONNECTED PROJECT / 09 MILESTONES" size="hero" heading="h1" eager />
+    <div class="banner-page-intro project-intro"><p>Build one service all the way from its object model to a production deployment. Published resources are ready to open. Planned resources stay visible without pretending they already exist.</p><a class="button button-primary" href="#project-milestones">Start the project</a></div>
+  </section>
+
+  <main class="project-main section-wrap" data-project-hub>
+    <section class="project-outcome">
+      <div><p class="section-index">WHAT YOU WILL BUILD</p><h2>A short-link service whose engineering decisions remain visible.</h2></div>
+      <p>The finished system accepts a long URL, creates a short code, redirects readers quickly, resists abuse, scales across instances and exposes enough operational signals to debug failures.</p>
+      <div class="project-progress" aria-live="polite"><span data-project-progress-label>0 of {URL_SHORTENER_MILESTONES.length} milestones complete</span><div><i data-project-progress-bar style="--project-progress: 0%"></i></div></div>
+    </section>
+
+    <section class="project-architecture" aria-labelledby="architecture-title">
+      <div><p class="section-index">ARCHITECTURE OVERVIEW</p><h2 id="architecture-title">Follow a request across the stack.</h2></div>
+      <div class="architecture-flow" role="img" aria-label="A client sends a request through rate limiting to the Spring Boot API, which uses cache and database storage, while telemetry goes to observability systems.">
+        <span>Client</span><i>→</i><span>Rate limiter</span><i>→</i><span>Spring Boot API</span><i>→</i><span>LRU / Redis cache</span><i>→</i><span>Database</span>
+        <small>All service steps emit health, metrics, logs and traces.</small>
+      </div>
+    </section>
+
+    <section class="project-milestones" id="project-milestones">
+      <div class="section-heading section-heading-notes">
+        <div><p class="section-index">MILESTONE SEQUENCE / {String(URL_SHORTENER_MILESTONES.length).padStart(2, '0')}</p><h2>Build one layer at a time.</h2></div>
+        <p>Your status is stored only in this browser. The project still works when storage is unavailable.</p>
+      </div>
+      <ol>
+        {URL_SHORTENER_MILESTONES.map((milestone) => (
+          <li data-project-milestone data-milestone-id={milestone.id}>
+            <div class="milestone-number"><span>{milestone.number}</span><i data-milestone-state>Not started</i></div>
+            <div class="milestone-copy"><h3>{milestone.title}</h3><p>{milestone.outcome}</p><div>{milestone.concepts.map((concept) => <span>{concept}</span>)}</div></div>
+            <div class="milestone-resources">
+              <h4>PUBLISHED RESOURCES</h4>
+              {milestone.resources.length > 0 ? <ul>{milestone.resources.map((resource) => <li><a href={resource.href}>{resource.title}</a><small>{resource.note}</small></li>)}</ul> : <p>No complete resource is linked yet.</p>}
+              <h4>PLANNED RESOURCES</h4>
+              <ul class="planned-resources">{milestone.planned.map((resource) => <li><span aria-hidden="true">○</span><strong>{resource}</strong><small>Planned</small></li>)}</ul>
+            </div>
+            <label class="milestone-control">My progress
+              <select data-milestone-progress aria-label={`Progress for ${milestone.title}`}>
+                <option value="not-started">Not started</option><option value="in-progress">In progress</option><option value="complete">Complete</option><option value="revisit">Revisit</option>
+              </select>
+            </label>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <nav class="project-topic-links" aria-label="Related learning paths">
+      <span>CONTINUE BY TOPIC</span>
+      <a href="/topics/java/">Java, Spring Boot &amp; Microservices</a><a href="/topics/lld/">Low-Level Design</a><a href="/topics/system-design/">System Design</a><a href="/topics/cloud-native/">Cloud Native</a>
+    </nav>
+  </main>
+</BaseLayout>
+
+<script>
+  const PROJECT_PROGRESS_KEY = 'atlas-project-progress:v1';
+  document.querySelectorAll<HTMLElement>('[data-project-hub]').forEach((hub) => {
+    const milestones = Array.from(hub.querySelectorAll<HTMLElement>('[data-project-milestone]'));
+    const read = (): Record<string, string> => {
+      try { const value = JSON.parse(window.localStorage.getItem(PROJECT_PROGRESS_KEY) || '{}'); return value && typeof value === 'object' ? value : {}; }
+      catch { return {}; }
+    };
+    const write = (value: Record<string, string>) => { try { window.localStorage.setItem(PROJECT_PROGRESS_KEY, JSON.stringify(value)); } catch { /* Local progress is optional. */ } };
+    const updateSummary = () => {
+      const complete = milestones.filter((milestone) => milestone.querySelector<HTMLSelectElement>('[data-milestone-progress]')?.value === 'complete').length;
+      const label = hub.querySelector<HTMLElement>('[data-project-progress-label]'); if (label) label.textContent = `${complete} of ${milestones.length} milestones complete`;
+      const bar = hub.querySelector<HTMLElement>('[data-project-progress-bar]'); if (bar) bar.style.setProperty('--project-progress', `${milestones.length ? complete / milestones.length * 100 : 0}%`);
+    };
+    const saved = read();
+    milestones.forEach((milestone) => {
+      const id = milestone.dataset.milestoneId || '';
+      const select = milestone.querySelector<HTMLSelectElement>('[data-milestone-progress]');
+      const label = milestone.querySelector<HTMLElement>('[data-milestone-state]');
+      if (!select) return;
+      if (saved[id]) select.value = saved[id];
+      const update = () => {
+        milestone.dataset.progress = select.value;
+        if (label) label.textContent = select.options[select.selectedIndex]?.text || 'Not started';
+        const value = read(); value[id] = select.value; write(value); updateSummary();
+      };
+      select.addEventListener('change', update);
+      milestone.dataset.progress = select.value;
+      if (label) label.textContent = select.options[select.selectedIndex]?.text || 'Not started';
+    });
+    updateSummary();
+  });
+</script>
+
+<style>
+  .project-main { display: grid; gap: 4rem; padding-block: 4rem 6rem; }
+  .project-outcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .9fr); gap: 1rem 2rem; align-items: end; }
+  .project-outcome h2, .project-architecture h2 { margin: .35rem 0 0; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+  .project-outcome > p { margin: 0; color: var(--text-soft); font-size: .78rem; line-height: 1.65; }
+  .project-progress { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .7rem; padding: .75rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); color: var(--text-soft); font-size: .65rem; }
+  .project-progress > div { overflow: hidden; height: .45rem; border-radius: 999px; background: var(--surface-strong); }
+  .project-progress i { display: block; width: var(--project-progress); height: 100%; background: linear-gradient(90deg, var(--indigo), var(--teal)); transition: width .25s ease; }
+  .project-architecture { display: grid; grid-template-columns: minmax(14rem, .55fr) minmax(0, 1.45fr); gap: 1rem; align-items: center; }
+  .architecture-flow { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: .45rem; padding: 1.1rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
+  .architecture-flow span { padding: .6rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); font-size: .65rem; font-weight: 650; }
+  .architecture-flow i { color: var(--amber); font-style: normal; }
+  .architecture-flow small { width: 100%; margin-top: .4rem; color: var(--text-faint); font-size: .58rem; text-align: center; }
+  .project-milestones > ol { display: grid; gap: .75rem; margin: 1.2rem 0 0; padding: 0; list-style: none; }
+  .project-milestones > ol > li { display: grid; grid-template-columns: 5rem minmax(13rem, .8fr) minmax(18rem, 1.2fr); gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
+  .milestone-number { display: grid; align-content: start; gap: .45rem; }
+  .milestone-number span { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: .65rem; }
+  .milestone-number i { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; font-style: normal; }
+  [data-project-milestone][data-progress='complete'] .milestone-number i { color: #21835f; }
+  [data-project-milestone][data-progress='in-progress'] .milestone-number i { color: var(--amber); }
+  .milestone-copy h3 { margin: 0; font-size: 1rem; }
+  .milestone-copy p { margin: .5rem 0 0; color: var(--text-soft); font-size: .7rem; line-height: 1.55; }
+  .milestone-copy > div { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .65rem; }
+  .milestone-copy > div span { padding: .26rem .4rem; border: 1px solid var(--line); border-radius: 999px; color: var(--text-faint); font-family: var(--font-mono); font-size: .47rem; }
+  .milestone-resources { min-width: 0; }
+  .milestone-resources h4 { margin: 0 0 .4rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .06em; }
+  .milestone-resources h4:not(:first-child) { margin-top: .8rem; }
+  .milestone-resources ul { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .milestone-resources li { display: grid; gap: .12rem; }
+  .milestone-resources a { color: var(--indigo); font-size: .66rem; font-weight: 650; }
+  .milestone-resources small, .milestone-resources > p { margin: 0; color: var(--text-faint); font-size: .55rem; line-height: 1.45; }
+  .planned-resources li { grid-template-columns: auto 1fr auto; align-items: center; gap: .4rem; color: var(--text-faint); }
+  .planned-resources strong { font-size: .62rem; font-weight: 500; }
+  .milestone-control { grid-column: 2 / -1; display: flex; align-items: center; justify-content: flex-end; gap: .5rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; text-transform: uppercase; }
+  .milestone-control select { min-height: 2.2rem; padding: .4rem .55rem; border: 1px solid var(--line-strong); border-radius: .45rem; background: var(--surface-strong); color: var(--text); font: inherit; font-size: .58rem; text-transform: none; }
+  .project-topic-links { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .project-topic-links > span { margin-right: auto; color: var(--amber); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .08em; }
+  .project-topic-links a { padding: .4rem .55rem; border: 1px solid var(--line); border-radius: .45rem; color: var(--text-soft); font-size: .6rem; }
+  .project-main :is(a, select):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 900px) { .project-milestones > ol > li { grid-template-columns: 4rem 1fr; } .milestone-resources { grid-column: 2; } .milestone-control { grid-column: 2; justify-content: flex-start; } }
+  @media (max-width: 680px) { .project-main { padding-top: 3rem; } .project-outcome, .project-architecture { grid-template-columns: 1fr; } .project-progress { grid-template-columns: 1fr; } .project-milestones > ol > li { grid-template-columns: 1fr; } .milestone-number { grid-template-columns: auto 1fr; align-items: center; } .milestone-resources, .milestone-control { grid-column: auto; } .planned-resources li { grid-template-columns: auto 1fr; } .planned-resources small { grid-column: 2; } }
+  @media (prefers-reduced-motion: reduce) { .project-progress i { transition: none; } }
+</style>

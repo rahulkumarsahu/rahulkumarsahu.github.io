@@ -1,13 +1,17 @@
 ---
 title: Remove Duplicates from a Sorted Array
 date: 2026-08-05 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Use read and write pointers to keep one copy of each value in place.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, easy, two-pointers, in-place]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: easy
 contentType: problem
+patterns: [two-pointers, in-place-compaction]
 order: 13
 ---
 

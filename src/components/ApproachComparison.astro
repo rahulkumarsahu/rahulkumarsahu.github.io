@@ -1,0 +1,42 @@
+---
+import type { ApproachComparisonData } from '../data/approachComparisons';
+
+const { comparison } = Astro.props as { comparison: ApproachComparisonData };
+---
+
+<section class="approach-comparison" aria-labelledby="approach-comparison-title">
+  <header>
+    <span>BRUTE FORCE / OPTIMAL</span>
+    <h2 id="approach-comparison-title">Compare the work, not only the Big O</h2>
+    <p><strong>Representative input:</strong> <code>{comparison.input}</code></p>
+  </header>
+  <p class="approach-observation"><strong>The improvement:</strong> {comparison.observation}</p>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Approach comparison table">
+    <table>
+      <thead><tr><th>Approach</th><th>Meaningful work</th><th>Extra memory</th><th>Modifies input</th><th>Time</th><th>Space</th><th>Main tradeoff</th></tr></thead>
+      <tbody>
+        {comparison.rows.map((row) => (
+          <tr><th scope="row">{row.name}</th><td>{row.operations}</td><td>{row.extraMemory}</td><td>{row.modifiesInput}</td><td><code>{row.time}</code></td><td><code>{row.space}</code></td><td>{row.tradeoff}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {comparison.note && <p class="approach-note">{comparison.note}</p>}
+</section>
+
+<style>
+  .approach-comparison { margin: 2rem 0; padding: 1.15rem; border: 1px solid var(--line-strong); border-radius: .9rem; background: color-mix(in srgb, var(--amber) 5%, var(--surface)); }
+  .approach-comparison header > span { color: var(--amber); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .1em; }
+  .approach-comparison h2 { margin: .32rem 0 0; padding: 0; border: 0; font-size: 1.2rem; }
+  .approach-comparison header p, .approach-observation, .approach-note { margin: .65rem 0 0; color: var(--text-soft); font-size: .74rem; line-height: 1.55; }
+  .approach-observation { padding: .7rem .8rem; border-left: 3px solid var(--amber); background: var(--surface); }
+  .table-scroll { overflow-x: auto; margin-top: .9rem; border: 1px solid var(--line); border-radius: .65rem; }
+  .approach-comparison table { width: 100%; min-width: 840px; margin: 0; border-collapse: collapse; font-size: .68rem; }
+  .approach-comparison th, .approach-comparison td { padding: .68rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .approach-comparison tr:last-child > * { border-bottom: 0; }
+  .approach-comparison tr > *:last-child { border-right: 0; }
+  .approach-comparison thead { background: var(--surface-strong); color: var(--text-faint); font-family: var(--font-mono); font-size: .54rem; letter-spacing: .05em; text-transform: uppercase; }
+  .approach-comparison tbody th { color: var(--text); font-size: .7rem; }
+  .approach-comparison td { color: var(--text-soft); }
+  .table-scroll:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+</style>

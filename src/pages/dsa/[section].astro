@@ -3,10 +3,13 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DsaArticleCard from '../../components/DsaArticleCard.astro';
+import GraphTraversalSimulator from '../../components/GraphTraversalSimulator.astro';
 import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
+import TreeTraversalSimulator from '../../components/TreeTraversalSimulator.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
+import { getDsaPattern } from '../../data/dsaPatterns';
 import { getPostSlug, getPostsForSeries } from '../../lib/posts';
 
 export function getStaticPaths() {
@@ -18,6 +21,9 @@ export function getStaticPaths() {
 
 const { section } = Astro.props;
 const posts = getPostsForSeries(await getCollection('posts'), section.slug);
+const availablePatterns = Array.from(new Set(posts.flatMap((post) => post.data.patterns ?? [])))
+  .map((slug) => ({ value: slug, label: getDsaPattern(slug)?.name ?? slug }))
+  .sort((a, b) => a.label.localeCompare(b.label));
 const groups = ['basics', 'easy', 'medium', 'hard'] as const;
 const groupCopy = {
   basics: ['01', 'Learn the idea', 'Build the mental model and learn the reusable implementation pattern.'],
@@ -44,7 +50,14 @@ const groupCopy = {
       {section.topics.map((topic) => <span>{topic}</span>)}
     </div>
     <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />
+    <div class="dsa-tool-links">
+      <a href="/dsa/patterns/">Browse DSA patterns</a>
+      <a href="/dsa/revision/">Open revision cards</a>
+    </div>
   </section>
+
+  {section.slug === 'trees' && <div class="section-wrap dsa-section-simulator"><TreeTraversalSimulator /></div>}
+  {section.slug === 'graphs' && <div class="section-wrap dsa-section-simulator"><GraphTraversalSimulator /></div>}
 
   <div class="section-search-wrap section-wrap">
     <SectionSearch
@@ -55,6 +68,8 @@ const groupCopy = {
       showDifficulty
       showContentType
       showCompletion
+      showPattern
+      patterns={availablePatterns}
     />
   </div>
 
@@ -79,3 +94,11 @@ const groupCopy = {
     })}
   </div>
 </BaseLayout>
+
+<style>
+  .dsa-tool-links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  .dsa-tool-links a { padding: .48rem .65rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text-soft); font-size: .64rem; font-weight: 650; }
+  .dsa-tool-links a:hover { border-color: var(--indigo); color: var(--indigo); }
+  .dsa-tool-links a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .dsa-section-simulator { padding-top: 2rem; }
+</style>

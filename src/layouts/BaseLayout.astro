@@ -78,7 +78,12 @@ const defaultJsonLd = {
     <title>{pageTitle}</title>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? defaultJsonLd)} />
     <script is:inline>
-      const storedTheme = localStorage.getItem('atlas-theme');
+      let storedTheme = null;
+      try {
+        storedTheme = window.localStorage.getItem('atlas-theme');
+      } catch {
+        // A blocked storage API should never prevent the page from loading.
+      }
       const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       const selectedTheme = storedTheme || preferredTheme;
       document.documentElement.dataset.theme = selectedTheme;
@@ -112,7 +117,11 @@ const defaultJsonLd = {
       themeToggle?.addEventListener('click', () => {
         const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = nextTheme;
-        localStorage.setItem('atlas-theme', nextTheme);
+        try {
+          window.localStorage.setItem('atlas-theme', nextTheme);
+        } catch {
+          // The theme still changes for this page even when storage is blocked.
+        }
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'light' ? '#f5f6f2' : '#172033');
       });
 

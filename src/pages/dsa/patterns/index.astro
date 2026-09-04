@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import TopicBanner from '../../../components/TopicBanner.astro';
+import { DSA_PATTERNS } from '../../../data/dsaPatterns';
+import { getPostSlug } from '../../../lib/posts';
+
+const allPosts = (await getCollection('posts')).filter((post) => !post.data.draft && post.data.topic === 'dsa');
+const cards = DSA_PATTERNS.map((pattern) => {
+  const posts = allPosts.filter((post) => post.data.patterns?.includes(pattern.slug));
+  const levels = ['basics', 'easy', 'medium', 'hard']
+    .map((difficulty) => ({ difficulty, count: posts.filter((post) => (post.data.difficulty ?? 'basics') === difficulty).length }))
+    .filter((item) => item.count > 0);
+  return { pattern, posts, levels };
+});
+---
+
+<BaseLayout title="DSA Pattern Library" description="Recognize reusable DSA approaches, understand their invariants and find practice articles that use each pattern.">
+  <section class="page-hero banner-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Patterns' }]} />
+    <TopicBanner topic="dsa" section="patterns" title="DSA Pattern Library" label="DSA / REUSABLE APPROACHES" size="hero" heading="h1" eager />
+    <div class="banner-page-intro pattern-intro">
+      <p>Data structures describe how information is stored. Patterns describe how you approach the problem. Learn the signal, protect the invariant, then choose practice that makes the idea stick.</p>
+      <a class="button button-secondary" href="/dsa/revision/">Open revision cards</a>
+    </div>
+  </section>
+
+  <main class="pattern-library section-wrap">
+    <div class="section-heading section-heading-notes">
+      <div><p class="section-index">PATTERN INDEX / {String(cards.length).padStart(2, '0')}</p><h2>Start with the shape of the problem.</h2></div>
+      <p>Every count below reflects published articles only. Planned practice stays on the individual pattern page.</p>
+    </div>
+    <div class="pattern-card-grid">
+      {cards.map(({ pattern, posts, levels }, index) => (
+        <article class="pattern-card">
+          <div class="pattern-card-top"><span>{String(index + 1).padStart(2, '0')}</span><small>{posts.length} AVAILABLE</small></div>
+          <h2><a href={`/dsa/patterns/${pattern.slug}/`}>{pattern.name}</a></h2>
+          <p>{pattern.description}</p>
+          <dl>
+            <div><dt>Recognition signals</dt><dd>{pattern.signals.slice(0, 2).join(' · ')}</dd></div>
+            <div><dt>Common invariant</dt><dd>{pattern.invariant}</dd></div>
+            <div><dt>Expected complexity</dt><dd>{pattern.expectedComplexity}</dd></div>
+          </dl>
+          <div class="pattern-levels" aria-label="Difficulty distribution">
+            {levels.length > 0 ? levels.map((level) => <span>{level.difficulty}: {level.count}</span>) : <span>Practice is planned</span>}
+          </div>
+          <a class="pattern-card-link" href={`/dsa/patterns/${pattern.slug}/`}>Study this pattern →</a>
+        </article>
+      ))}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .pattern-intro { align-items: center; }
+  .pattern-library { padding-block: 4rem 6rem; }
+  .pattern-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; margin-top: 1.4rem; }
+  .pattern-card { display: flex; min-width: 0; flex-direction: column; padding: 1.2rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
+  .pattern-card-top { display: flex; align-items: center; justify-content: space-between; color: var(--text-faint); font-family: var(--font-mono); font-size: .55rem; letter-spacing: .08em; }
+  .pattern-card-top > span { color: var(--amber); }
+  .pattern-card h2 { margin: .8rem 0 0; font-size: 1.25rem; }
+  .pattern-card h2 a { color: var(--text); }
+  .pattern-card > p { margin: .55rem 0 0; color: var(--text-soft); font-size: .75rem; line-height: 1.55; }
+  .pattern-card dl { display: grid; gap: .55rem; margin: 1rem 0 0; }
+  .pattern-card dl div { display: grid; gap: .18rem; }
+  .pattern-card dt { color: var(--indigo); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .06em; text-transform: uppercase; }
+  .pattern-card dd { margin: 0; color: var(--text-soft); font-size: .68rem; line-height: 1.5; }
+  .pattern-levels { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1rem; }
+  .pattern-levels span { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; text-transform: capitalize; }
+  .pattern-card-link { margin-top: auto; padding-top: 1rem; color: var(--indigo); font-size: .68rem; font-weight: 650; }
+  .pattern-card a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
+  @media (max-width: 760px) { .pattern-card-grid { grid-template-columns: 1fr; } .pattern-library { padding-top: 3rem; } }
+</style>

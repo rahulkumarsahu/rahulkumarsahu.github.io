@@ -1,0 +1,153 @@
+---
+import SimulatorShell from './SimulatorShell.astro';
+---
+
+<SimulatorShell id="load-balancing-simulator" eyebrow="SYSTEM BEHAVIOUR" title="Load-balancing simulator" description="Compare request assignment strategies and see how unhealthy servers leave the rotation.">
+  <div slot="setup" class="sim-fields lb-fields">
+    <label>Strategy
+      <select data-lb-strategy aria-label="Load-balancing strategy"><option value="round-robin">Round robin</option><option value="weighted">Weighted round robin</option><option value="least">Least connections</option></select>
+    </label>
+    <label>Request count
+      <input type="number" min="1" max="20" value="9" data-lb-count aria-label="Number of requests" />
+    </label>
+    <fieldset><legend>Healthy servers</legend><label><input type="checkbox" checked data-lb-health="A" /> A</label><label><input type="checkbox" checked data-lb-health="B" /> B</label><label><input type="checkbox" checked data-lb-health="C" /> C</label></fieldset>
+    <button type="button" data-lb-apply>Build trace</button>
+    <small>Weights are A:1, B:2 and C:3. Keep at least one server healthy.</small>
+  </div>
+  <div slot="visual">
+    <div class="lb-request"><span>REQUEST</span><strong data-lb-request>Waiting</strong><i aria-hidden="true">↓</i></div>
+    <div class="lb-servers" data-lb-servers aria-label="Server state"></div>
+    <div class="lb-legend"><span><i class="is-selected"></i>Assigned now</span><span><i class="is-healthy"></i>Healthy</span><span><i class="is-unhealthy"></i>Unhealthy</span></div>
+  </div>
+  <dl slot="state">
+    <div><dt>Current rule</dt><dd><code data-lb-rule>Select a strategy.</code></dd></div>
+    <div><dt>Request assignment</dt><dd data-lb-assignment>None</dd></div>
+    <div><dt>Active connections</dt><dd data-lb-connections>A: 0 · B: 0 · C: 0</dd></div>
+    <div><dt>Server health</dt><dd data-lb-health-state>A healthy · B healthy · C healthy</dd></div>
+    <div><dt>Distribution summary</dt><dd data-lb-distribution>A: 0 · B: 0 · C: 0</dd></div>
+    <div><dt>Explanation</dt><dd data-lb-explanation>Build the trace to begin.</dd></div>
+    <div><dt>Final result</dt><dd data-lb-result>Complete the trace to compare the distribution.</dd></div>
+  </dl>
+</SimulatorShell>
+
+<script>
+  type ServerName = 'A' | 'B' | 'C';
+  type LbStep = { request: number | null; selected: ServerName | null; active: Record<ServerName, number>; distribution: Record<ServerName, number>; healthy: ServerName[]; rule: string; explanation: string; final?: boolean };
+  document.querySelectorAll<HTMLElement>('#load-balancing-simulator').forEach((root) => {
+    const strategy = root.querySelector<HTMLSelectElement>('[data-lb-strategy]');
+    const countInput = root.querySelector<HTMLInputElement>('[data-lb-count]');
+    const apply = root.querySelector<HTMLButtonElement>('[data-lb-apply]');
+    const serverBox = root.querySelector<HTMLElement>('[data-lb-servers]');
+    const error = root.querySelector<HTMLElement>('[data-simulator-error]');
+    const healthInputs = Array.from(root.querySelectorAll<HTMLInputElement>('[data-lb-health]'));
+    const get = (selector: string) => root.querySelector<HTMLElement>(selector);
+    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
+    const weights: Record<ServerName, number> = { A: 1, B: 2, C: 3 };
+    let steps: LbStep[] = [];
+    let stepIndex = 0;
+    let timer: number | undefined;
+
+    const clone = (value: Record<ServerName, number>) => ({ A: value.A, B: value.B, C: value.C });
+    const parse = () => {
+      const count = Number(countInput?.value);
+      const healthy = healthInputs.filter((input) => input.checked).map((input) => input.dataset.lbHealth as ServerName);
+      if (!Number.isInteger(count) || count < 1 || count > 20) throw new Error('Choose between 1 and 20 requests.');
+      if (!healthy.length) throw new Error('At least one server must remain healthy to receive traffic.');
+      return { count, healthy };
+    };
+    const makeSteps = (count: number, healthy: ServerName[]) => {
+      const active: Record<ServerName, number> = { A: 0, B: 0, C: 0 };
+      const distribution: Record<ServerName, number> = { A: 0, B: 0, C: 0 };
+      const weightedPool = healthy.flatMap((server) => Array.from({ length: weights[server] }, () => server));
+      const trace: LbStep[] = [{ request: null, selected: null, active: clone(active), distribution: clone(distribution), healthy, rule: 'Wait for the first request.', explanation: 'Only healthy servers are eligible.' }];
+      for (let request = 1; request <= count; request++) {
+        let selected: ServerName;
+        let rule: string;
+        if (strategy?.value === 'weighted') {
+          selected = weightedPool[(request - 1) % weightedPool.length];
+          rule = 'Follow the healthy weighted rotation A×1, B×2, C×3.';
+        } else if (strategy?.value === 'least') {
+          selected = healthy.reduce((best, server) => active[server] < active[best] ? server : best, healthy[0]);
+          rule = 'Choose the healthy server with the fewest active connections.';
+        } else {
+          selected = healthy[(request - 1) % healthy.length];
+          rule = 'Choose the next healthy server in circular order.';
+        }
+        active[selected]++;
+        distribution[selected]++;
+        trace.push({ request, selected, active: clone(active), distribution: clone(distribution), healthy, rule, explanation: `Request ${request} goes to server ${selected}. Its active-connection count is now ${active[selected]}.` });
+      }
+      trace.push({ request: null, selected: null, active: clone(active), distribution: clone(distribution), healthy, rule: 'All requests have been assigned.', explanation: 'The final counts show how this strategy distributed the workload.', final: true });
+      return trace;
+    };
+    const summary = (record: Record<ServerName, number>) => `A: ${record.A} · B: ${record.B} · C: ${record.C}`;
+    const render = () => {
+      const state = steps[stepIndex];
+      if (!state || !serverBox) return;
+      serverBox.innerHTML = '';
+      (['A', 'B', 'C'] as ServerName[]).forEach((name) => {
+        const server = document.createElement('article');
+        const healthy = state.healthy.includes(name);
+        server.className = `lb-server ${healthy ? 'is-healthy' : 'is-unhealthy'}${state.selected === name ? ' is-selected' : ''}`;
+        server.innerHTML = '<span></span><strong></strong><small></small><i></i>';
+        server.querySelector('span')!.textContent = `SERVER ${name}`;
+        server.querySelector('strong')!.textContent = `${state.active[name]} active`;
+        server.querySelector('small')!.textContent = `weight ${weights[name]} · ${state.distribution[name]} assigned`;
+        server.querySelector('i')!.textContent = healthy ? 'HEALTHY' : 'UNHEALTHY';
+        server.setAttribute('aria-label', `Server ${name}, ${healthy ? 'healthy' : 'unhealthy'}, ${state.active[name]} active connections, ${state.distribution[name]} requests assigned${state.selected === name ? ', selected now' : ''}`);
+        serverBox.appendChild(server);
+      });
+      const values: Record<string, string> = {
+        '[data-lb-request]': state.request ? `#${state.request}` : state.final ? 'Complete' : 'Waiting',
+        '[data-lb-rule]': state.rule,
+        '[data-lb-assignment]': state.selected ? `Request ${state.request} → Server ${state.selected}` : 'None',
+        '[data-lb-connections]': summary(state.active),
+        '[data-lb-health-state]': (['A', 'B', 'C'] as ServerName[]).map((name) => `${name} ${state.healthy.includes(name) ? 'healthy' : 'unhealthy'}`).join(' · '),
+        '[data-lb-distribution]': summary(state.distribution),
+        '[data-lb-explanation]': state.explanation,
+        '[data-lb-result]': state.final ? summary(state.distribution) : 'Complete the trace to compare the distribution.',
+      };
+      Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
+      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
+      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
+      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+    };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
+    const rebuild = () => { stop(); try { const parsed = parse(); steps = makeSteps(parsed.count, parsed.healthy); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Choose valid server and request settings.'; } } };
+    apply?.addEventListener('click', rebuild); strategy?.addEventListener('change', rebuild); healthInputs.forEach((input) => input.addEventListener('change', rebuild));
+    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
+    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
+    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
+    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
+    action('pause')?.addEventListener('click', stop);
+    rebuild();
+  });
+</script>
+
+<style>
+  .lb-fields fieldset { display: flex; min-width: 14rem; flex: 1 1 15rem; gap: .5rem; margin: 0; padding: .45rem .6rem; border: 1px solid var(--line-strong); border-radius: .5rem; }
+  .lb-fields fieldset legend { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .06em; text-transform: uppercase; }
+  .lb-fields fieldset label { display: flex; min-width: 0; flex: 1; align-items: center; gap: .3rem; color: var(--text); font-size: .62rem; text-transform: none; }
+  .lb-fields fieldset input { min-height: 0; padding: 0; accent-color: var(--indigo); }
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .lb-request { display: grid; place-items: center; gap: .2rem; margin-bottom: .8rem; }
+  .lb-request span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .08em; }
+  .lb-request strong { font-size: 1.2rem; }
+  .lb-request i { color: var(--amber); font-size: 1.2rem; font-style: normal; }
+  .lb-servers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; }
+  .lb-server { display: grid; min-width: 0; gap: .35rem; padding: .8rem; border: 2px solid var(--line-strong); border-radius: .7rem; background: var(--surface); text-align: center; }
+  .lb-server span, .lb-server small, .lb-server i { font-family: var(--font-mono); font-size: .5rem; }
+  .lb-server span, .lb-server small { color: var(--text-faint); }
+  .lb-server strong { font-size: .72rem; }
+  .lb-server i { color: #21835f; font-style: normal; }
+  .lb-server.is-unhealthy { border-style: dashed; opacity: .58; }
+  .lb-server.is-unhealthy i { color: #c45b46; }
+  .lb-server.is-selected { border-color: var(--amber); outline: 3px solid color-mix(in srgb, var(--amber) 24%, transparent); background: color-mix(in srgb, var(--amber) 10%, var(--surface)); }
+  .lb-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .56rem; }
+  .lb-legend span { display: flex; align-items: center; gap: .3rem; }
+  .lb-legend i { width: .72rem; height: .72rem; border: 2px solid var(--line-strong); border-radius: .2rem; }
+  .lb-legend i.is-selected { border-color: var(--amber); }
+  .lb-legend i.is-healthy { border-color: #21835f; }
+  .lb-legend i.is-unhealthy { border-style: dashed; border-color: #c45b46; }
+  @media (max-width: 520px) { .lb-servers { grid-template-columns: 1fr; } .lb-server { grid-template-columns: 1fr 1fr; text-align: left; } }
+</style>

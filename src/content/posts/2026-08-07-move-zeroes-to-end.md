@@ -11,6 +11,7 @@ series: arrays
 learningSection: arrays
 difficulty: easy
 contentType: problem
+patterns: [two-pointers, in-place-compaction]
 order: 14
 ---
 

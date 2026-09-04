@@ -2062,6 +2062,28 @@ a {
   text-transform: uppercase;
 }
 
+.dsa-pattern-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: .55rem;
+}
+
+.dsa-pattern-tags span {
+  padding: .24rem .4rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  text-transform: capitalize;
+}
+
+.home-connected-project {
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+
 .dsa-article-card h3 {
   margin: 24px 0 12px;
   font-family: var(--font-display);

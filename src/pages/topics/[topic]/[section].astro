@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import CacheSimulator from '../../../components/CacheSimulator.astro';
+import LoadBalancingSimulator from '../../../components/LoadBalancingSimulator.astro';
 import PostCard from '../../../components/PostCard.astro';
 import ProgressSummary from '../../../components/ProgressSummary.astro';
 import SectionSearch from '../../../components/SectionSearch.astro';
@@ -71,6 +73,13 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
     </div>
   </nav>
 
+  {path.slug === 'system-design' && section.slug === 'caching' && (
+    <div class="section-wrap system-simulator"><CacheSimulator /></div>
+  )}
+  {path.slug === 'system-design' && section.slug === 'traffic-management' && (
+    <div class="section-wrap system-simulator"><LoadBalancingSimulator /></div>
+  )}
+
   <div class="section-search-wrap section-wrap">
     <SectionSearch
       placeholder={`Search inside ${section.title}`}
@@ -135,3 +144,7 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
     ) : <span></span>}
   </nav>
 </BaseLayout>
+
+<style>
+  .system-simulator { padding-top: 1.5rem; }
+</style>

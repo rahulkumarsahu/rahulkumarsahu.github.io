@@ -11,6 +11,7 @@ const { post } = Astro.props as { post: Post };
   data-post-slug={getPostSlug(post)}
   data-filter-difficulty={post.data.difficulty ?? 'basics'}
   data-filter-content-type={post.data.contentType ?? 'concept'}
+  data-filter-patterns={post.data.patterns?.join(' ') ?? ''}
 >
   <a class="dsa-article-cover-link" href={`/posts/${getPostSlug(post)}/`} tabindex="-1" aria-hidden="true">
     <PostBanner {post} />
@@ -23,6 +24,11 @@ const { post } = Astro.props as { post: Post };
       <span>{post.data.contentType ?? 'concept'}</span>
       <span>{estimateReadTime(post)} min</span>
     </div>
+    {post.data.patterns?.length > 0 && (
+      <div class="dsa-pattern-tags" aria-label="Patterns">
+        {post.data.patterns.slice(0, 3).map((pattern) => <span>{pattern.replaceAll('-', ' ')}</span>)}
+      </div>
+    )}
     <h3><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a></h3>
     <p>{post.data.description}</p>
     <a class="dsa-article-link" href={`/posts/${getPostSlug(post)}/`}>Read article <span>→</span></a>

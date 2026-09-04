@@ -8,6 +8,7 @@ topic: dsa
 series: arrays
 difficulty: basics
 contentType: concept
+patterns: [array-traversal]
 order: 2
 ---
 

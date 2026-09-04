@@ -1,0 +1,138 @@
+---
+import type { KnowledgeQuestion } from '../data/knowledgeChecks';
+
+const { articleSlug, questions } = Astro.props as { articleSlug: string; questions: KnowledgeQuestion[] };
+---
+
+<section class="knowledge-check" aria-labelledby={`knowledge-${articleSlug}`} data-knowledge-check data-article-slug={articleSlug}>
+  <header>
+    <div><span>QUICK KNOWLEDGE CHECK</span><h2 id={`knowledge-${articleSlug}`}>Can you explain the key decisions?</h2></div>
+    <p><strong data-check-progress>0 of {questions.length}</strong> understood</p>
+  </header>
+  <div class="knowledge-questions">
+    {questions.map((question, questionIndex) => (
+      <fieldset
+        data-check-question
+        data-question-id={question.id}
+        data-correct-index={String(question.correctIndex)}
+        data-explanation={question.explanation}
+      >
+        <legend><span>{String(questionIndex + 1).padStart(2, '0')}</span>{question.question}</legend>
+        <div class="knowledge-options">
+          {question.options.map((option, optionIndex) => (
+            <label>
+              <input type="radio" name={`${articleSlug}-${question.id}`} value={String(optionIndex)} />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+        <div class="knowledge-actions">
+          <button type="button" data-check-answer>Check answer</button>
+          <button type="button" data-check-retry hidden>Try again</button>
+        </div>
+        <p class="knowledge-feedback" role="status" aria-live="polite" data-check-feedback hidden></p>
+      </fieldset>
+    ))}
+  </div>
+</section>
+
+<script>
+  const KNOWLEDGE_KEY = 'atlas-knowledge-checks:v1';
+
+  const readKnowledge = (): Record<string, string[]> => {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(KNOWLEDGE_KEY) || '{}');
+      return value && typeof value === 'object' ? value : {};
+    } catch {
+      return {};
+    }
+  };
+
+  const writeKnowledge = (value: Record<string, string[]>) => {
+    try {
+      window.localStorage.setItem(KNOWLEDGE_KEY, JSON.stringify(value));
+    } catch {
+      // The questions remain fully usable when storage is blocked.
+    }
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-knowledge-check]').forEach((check) => {
+    const slug = check.dataset.articleSlug;
+    if (!slug) return;
+    const questions = Array.from(check.querySelectorAll<HTMLElement>('[data-check-question]'));
+    const progress = check.querySelector<HTMLElement>('[data-check-progress]');
+    const completed = new Set(readKnowledge()[slug] || []);
+
+    const updateProgress = () => {
+      if (progress) progress.textContent = `${completed.size} of ${questions.length}`;
+    };
+
+    questions.forEach((question) => {
+      const id = question.dataset.questionId || '';
+      const submit = question.querySelector<HTMLButtonElement>('[data-check-answer]');
+      const retry = question.querySelector<HTMLButtonElement>('[data-check-retry]');
+      const feedback = question.querySelector<HTMLElement>('[data-check-feedback]');
+      const choices = Array.from(question.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+
+      submit?.addEventListener('click', () => {
+        const selected = choices.find((choice) => choice.checked);
+        if (!selected || !feedback) {
+          if (feedback) {
+            feedback.hidden = false;
+            feedback.dataset.result = 'waiting';
+            feedback.textContent = 'Choose an answer before checking.';
+          }
+          return;
+        }
+
+        const isCorrect = selected.value === question.dataset.correctIndex;
+        feedback.hidden = false;
+        feedback.dataset.result = isCorrect ? 'correct' : 'incorrect';
+        feedback.textContent = `${isCorrect ? 'Correct.' : 'Not quite.'} ${question.dataset.explanation || ''}`;
+        retry?.removeAttribute('hidden');
+        if (isCorrect) {
+          completed.add(id);
+          const stored = readKnowledge();
+          stored[slug] = Array.from(completed);
+          writeKnowledge(stored);
+          updateProgress();
+        }
+      });
+
+      retry?.addEventListener('click', () => {
+        choices.forEach((choice) => { choice.checked = false; });
+        if (feedback) feedback.hidden = true;
+        retry.hidden = true;
+        choices[0]?.focus();
+      });
+    });
+
+    updateProgress();
+  });
+</script>
+
+<style>
+  .knowledge-check { margin: 2rem 0; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 1rem; background: var(--surface); }
+  .knowledge-check > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--teal) 7%, var(--surface-strong)); }
+  .knowledge-check header span { color: var(--teal); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .11em; }
+  .knowledge-check h2 { margin: .3rem 0 0; padding: 0; border: 0; font-size: 1.22rem; }
+  .knowledge-check header p { margin: 0; color: var(--text-faint); font-size: .68rem; white-space: nowrap; }
+  .knowledge-check header strong { color: var(--text); }
+  .knowledge-questions { display: grid; gap: 0; }
+  .knowledge-questions fieldset { min-width: 0; margin: 0; padding: 1.15rem 1.2rem; border: 0; border-bottom: 1px solid var(--line); }
+  .knowledge-questions fieldset:last-child { border-bottom: 0; }
+  .knowledge-questions legend { display: flex; align-items: center; gap: .6rem; width: 100%; color: var(--text); font-size: .82rem; font-weight: 650; line-height: 1.45; }
+  .knowledge-questions legend span { display: grid; width: 1.7rem; height: 1.7rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: .55rem; }
+  .knowledge-options { display: grid; gap: .5rem; margin-top: .8rem; }
+  .knowledge-options label { display: flex; align-items: flex-start; gap: .6rem; padding: .65rem .7rem; border: 1px solid var(--line); border-radius: .55rem; color: var(--text-soft); font-size: .75rem; line-height: 1.45; cursor: pointer; }
+  .knowledge-options label:has(input:checked) { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 7%, transparent); color: var(--text); }
+  .knowledge-options input { margin-top: .16rem; accent-color: var(--indigo); }
+  .knowledge-actions { display: flex; gap: .5rem; margin-top: .8rem; }
+  .knowledge-actions button { min-height: 2.25rem; padding: .45rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); font-size: .68rem; font-weight: 650; cursor: pointer; }
+  .knowledge-actions button:first-child { border-color: var(--indigo); background: var(--indigo); color: white; }
+  .knowledge-feedback { margin: .7rem 0 0; padding: .65rem .75rem; border-left: 3px solid var(--line-strong); background: var(--surface-strong); color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
+  .knowledge-feedback[data-result='correct'] { border-left-color: #21835f; }
+  .knowledge-feedback[data-result='incorrect'] { border-left-color: var(--amber); }
+  .knowledge-check :is(input, button):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 620px) { .knowledge-check > header { align-items: flex-start; flex-direction: column; } }
+</style>

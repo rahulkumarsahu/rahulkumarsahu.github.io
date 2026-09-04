@@ -8,6 +8,7 @@ topic: dsa
 series: recursion-backtracking
 difficulty: basics
 contentType: concept
+patterns: [recursion]
 order: 1
 image: /images/dsa/recursion-call-stack.webp
 interactive: recursion-call-stack

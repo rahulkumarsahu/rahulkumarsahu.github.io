@@ -1,0 +1,169 @@
+---
+import SimulatorShell from './SimulatorShell.astro';
+---
+
+<SimulatorShell id="tree-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Tree traversal simulator" description="Watch the current node, call stack or queue, and visited order change one step at a time.">
+  <div slot="setup" class="sim-fields">
+    <label>Traversal
+      <select data-tree-mode aria-label="Tree traversal order"><option value="preorder">Preorder</option><option value="inorder">Inorder</option><option value="postorder">Postorder</option><option value="bfs">Breadth first</option></select>
+    </label>
+    <label>Level-order node values
+      <input data-tree-input value="8, 4, 12, 2, 6, 10, 14" aria-describedby="tree-input-help" />
+    </label>
+    <button type="button" data-tree-apply>Build trace</button>
+    <small id="tree-input-help">Enter 1 to 7 integer values. They are placed into a complete tree from left to right.</small>
+  </div>
+  <div slot="visual">
+    <div class="tree-canvas" data-tree-canvas aria-label="Binary tree visualization"></div>
+    <div class="tree-legend"><span><i class="is-current"></i>Current node</span><span><i class="is-visited"></i>Visited</span><span><i></i>Waiting</span></div>
+  </div>
+  <dl slot="state">
+    <div><dt>Current code or rule</dt><dd><code data-tree-line>Choose a traversal and press Build trace.</code></dd></div>
+    <div><dt>Current node</dt><dd data-tree-current>None</dd></div>
+    <div><dt data-tree-frontier-label>Call stack</dt><dd data-tree-frontier>Empty</dd></div>
+    <div><dt>Visited order</dt><dd data-tree-visited>Empty</dd></div>
+    <div><dt>Explanation</dt><dd data-tree-explanation>The trace is ready to build.</dd></div>
+    <div><dt>Final result</dt><dd data-tree-result>Complete the trace to reveal the traversal.</dd></div>
+  </dl>
+</SimulatorShell>
+
+<script>
+  type TreeStep = { current: number | null; visited: number[]; frontier: number[]; line: string; explanation: string; final?: boolean };
+
+  document.querySelectorAll<HTMLElement>('#tree-traversal-simulator').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('[data-tree-input]');
+    const mode = root.querySelector<HTMLSelectElement>('[data-tree-mode]');
+    const apply = root.querySelector<HTMLButtonElement>('[data-tree-apply]');
+    const canvas = root.querySelector<HTMLElement>('[data-tree-canvas]');
+    const error = root.querySelector<HTMLElement>('[data-simulator-error]');
+    const line = root.querySelector<HTMLElement>('[data-tree-line]');
+    const current = root.querySelector<HTMLElement>('[data-tree-current]');
+    const frontier = root.querySelector<HTMLElement>('[data-tree-frontier]');
+    const frontierLabel = root.querySelector<HTMLElement>('[data-tree-frontier-label]');
+    const visited = root.querySelector<HTMLElement>('[data-tree-visited]');
+    const explanation = root.querySelector<HTMLElement>('[data-tree-explanation]');
+    const result = root.querySelector<HTMLElement>('[data-tree-result]');
+    const position = root.querySelector<HTMLElement>('[data-sim-position]');
+    const buttons = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
+    let values: number[] = [];
+    let steps: TreeStep[] = [];
+    let stepIndex = 0;
+    let timer: number | undefined;
+
+    const parse = () => {
+      const parts = (input?.value || '').split(',').map((value) => value.trim()).filter(Boolean);
+      if (parts.length < 1 || parts.length > 7 || parts.some((value) => !/^-?\d+$/.test(value))) throw new Error('Enter between 1 and 7 whole numbers separated by commas.');
+      return parts.map(Number);
+    };
+
+    const buildSteps = () => {
+      const nextSteps: TreeStep[] = [{ current: null, visited: [], frontier: [0], line: 'Start at the root.', explanation: 'No node has been visited yet.' }];
+      const seen: number[] = [];
+      if (mode?.value === 'bfs') {
+        const queue = [0];
+        while (queue.length) {
+          const index = queue.shift()!;
+          seen.push(index);
+          const left = index * 2 + 1;
+          const right = index * 2 + 2;
+          if (left < values.length) queue.push(left);
+          if (right < values.length) queue.push(right);
+          nextSteps.push({ current: index, visited: [...seen], frontier: [...queue], line: 'node = queue.remove(); enqueue(node.left, node.right);', explanation: `Visit ${values[index]}, then place its existing children at the back of the queue.` });
+        }
+      } else {
+        const walk = (index: number, path: number[]) => {
+          if (index >= values.length) return;
+          const nextPath = [...path, index];
+          if (mode?.value === 'preorder') {
+            seen.push(index);
+            nextSteps.push({ current: index, visited: [...seen], frontier: [...nextPath].reverse(), line: 'visit(node); traverse(node.left); traverse(node.right);', explanation: `Visit ${values[index]} before exploring its children.` });
+          }
+          walk(index * 2 + 1, nextPath);
+          if (mode?.value === 'inorder') {
+            seen.push(index);
+            nextSteps.push({ current: index, visited: [...seen], frontier: [...nextPath].reverse(), line: 'traverse(node.left); visit(node); traverse(node.right);', explanation: `The left subtree is complete, so visit ${values[index]} now.` });
+          }
+          walk(index * 2 + 2, nextPath);
+          if (mode?.value === 'postorder') {
+            seen.push(index);
+            nextSteps.push({ current: index, visited: [...seen], frontier: [...nextPath].reverse(), line: 'traverse(node.left); traverse(node.right); visit(node);', explanation: `Both child subtrees are complete, so visit ${values[index]} while returning.` });
+          }
+        };
+        walk(0, []);
+      }
+      nextSteps.push({ current: null, visited: [...seen], frontier: [], line: 'Traversal complete.', explanation: 'Every node has been visited exactly once.', final: true });
+      return nextSteps;
+    };
+
+    const render = () => {
+      const state = steps[stepIndex];
+      if (!state || !canvas) return;
+      canvas.innerHTML = '';
+      values.forEach((value, index) => {
+        const node = document.createElement('div');
+        node.className = 'tree-node';
+        node.dataset.treeIndex = String(index);
+        node.dataset.level = String(Math.floor(Math.log2(index + 1)));
+        node.dataset.position = String(index - (2 ** Math.floor(Math.log2(index + 1)) - 1));
+        node.textContent = String(value);
+        const wasVisited = state.visited.includes(index) && index !== state.current;
+        if (wasVisited) node.classList.add('is-visited');
+        if (index === state.current) node.classList.add('is-current');
+        const parent = index === 0 ? '' : `child of ${values[Math.floor((index - 1) / 2)]}`;
+        node.setAttribute('aria-label', `Node ${value}${parent ? `, ${parent}` : ', root'}${index === state.current ? ', current' : wasVisited ? ', visited' : ', waiting'}`);
+        canvas.appendChild(node);
+      });
+      if (line) line.textContent = state.line;
+      if (current) current.textContent = state.current === null ? 'None' : String(values[state.current]);
+      if (frontier) frontier.textContent = state.frontier.length ? state.frontier.map((index) => values[index]).join(' → ') : 'Empty';
+      if (frontierLabel) frontierLabel.textContent = mode?.value === 'bfs' ? 'Queue, front first' : 'Call stack, top first';
+      if (visited) visited.textContent = state.visited.length ? state.visited.map((index) => values[index]).join(' → ') : 'Empty';
+      if (explanation) explanation.textContent = state.explanation;
+      if (result) result.textContent = state.final ? state.visited.map((index) => values[index]).join(' → ') : 'Complete the trace to reveal the traversal.';
+      if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
+      if (buttons('previous')) buttons('previous')!.disabled = stepIndex === 0;
+      if (buttons('next')) buttons('next')!.disabled = stepIndex >= steps.length - 1;
+    };
+
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (buttons('play')) buttons('play')!.disabled = false; if (buttons('pause')) buttons('pause')!.disabled = true; };
+    const rebuild = () => {
+      stop();
+      try {
+        values = parse();
+        steps = buildSteps();
+        stepIndex = 0;
+        if (error) error.hidden = true;
+        render();
+      } catch (reason) {
+        if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Use a short comma-separated list of integers.'; }
+      }
+    };
+    apply?.addEventListener('click', rebuild);
+    mode?.addEventListener('change', rebuild);
+    buttons('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
+    buttons('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
+    buttons('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
+    buttons('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (buttons('play')) buttons('play')!.disabled = true; if (buttons('pause')) buttons('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
+    buttons('pause')?.addEventListener('click', stop);
+    rebuild();
+  });
+</script>
+
+<style>
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .tree-canvas { display: grid; grid-template-columns: repeat(4, minmax(2.8rem, 1fr)); grid-template-rows: repeat(3, 4.6rem); gap: .6rem; align-items: center; justify-items: center; min-width: 0; }
+  .tree-node { display: grid; position: relative; z-index: 1; width: 3rem; height: 3rem; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--text); font-family: var(--font-mono); font-size: .72rem; }
+  .tree-node[data-tree-index='0'] { grid-column: 1 / 5; grid-row: 1; }
+  .tree-node[data-tree-index='1'] { grid-column: 1 / 3; grid-row: 2; }
+  .tree-node[data-tree-index='2'] { grid-column: 3 / 5; grid-row: 2; }
+  .tree-node[data-tree-index='3'] { grid-column: 1; grid-row: 3; }
+  .tree-node[data-tree-index='4'] { grid-column: 2; grid-row: 3; }
+  .tree-node[data-tree-index='5'] { grid-column: 3; grid-row: 3; }
+  .tree-node[data-tree-index='6'] { grid-column: 4; grid-row: 3; }
+  .tree-node.is-visited, .tree-legend i.is-visited { border-style: dashed; border-color: var(--teal); background: color-mix(in srgb, var(--teal) 12%, var(--surface)); }
+  .tree-node.is-current, .tree-legend i.is-current { border-color: var(--amber); outline: 3px solid color-mix(in srgb, var(--amber) 22%, transparent); background: color-mix(in srgb, var(--amber) 14%, var(--surface)); }
+  .tree-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1rem; color: var(--text-faint); font-size: .58rem; }
+  .tree-legend span { display: flex; align-items: center; gap: .3rem; }
+  .tree-legend i { width: .75rem; height: .75rem; border: 2px solid var(--line-strong); border-radius: 50%; }
+  @media (max-width: 440px) { .tree-canvas { grid-template-rows: repeat(3, 3.8rem); gap: .2rem; } .tree-node { width: 2.5rem; height: 2.5rem; } }
+</style>

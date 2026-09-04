@@ -1,13 +1,17 @@
 ---
 title: Longest Subarray with Sum K
 date: 2026-08-10 09:00:00 +0530
+lastReviewed: 2026-09-04 09:00:00 +0530
+javaVersion: "Java 21+"
 description: Use prefix sums and earliest indexes to handle positive and negative values in linear time.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, medium, prefix-sum, hashing]
 topic: dsa
 series: arrays
+learningSection: arrays
 difficulty: medium
 contentType: problem
+patterns: [prefix-sum, hashing]
 order: 22
 ---
 
