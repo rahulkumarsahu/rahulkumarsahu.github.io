@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { SITE } from '../data/site';
+import aboutPortrait from '../assets/about/rahul-about-portrait.png';
 ---
 
 <BaseLayout
@@ -25,8 +27,18 @@ import { SITE } from '../data/site';
         </div>
       </div>
       <div class="portrait-frame">
-        <img src="/images/rahul-kumar.jpg" alt="Rahul Kumar" width="420" height="420" />
-        <span>RAHUL KUMAR / SENIOR BACKEND ENGINEER</span>
+        <Image
+          class="portrait-illustration"
+          src={aboutPortrait}
+          alt="Illustrated portrait of Rahul Kumar"
+          width={720}
+          widths={[360, 540, 720]}
+          sizes="(max-width: 840px) 360px, 360px"
+          format="webp"
+          quality={86}
+          loading="eager"
+          fetchpriority="high"
+        />
       </div>
     </div>
   </section>

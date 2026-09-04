@@ -2814,16 +2814,8 @@ a {
 }
 
 .portrait-frame {
-  position: relative;
-  padding: 15px 15px 38px;
-  border: 1px solid var(--line-strong);
-  background:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px),
-    var(--surface-strong);
-  background-size: 24px 24px;
-  box-shadow: var(--shadow);
-  transform: rotate(1.5deg);
+  overflow: hidden;
+  border-radius: 18px;
 }
 
 .portrait-frame img {
@@ -2834,14 +2826,9 @@ a {
   filter: saturate(0.88) contrast(1.04);
 }
 
-.portrait-frame span {
-  position: absolute;
-  bottom: 12px;
-  left: 15px;
-  color: var(--text-faint);
-  font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.08em;
+.portrait-frame .portrait-illustration {
+  object-fit: contain;
+  filter: saturate(.96) contrast(1.02);
 }
 
 .about-story {
