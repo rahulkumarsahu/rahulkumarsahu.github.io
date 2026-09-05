@@ -2,7 +2,13 @@
 import SimulatorShell from './SimulatorShell.astro';
 ---
 
-<SimulatorShell id="cache-simulator" eyebrow="SYSTEM BEHAVIOUR" title="LRU cache simulator" description="See how recency changes after every request and why capacity forces an eviction.">
+<SimulatorShell
+  id="cache-simulator"
+  eyebrow="ACTIVE-LEARNING TRACE"
+  title="LRU cache simulator"
+  description="Predict each cache decision, then reveal how recency changes and why capacity forces an eviction."
+  activeLearning
+>
   <div slot="setup" class="sim-fields">
     <label>Capacity
       <input type="number" min="1" max="6" value="3" data-cache-capacity aria-label="Cache capacity" />
@@ -11,16 +17,34 @@ import SimulatorShell from './SimulatorShell.astro';
       <input value="A, B, C, A, D, B, E" data-cache-input aria-describedby="cache-input-help" />
     </label>
     <button type="button" data-cache-apply>Build trace</button>
+    <button type="button" class="cache-share" data-cache-share>Copy share link</button>
     <small id="cache-input-help">Use 1 to 15 short keys separated by commas. Capacity may be 1 to 6.</small>
+    <small class="cache-share-status" data-cache-share-status aria-live="polite"></small>
   </div>
-  <div slot="visual">
-    <div class="cache-request"><span>Incoming key</span><strong data-cache-incoming>None</strong><i data-cache-outcome>Waiting</i></div>
-    <div class="cache-order-label"><span>MOST RECENTLY USED</span><span>LEAST RECENTLY USED</span></div>
-    <div class="cache-slots" data-cache-slots aria-label="Cache contents in recency order"></div>
-    <div class="cache-legend"><span><i class="is-hit"></i>Hit</span><span><i class="is-miss"></i>Miss</span><span><i class="is-evicted"></i>Evicted</span></div>
+
+  <div slot="visual" class="cache-learning-workspace">
+    <div class="cache-code-panel">
+      <div><span>RULE</span><strong data-cache-code-status>Waiting for a request</strong></div>
+      <pre aria-label="LRU cache algorithm"><code><span data-cache-code-line="1">for (String key : requests) &#123;</span>
+<span data-cache-code-line="2">  if (cache.contains(key)) &#123;</span>
+<span data-cache-code-line="3">    moveToMostRecent(key);</span>
+<span data-cache-code-line="4">  &#125; else if (cache.isFull()) &#123;</span>
+<span data-cache-code-line="5">    evictLeastRecent();</span>
+<span data-cache-code-line="6">    insertAsMostRecent(key);</span>
+<span data-cache-code-line="7">  &#125;</span>
+<span data-cache-code-line="8">&#125;</span></code></pre>
+    </div>
+
+    <div class="cache-visual-panel">
+      <div class="cache-request"><span>Incoming key</span><strong data-cache-incoming>None</strong><i data-cache-outcome>Waiting</i></div>
+      <div class="cache-order-label"><span>MOST RECENTLY USED</span><span>LEAST RECENTLY USED</span></div>
+      <div class="cache-slots" data-cache-slots aria-label="Cache contents in recency order"></div>
+      <div class="cache-legend"><span><i class="is-hit"></i>Hit and moved</span><span><i class="is-miss"></i>Miss and inserted</span><span><i class="is-evicted"></i>LRU evicted</span></div>
+    </div>
   </div>
+
   <dl slot="state">
-    <div><dt>Current rule</dt><dd><code data-cache-rule>Read the next key.</code></dd></div>
+    <div><dt>Current code or rule</dt><dd><code data-cache-rule>Read the next key.</code></dd></div>
     <div><dt>Hit or miss</dt><dd data-cache-status>Waiting</dd></div>
     <div><dt>Evicted key</dt><dd data-cache-evicted>None</dd></div>
     <div><dt>MRU to LRU order</dt><dd data-cache-order>Empty</dd></div>
@@ -32,19 +56,42 @@ import SimulatorShell from './SimulatorShell.astro';
 </SimulatorShell>
 
 <script>
-  type CacheStep = { key: string | null; cache: string[]; outcome: 'waiting' | 'hit' | 'miss'; evicted: string | null; hits: number; misses: number; explanation: string; final?: boolean };
+  import { connectActiveSimulatorControls } from '../lib/activeSimulator';
+  import { connectSimulatorPrediction, type SimulatorPrediction as Prediction } from '../lib/simulatorPrediction';
+
+  type CacheAction = 'waiting' | 'hit' | 'miss-insert' | 'miss-evict' | 'complete';
+  type CacheStep = {
+    key: string | null;
+    cache: string[];
+    outcome: 'waiting' | 'hit' | 'miss';
+    action: CacheAction;
+    line: number;
+    evicted: string | null;
+    hits: number;
+    misses: number;
+    explanation: string;
+    final?: boolean;
+  };
+
   document.querySelectorAll<HTMLElement>('#cache-simulator').forEach((root) => {
+    if (root.dataset.simulatorReady === 'true') return;
+    root.dataset.simulatorReady = 'true';
+
     const input = root.querySelector<HTMLInputElement>('[data-cache-input]');
     const capacityInput = root.querySelector<HTMLInputElement>('[data-cache-capacity]');
     const apply = root.querySelector<HTMLButtonElement>('[data-cache-apply]');
+    const share = root.querySelector<HTMLButtonElement>('[data-cache-share]');
+    const shareStatus = root.querySelector<HTMLElement>('[data-cache-share-status]');
     const error = root.querySelector<HTMLElement>('[data-simulator-error]');
     const slots = root.querySelector<HTMLElement>('[data-cache-slots]');
     const get = (selector: string) => root.querySelector<HTMLElement>(selector);
-    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
     let capacity = 3;
     let steps: CacheStep[] = [];
     let stepIndex = 0;
     let timer: number | undefined;
+    let predictionCheckpoints = new Set<number>();
+    let answeredPredictions = new Set<number>();
+    const prediction = connectSimulatorPrediction(root);
 
     const parse = () => {
       const nextCapacity = Number(capacityInput?.value);
@@ -58,7 +105,10 @@ import SimulatorShell from './SimulatorShell.astro';
       const cache: string[] = [];
       let hits = 0;
       let misses = 0;
-      const trace: CacheStep[] = [{ key: null, cache: [], outcome: 'waiting', evicted: null, hits, misses, explanation: 'The cache is empty. The left side will always be the most recently used position.' }];
+      const trace: CacheStep[] = [{
+        key: null, cache: [], outcome: 'waiting', action: 'waiting', line: 1, evicted: null, hits, misses,
+        explanation: 'The cache is empty. The left side is always the most recently used position.',
+      }];
       keys.forEach((key) => {
         const existing = cache.indexOf(key);
         let evicted: string | null = null;
@@ -66,30 +116,71 @@ import SimulatorShell from './SimulatorShell.astro';
           hits++;
           cache.splice(existing, 1);
           cache.unshift(key);
-          trace.push({ key, cache: [...cache], outcome: 'hit', evicted, hits, misses, explanation: `${key} is already cached. Move it to the most recently used position.` });
+          trace.push({ key, cache: [...cache], outcome: 'hit', action: 'hit', line: 3, evicted, hits, misses, explanation: `${key} is already cached. Move it to the most recently used position.` });
         } else {
           misses++;
           if (cache.length >= capacity) evicted = cache.pop() || null;
           cache.unshift(key);
-          trace.push({ key, cache: [...cache], outcome: 'miss', evicted, hits, misses, explanation: evicted ? `${key} is missing. Add it and evict ${evicted}, the least recently used key.` : `${key} is missing. Add it to the most recently used position.` });
+          trace.push({
+            key, cache: [...cache], outcome: 'miss', action: evicted ? 'miss-evict' : 'miss-insert', line: evicted ? 5 : 6,
+            evicted, hits, misses,
+            explanation: evicted ? `${key} is missing. Evict ${evicted}, the least recently used key, then add ${key} as most recent.` : `${key} is missing. Add it to the most recently used position without evicting anything.`,
+          });
         }
       });
-      trace.push({ key: null, cache: [...cache], outcome: 'waiting', evicted: null, hits, misses, explanation: 'Every request has been processed.', final: true });
+      trace.push({ key: null, cache: [...cache], outcome: 'waiting', action: 'complete', line: 8, evicted: null, hits, misses, explanation: 'Every request has been processed.', final: true });
       return trace;
     };
 
+    const rebuildPredictionCheckpoints = () => {
+      predictionCheckpoints = new Set();
+      (['miss-insert', 'hit', 'miss-evict'] as CacheAction[]).forEach((action) => {
+        const index = steps.findIndex((state, stateIndex) => stateIndex > 0 && state.action === action);
+        if (index > 0) predictionCheckpoints.add(index);
+      });
+      answeredPredictions = new Set();
+      prediction.hide();
+    };
+
+    const predictionFor = (targetIndex: number): Prediction => {
+      const state = steps[targetIndex];
+      const before = steps[targetIndex - 1]?.cache ?? [];
+      return {
+        question: `Request ${state.key} arrives. The current MRU → LRU order is ${before.length ? before.join(' → ') : 'empty'}. What happens next?`,
+        options: [
+          { id: 'hit', label: 'Cache hit: move the key to MRU' },
+          { id: 'miss-insert', label: 'Cache miss: insert without eviction' },
+          { id: 'miss-evict', label: 'Cache miss: evict LRU, then insert' },
+        ],
+        correct: state.action,
+        explanation: state.explanation,
+      };
+    };
+
     const rate = (count: number, total: number) => total ? `${Math.round(count / total * 100)}% (${count}/${total})` : '0%';
+    const isPlaying = () => timer !== undefined;
+
+    const stop = () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+      controls.refresh();
+    };
+
     const render = () => {
       const state = steps[stepIndex];
       if (!state || !slots) return;
-      slots.innerHTML = '';
+      slots.replaceChildren();
       for (let index = 0; index < capacity; index++) {
         const slot = document.createElement('div');
         const value = state.cache[index];
         slot.className = 'cache-slot';
-        slot.innerHTML = value ? `<span>${index === 0 ? 'MRU' : index === capacity - 1 ? 'LRU' : `#${index + 1}`}</span><strong></strong>` : '<span>EMPTY</span><strong>·</strong>';
-        const strong = slot.querySelector('strong'); if (strong && value) strong.textContent = value;
+        const label = document.createElement('span');
+        label.textContent = value ? (index === 0 ? 'MRU' : index === state.cache.length - 1 ? 'LRU' : `#${index + 1}`) : 'EMPTY';
+        const key = document.createElement('strong');
+        key.textContent = value || '·';
+        slot.append(label, key);
         if (value === state.key) slot.classList.add(state.outcome === 'hit' ? 'is-hit' : 'is-miss');
+        if (state.evicted && index === capacity - 1) slot.dataset.evictionOccurred = 'true';
         slot.setAttribute('aria-label', value ? `Position ${index + 1}, key ${value}${value === state.key ? `, current ${state.outcome}` : ''}` : `Position ${index + 1}, empty`);
         slots.appendChild(slot);
       }
@@ -97,8 +188,9 @@ import SimulatorShell from './SimulatorShell.astro';
       const values: Record<string, string> = {
         '[data-cache-incoming]': state.key || 'None',
         '[data-cache-outcome]': state.key ? state.outcome.toUpperCase() : state.final ? 'Complete' : 'Waiting',
-        '[data-cache-rule]': state.outcome === 'hit' ? 'move key to MRU' : state.outcome === 'miss' ? 'insert at MRU; evict LRU if full' : state.final ? 'all requests processed' : 'read the next key',
-        '[data-cache-status]': state.key ? state.outcome.toUpperCase() : 'Waiting',
+        '[data-cache-code-status]': state.final ? 'Trace complete' : `Line ${state.line}`,
+        '[data-cache-rule]': state.action === 'hit' ? 'moveToMostRecent(key)' : state.action === 'miss-evict' ? 'evictLeastRecent(), then insert' : state.action === 'miss-insert' ? 'insertAsMostRecent(key)' : state.final ? 'all requests processed' : 'read the next key',
+        '[data-cache-status]': state.key ? state.outcome.toUpperCase() : state.final ? 'Complete' : 'Waiting',
         '[data-cache-evicted]': state.evicted || 'None',
         '[data-cache-order]': state.cache.length ? state.cache.join(' → ') : 'Empty',
         '[data-cache-hit-rate]': rate(state.hits, total),
@@ -107,26 +199,127 @@ import SimulatorShell from './SimulatorShell.astro';
         '[data-cache-result]': state.final ? `${state.cache.join(' → ')}; hit rate ${rate(state.hits, total)}` : 'Complete the trace to see the final cache.',
       };
       Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
-      const outcome = get('[data-cache-outcome]'); if (outcome) outcome.dataset.outcome = state.outcome;
-      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
-      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
-      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+      const outcome = get('[data-cache-outcome]');
+      if (outcome) outcome.dataset.outcome = state.outcome;
+      root.querySelectorAll<HTMLElement>('[data-cache-code-line]').forEach((line) => {
+        const active = Number(line.dataset.cacheCodeLine) === state.line;
+        line.classList.toggle('is-active', active);
+        if (active) line.setAttribute('aria-current', 'step');
+        else line.removeAttribute('aria-current');
+      });
+      controls.refresh();
     };
-    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
-    const rebuild = () => { stop(); try { const parsed = parse(); capacity = parsed.capacity; steps = makeSteps(parsed.keys); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Enter a valid capacity and short key sequence.'; } } };
-    apply?.addEventListener('click', rebuild);
-    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
-    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
-    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
-    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
-    action('pause')?.addEventListener('click', stop);
-    rebuild();
+
+    const startPlayback = () => {
+      stop();
+      if (stepIndex >= steps.length - 1) stepIndex = 0;
+      timer = window.setTimeout(() => {
+        timer = undefined;
+        requestStep(stepIndex + 1, true);
+      }, controls.delay(800));
+      controls.refresh();
+    };
+
+    const requestStep = (targetIndex: number, resumePlayback = false) => {
+      const target = Math.min(Math.max(0, targetIndex), steps.length - 1);
+      const shouldPredict = target === stepIndex + 1 && predictionCheckpoints.has(target) && !answeredPredictions.has(target);
+      stop();
+      if (shouldPredict) {
+        prediction.show(predictionFor(target), () => {
+          answeredPredictions.add(target);
+          stepIndex = target;
+          render();
+          if (resumePlayback && stepIndex < steps.length - 1) startPlayback();
+        });
+        return;
+      }
+      prediction.hide();
+      stepIndex = target;
+      render();
+      if (resumePlayback && stepIndex < steps.length - 1) startPlayback();
+    };
+
+    const controls = connectActiveSimulatorControls(root, {
+      getIndex: () => stepIndex,
+      getLength: () => steps.length,
+      isPlaying,
+      first: () => requestStep(0),
+      previous: () => requestStep(stepIndex - 1),
+      next: () => requestStep(stepIndex + 1),
+      last: () => requestStep(steps.length - 1),
+      play: startPlayback,
+      pause: stop,
+      reset: () => {
+        stop();
+        rebuildPredictionCheckpoints();
+        stepIndex = 0;
+        render();
+      },
+      scrub: (index) => requestStep(index),
+    });
+
+    const updateShareUrl = () => {
+      const parsed = parse();
+      const url = new URL(window.location.href);
+      url.searchParams.set('cacheCapacity', String(parsed.capacity));
+      url.searchParams.set('cacheKeys', parsed.keys.join(','));
+      window.history.replaceState({}, '', url);
+      return url.toString();
+    };
+
+    const rebuild = (updateUrl = true) => {
+      stop();
+      try {
+        const parsed = parse();
+        capacity = parsed.capacity;
+        steps = makeSteps(parsed.keys);
+        stepIndex = 0;
+        rebuildPredictionCheckpoints();
+        if (error) error.hidden = true;
+        if (shareStatus) shareStatus.textContent = '';
+        if (updateUrl) updateShareUrl();
+        render();
+      } catch (reason) {
+        if (error) {
+          error.hidden = false;
+          error.textContent = reason instanceof Error ? reason.message : 'Enter a valid capacity and short key sequence.';
+        }
+      }
+    };
+
+    apply?.addEventListener('click', () => rebuild());
+    share?.addEventListener('click', async () => {
+      try {
+        const url = updateShareUrl();
+        await navigator.clipboard.writeText(url);
+        if (shareStatus) shareStatus.textContent = 'Share link copied. It will open with this capacity and request sequence.';
+      } catch {
+        if (shareStatus) shareStatus.textContent = 'The shareable input is now in the address bar. Copy the page URL to share it.';
+      }
+    });
+
+    const sharedUrl = new URL(window.location.href);
+    const sharedCapacity = sharedUrl.searchParams.get('cacheCapacity');
+    const sharedKeys = sharedUrl.searchParams.get('cacheKeys');
+    if (sharedCapacity && capacityInput) capacityInput.value = sharedCapacity;
+    if (sharedKeys && input) input.value = sharedKeys;
+    rebuild(false);
   });
 </script>
 
 <style>
   .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
-  .cache-request { display: grid; width: min(12rem, 100%); margin: 0 auto 1.5rem; place-items: center; gap: .25rem; padding: .8rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .sim-fields .cache-share { border-color: var(--line-strong); background: var(--surface); color: var(--text); }
+  .cache-share-status { min-height: .9rem; }
+  .cache-learning-workspace { display: grid; grid-template-columns: minmax(14rem, .78fr) minmax(18rem, 1.22fr); gap: 1rem; align-items: stretch; }
+  .cache-code-panel { overflow: hidden; border-radius: .7rem; background: #10182a; color: #dbe6f8; }
+  .cache-code-panel > div { display: flex; justify-content: space-between; gap: .75rem; padding: .65rem .8rem; border-bottom: 1px solid rgba(255,255,255,.1); font: .55rem var(--font-mono); }
+  .cache-code-panel > div span { color: #72ded2; letter-spacing: .08em; }
+  .cache-code-panel pre { overflow-x: auto; margin: 0; padding: .7rem 0; border: 0; border-radius: 0; background: transparent; font-size: .58rem; line-height: 1.8; }
+  .cache-code-panel code > span { display: block; min-width: max-content; padding: 0 .8rem; border-left: 3px solid transparent; }
+  .cache-code-panel code > span.is-active { border-left-color: #72ded2; background: rgba(114,222,210,.12); color: white; }
+  .cache-visual-panel { min-width: 0; align-self: center; }
+  .cache-request { display: grid; width: min(12rem, 100%); margin: 0 auto 1.2rem; place-items: center; gap: .25rem; padding: .8rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
   .cache-request span, .cache-order-label, .cache-slot span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .06em; }
   .cache-request strong { font-size: 1.35rem; }
   .cache-request i { padding: .2rem .4rem; border-radius: 999px; background: var(--surface-strong); color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; font-style: normal; }
@@ -138,11 +331,13 @@ import SimulatorShell from './SimulatorShell.astro';
   .cache-slot strong { overflow: hidden; max-width: 100%; padding: 0 .2rem; font-family: var(--font-mono); font-size: .78rem; text-overflow: ellipsis; }
   .cache-slot.is-hit { border-style: double; border-color: #21835f; background: color-mix(in srgb, #21835f 10%, var(--surface)); }
   .cache-slot.is-miss { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, var(--surface)); }
-  .cache-legend { display: flex; justify-content: center; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .56rem; }
+  .cache-slot[data-eviction-occurred='true'] { box-shadow: inset 0 -3px #c45b46; }
+  .cache-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .56rem; }
   .cache-legend span { display: flex; align-items: center; gap: .3rem; }
   .cache-legend i { width: .72rem; height: .72rem; border: 2px solid var(--line-strong); border-radius: .2rem; }
   .cache-legend i.is-hit { border-style: double; border-color: #21835f; }
   .cache-legend i.is-miss { border-color: var(--amber); }
   .cache-legend i.is-evicted { border-style: dashed; border-color: #c45b46; }
+  @media (max-width: 920px) { .cache-learning-workspace { grid-template-columns: 1fr; } }
   @media (max-width: 440px) { .cache-slots { gap: .25rem; } .cache-slot { min-height: 5rem; } }
 </style>

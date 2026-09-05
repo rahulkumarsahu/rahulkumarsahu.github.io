@@ -1,0 +1,80 @@
+---
+import { formatLearningDuration, getLearningEstimate } from '../lib/learningEstimates';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  label?: string;
+}
+
+const { posts, label = 'Time for available lessons' } = Astro.props;
+const estimate = getLearningEstimate(posts);
+---
+
+<aside class="learning-estimate" aria-label={label}>
+  <div class="learning-estimate-heading">
+    <span>PLAN YOUR STUDY TIME</span>
+    <strong>{label}</strong>
+  </div>
+  {estimate.lessonCount ? (
+    <>
+      <dl class="learning-estimate-facts">
+        <div class="learning-estimate-duration">
+          <dt>Reading and practice estimate</dt>
+          <dd>{formatLearningDuration(estimate.totalMinutesMin)} to {formatLearningDuration(estimate.totalMinutesMax)}</dd>
+        </div>
+        <div><dt>Concept lessons</dt><dd>{estimate.conceptCount}</dd></div>
+        <div><dt>Practice problems</dt><dd>{estimate.problemCount}</dd></div>
+        {estimate.otherCount > 0 && <div><dt>Patterns and case studies</dt><dd>{estimate.otherCount}</dd></div>}
+      </dl>
+      <p class="learning-estimate-note">
+        Covers {estimate.lessonCount} published {estimate.lessonCount === 1 ? 'lesson' : 'lessons'} only.
+        Allow extra time to repeat examples and work at your own pace.
+      </p>
+      <details class="learning-estimate-method">
+        <summary>How this time is estimated</summary>
+        <p>
+          Reading adds up to about {formatLearningDuration(estimate.readingMinutes)}, based on article length at 210 words per minute.
+          We also allow 10 to 20 minutes per concept, 15 to 30 per pattern, 25 to 45 per case study,
+          and 15 to 30, 25 to 45, or 40 to 75 per easy, medium, or hard problem.
+          This is time for a first reading and attempt. Planned lessons and further revision are not included.
+        </p>
+      </details>
+    </>
+  ) : (
+    <p class="learning-estimate-empty">Lessons are not available yet. A study estimate will appear when the first article is published.</p>
+  )}
+</aside>
+
+<style>
+  .learning-estimate {
+    margin-top: 1.25rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: .8rem;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .learning-estimate-heading { display: grid; gap: .3rem; }
+  .learning-estimate-heading > span { color: var(--text-soft); font: .62rem var(--font-mono); letter-spacing: .08em; }
+  .learning-estimate-heading > strong { font-size: .9rem; }
+  .learning-estimate-facts { display: flex; flex-wrap: wrap; gap: .85rem 1.6rem; margin: .9rem 0; }
+  .learning-estimate-facts > div { min-width: 0; }
+  .learning-estimate-facts dt { color: var(--text-soft); font-size: .75rem; }
+  .learning-estimate-facts dd { margin: .3rem 0 0; font-size: .94rem; font-weight: 700; }
+  .learning-estimate-duration dd { color: var(--indigo); }
+  .learning-estimate-note,
+  .learning-estimate-empty,
+  .learning-estimate-method p { max-width: 85ch; margin: 0; color: var(--text-soft); font-size: .78rem; line-height: 1.7; }
+  .learning-estimate-empty { margin-top: .7rem; }
+  .learning-estimate-method { margin-top: .65rem; }
+  .learning-estimate-method summary { width: fit-content; padding: .25rem 0; cursor: pointer; color: var(--text-soft); font-size: .75rem; }
+  .learning-estimate-method summary:hover { color: var(--indigo); }
+  .learning-estimate-method summary:focus-visible { outline: 3px solid var(--indigo); outline-offset: 4px; border-radius: .15rem; }
+  .learning-estimate-method p { margin-top: .35rem; }
+  @media (max-width: 480px) {
+    .learning-estimate { padding: .9rem; }
+    .learning-estimate-duration { flex-basis: 100%; }
+    .learning-estimate-facts { gap: .75rem 1.2rem; }
+  }
+</style>

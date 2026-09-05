@@ -1,0 +1,247 @@
+---
+import { getCollection } from 'astro:content';
+import { LEARNING_GOALS, resolveLearningGoal } from '../data/learningGoals';
+import { URL_SHORTENER_MILESTONES } from '../data/connectedProject';
+import { getPostSlug, getSortedPosts, getTopicForPost } from '../lib/posts';
+
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const posts = getSortedPosts(await getCollection('posts'));
+const catalog = posts.map((post) => ({
+  slug: getPostSlug(post),
+  title: post.data.title,
+  href: `/posts/${getPostSlug(post)}/`,
+  topic: getTopicForPost(post).shortTitle,
+  patterns: post.data.patterns ?? [],
+}));
+const goals = LEARNING_GOALS.map((goal) => {
+  const resolved = resolveLearningGoal(goal, posts);
+  return {
+    id: goal.id,
+    title: goal.title,
+    slugs: resolved.available.map(getPostSlug),
+    destination: goal.destination,
+  };
+});
+const milestones = URL_SHORTENER_MILESTONES.map((milestone) => ({
+  id: milestone.id,
+  title: milestone.title,
+  resources: milestone.resources.map((resource) => resource.href),
+}));
+const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<', '\\u003c');
+---
+
+<section id={compact ? 'continue-learning' : 'learning-dashboard'} class:list={['learning-dashboard', 'section-wrap', { 'learning-dashboard-compact': compact }]} data-learning-dashboard data-compact={String(compact)} hidden={compact} aria-labelledby={`learning-dashboard-${compact ? 'compact' : 'full'}-title`}>
+  <script type="application/json" data-dashboard-model set:html={modelJson} />
+  <header class="dashboard-heading">
+    <div>
+      <p class="section-index">YOUR LEARNING</p>
+      <h2 id={`learning-dashboard-${compact ? 'compact' : 'full'}-title`}>{compact ? 'Continue where you stopped.' : 'Your learning, all in one place.'}</h2>
+    </div>
+    {compact && <a href="/learning/">Open my learning <span aria-hidden="true">↗</span></a>}
+  </header>
+
+  <p class="dashboard-storage-note" data-dashboard-storage aria-live="polite">Your activity stays in this browser.</p>
+
+  <div class="dashboard-empty" data-dashboard-empty>
+    <h3>Choose a path to begin</h3>
+    <p>Your next lesson, recent articles and saved work will appear here as you use the Atlas.</p>
+    <a class="button button-primary" href="/#choose-your-goal">Choose a learning goal</a>
+  </div>
+
+  <div class="dashboard-active" data-dashboard-active hidden>
+    <section class="dashboard-continue" aria-labelledby={`dashboard-next-${compact ? 'compact' : 'full'}`}>
+      <div class="dashboard-path-copy">
+        <span>CURRENT PATH</span>
+        <h3 data-dashboard-goal>No path selected</h3>
+        <p data-dashboard-goal-progress></p>
+      </div>
+      <a class="dashboard-next" data-dashboard-next href="/topics/">
+        <span>NEXT LESSON</span>
+        <strong id={`dashboard-next-${compact ? 'compact' : 'full'}`} data-dashboard-next-title>Choose your next lesson</strong>
+        <small data-dashboard-next-topic></small>
+        <i aria-hidden="true">↗</i>
+      </a>
+    </section>
+
+    <dl class="dashboard-stats" aria-label="Learning activity summary">
+      <div><dt data-dashboard-completed-count>0</dt><dd>Completed</dd></div>
+      <div><dt data-dashboard-attempted-count>0</dt><dd>Attempted</dd></div>
+      <div><dt data-dashboard-draft-count>0</dt><dd>Code drafts</dd></div>
+      <div><dt data-dashboard-bookmark-count>0</dt><dd>Bookmarks</dd></div>
+    </dl>
+
+    <div class="dashboard-columns">
+      <section><h3>Recently opened</h3><div class="dashboard-list" data-dashboard-recent></div></section>
+      <section><h3>Saved code drafts</h3><div class="dashboard-list" data-dashboard-drafts></div></section>
+      <section><h3>Bookmarked articles</h3><div class="dashboard-list" data-dashboard-bookmarks></div></section>
+      <section><h3>Revision topics due</h3><div class="dashboard-list" data-dashboard-revisions></div></section>
+    </div>
+
+    <section class="dashboard-project">
+      <div><span>CONNECTED PROJECT</span><h3>Production URL shortener</h3><p data-dashboard-project-summary></p></div>
+      <a href="/projects/production-url-shortener/" data-dashboard-project-next>Open project milestones ↗</a>
+    </section>
+  </div>
+
+  {!compact && (
+    <div class="dashboard-management">
+      <section class="dashboard-goal-selector" aria-labelledby="dashboard-goal-selector-title">
+        <div><span>CHANGE PATH</span><h2 id="dashboard-goal-selector-title">What are you working toward?</h2></div>
+        <div>{goals.map((goal) => <button type="button" data-dashboard-goal-choice={goal.id} aria-pressed="false">{goal.title}</button>)}</div>
+      </section>
+      <details class="dashboard-reset">
+        <summary>Reset my local learning data</summary>
+        <div>
+          <p>This clears your selected path, article activity, progress, bookmarks, revision reminders, knowledge checks and project progress. Your colour theme stays unchanged.</p>
+          <label><input type="checkbox" data-reset-drafts /> Also delete saved practice code</label>
+          <div><button type="button" data-reset-confirm>Reset learning data</button><button type="button" data-reset-cancel>Cancel</button></div>
+          <p data-reset-message aria-live="polite"></p>
+        </div>
+      </details>
+    </div>
+  )}
+
+  <noscript><p class="dashboard-noscript">Enable JavaScript to view learning progress stored in this browser. All articles remain available without it.</p></noscript>
+</section>
+
+<script>
+  import { createDashboardModel } from '../lib/learningDashboard';
+  import { markReviewed, resetLearningData, setLearningGoal } from '../lib/learningStorage';
+
+  const addArticleLinks = (container: HTMLElement | null, articles: Array<{ title: string; href: string; topic?: string }>, empty: string, fragment = '') => {
+    if (!container) return;
+    container.replaceChildren();
+    if (!articles.length) {
+      const message = document.createElement('p'); message.className = 'dashboard-list-empty'; message.textContent = empty; container.append(message); return;
+    }
+    articles.slice(0, 4).forEach((article) => {
+      const link = document.createElement('a'); link.href = `${article.href}${fragment}`;
+      const title = document.createElement('strong'); title.textContent = article.title;
+      const topic = document.createElement('small'); topic.textContent = article.topic || 'Article';
+      link.append(title, topic); container.append(link);
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-learning-dashboard]').forEach((dashboard) => {
+    if (dashboard.dataset.dashboardReady === 'true') return;
+    dashboard.dataset.dashboardReady = 'true';
+    const source = dashboard.querySelector<HTMLScriptElement>('[data-dashboard-model]');
+    if (!source) return;
+    let input;
+    try { input = JSON.parse(source.textContent || '{}'); } catch { return; }
+
+    const setText = (selector: string, value: string) => { const target = dashboard.querySelector<HTMLElement>(selector); if (target) target.textContent = value; };
+    const render = () => {
+      const model = createDashboardModel(input);
+      const compact = dashboard.dataset.compact === 'true';
+      dashboard.hidden = compact && !model.hasActivity;
+      const empty = dashboard.querySelector<HTMLElement>('[data-dashboard-empty]');
+      const active = dashboard.querySelector<HTMLElement>('[data-dashboard-active]');
+      if (empty) empty.hidden = model.hasActivity;
+      if (active) active.hidden = !model.hasActivity;
+      setText('[data-dashboard-storage]', model.storageAvailable
+        ? 'Your activity stays in this browser.'
+        : 'Browser storage is unavailable. This page still works, but activity will be kept only until you leave.');
+      setText('[data-dashboard-goal]', model.currentGoal?.title ?? 'No path selected yet');
+      setText('[data-dashboard-goal-progress]', model.currentGoal
+        ? `${model.goalCompleted} of ${model.goalTotal} available lessons completed`
+        : 'Choose a goal to receive a recommended next lesson.');
+      const next = dashboard.querySelector<HTMLAnchorElement>('[data-dashboard-next]');
+      if (next) {
+        next.href = model.nextLesson?.href ?? model.currentGoal?.destination.href ?? '/#choose-your-goal';
+        setText('[data-dashboard-next-title]', model.nextLesson?.title ?? (model.currentGoal ? 'Explore the rest of this path' : 'Choose a learning goal'));
+        setText('[data-dashboard-next-topic]', model.nextLesson?.topic ?? model.currentGoal?.destination.title ?? 'Start here');
+      }
+      setText('[data-dashboard-completed-count]', String(model.completed.length));
+      setText('[data-dashboard-attempted-count]', String(model.attempted.length));
+      setText('[data-dashboard-draft-count]', String(model.drafts.length));
+      setText('[data-dashboard-bookmark-count]', String(model.bookmarks.length));
+      addArticleLinks(dashboard.querySelector('[data-dashboard-recent]'), model.recent, 'No article opened yet.');
+      addArticleLinks(dashboard.querySelector('[data-dashboard-drafts]'), model.drafts, 'No practice code saved yet.', '#practice-workspace');
+      addArticleLinks(dashboard.querySelector('[data-dashboard-bookmarks]'), model.bookmarks, 'No bookmarked articles yet.');
+
+      const revisionList = dashboard.querySelector<HTMLElement>('[data-dashboard-revisions]');
+      if (revisionList) {
+        revisionList.replaceChildren();
+        if (!model.revisions.length) {
+          const message = document.createElement('p'); message.className = 'dashboard-list-empty'; message.textContent = 'Nothing is due for revision.'; revisionList.append(message);
+        } else {
+          model.revisions.slice(0, 4).forEach((article) => {
+            const row = document.createElement('div'); row.className = 'dashboard-revision-row';
+            const link = document.createElement('a'); link.href = article.href; link.textContent = article.title;
+            const button = document.createElement('button'); button.type = 'button'; button.textContent = 'Reviewed'; button.setAttribute('aria-label', `Mark ${article.title} as reviewed`);
+            button.addEventListener('click', () => markReviewed(article.slug));
+            row.append(link, button); revisionList.append(row);
+          });
+        }
+      }
+      setText('[data-dashboard-project-summary]', `${model.project.complete} of ${model.project.total} milestones complete${model.project.inProgress ? ` · ${model.project.inProgress} in progress` : ''}.`);
+      const projectNext = dashboard.querySelector<HTMLAnchorElement>('[data-dashboard-project-next]');
+      if (projectNext) projectNext.textContent = model.project.next ? `Continue: ${model.project.next.title} ↗` : 'Review the completed project ↗';
+      dashboard.querySelectorAll<HTMLButtonElement>('[data-dashboard-goal-choice]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.dashboardGoalChoice === model.currentGoal?.id));
+      });
+    };
+
+    dashboard.querySelectorAll<HTMLButtonElement>('[data-dashboard-goal-choice]').forEach((button) => button.addEventListener('click', () => {
+      const goal = button.dataset.dashboardGoalChoice;
+      if (goal) setLearningGoal(goal);
+    }));
+    dashboard.querySelector<HTMLButtonElement>('[data-reset-confirm]')?.addEventListener('click', () => {
+      const includeDrafts = dashboard.querySelector<HTMLInputElement>('[data-reset-drafts]')?.checked ?? false;
+      const persisted = resetLearningData(includeDrafts);
+      setText('[data-reset-message]', persisted ? 'Your local learning data has been reset.' : 'Learning data was cleared for this page. Browser storage is unavailable.');
+    });
+    dashboard.querySelector<HTMLButtonElement>('[data-reset-cancel]')?.addEventListener('click', () => {
+      const details = dashboard.querySelector<HTMLDetailsElement>('.dashboard-reset'); if (details) details.open = false;
+    });
+    render();
+    window.addEventListener('pageshow', render);
+    window.addEventListener('storage', render);
+    window.addEventListener('atlas-learning-state-changed', render);
+  });
+</script>
+
+<style>
+  .learning-dashboard { padding-block: 3.5rem 1rem; }
+  .learning-dashboard-compact { padding-top: 2.4rem; }
+  .learning-dashboard-compact .dashboard-columns,
+  .learning-dashboard-compact .dashboard-project { display: none; }
+  .dashboard-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .dashboard-heading h2 { margin: .35rem 0 0; font-size: clamp(1.6rem, 3vw, 2.35rem); }
+  .dashboard-heading > a { font-size: .85rem; text-decoration: underline; text-underline-offset: .2em; }
+  .dashboard-storage-note { margin: 0 0 1rem; color: var(--text-soft); font-size: .78rem; }
+  .dashboard-empty { padding: 1.4rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); }
+  .dashboard-empty h3 { margin: 0; } .dashboard-empty p { color: var(--text-soft); }
+  .dashboard-continue { display: grid; grid-template-columns: minmax(14rem, .8fr) minmax(18rem, 1.2fr); border: 1px solid var(--line-strong); border-radius: 1rem; overflow: hidden; background: var(--surface); }
+  .dashboard-path-copy, .dashboard-next { padding: 1.2rem; }
+  .dashboard-path-copy span, .dashboard-next > span, .dashboard-project span, .dashboard-goal-selector span { color: var(--text-soft); font: .6rem var(--font-mono); letter-spacing: .09em; }
+  .dashboard-path-copy h3 { margin: .4rem 0; font-size: 1.15rem; } .dashboard-path-copy p { margin: 0; color: var(--text-soft); font-size: .8rem; }
+  .dashboard-next { position: relative; display: grid; gap: .25rem; border-left: 1px solid var(--line); background: color-mix(in srgb, var(--indigo) 9%, var(--surface-strong)); }
+  .dashboard-next strong { padding-right: 2rem; font-size: 1rem; } .dashboard-next small { color: var(--text-soft); } .dashboard-next i { position: absolute; right: 1.1rem; top: 50%; color: var(--indigo); font-size: 1.4rem; font-style: normal; }
+  .dashboard-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: .8rem 0; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .dashboard-stats div { padding: .75rem 1rem; border-right: 1px solid var(--line); } .dashboard-stats div:last-child { border: 0; }
+  .dashboard-stats dt { font-size: 1.15rem; font-weight: 700; } .dashboard-stats dd { margin: 0; color: var(--text-soft); font-size: .7rem; }
+  .dashboard-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+  .dashboard-columns > section { min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .dashboard-columns h3 { margin: 0 0 .6rem; font-size: .82rem; }
+  .dashboard-list { display: grid; gap: .45rem; }
+  .dashboard-list :global(a) { display: grid; gap: .12rem; color: var(--text); font-size: .72rem; text-decoration: underline; text-underline-offset: .18em; }
+  .dashboard-list :global(small), .dashboard-list :global(.dashboard-list-empty) { margin: 0; color: var(--text-soft); font-size: .64rem; }
+  .dashboard-list :global(.dashboard-revision-row) { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .dashboard-list :global(.dashboard-revision-row button) { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-strong); color: var(--text); font-size: .6rem; cursor: pointer; }
+  .dashboard-project { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .8rem; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
+  .dashboard-project h3 { margin: .25rem 0; } .dashboard-project p { margin: 0; color: var(--text-soft); font-size: .75rem; } .dashboard-project a { font-size: .75rem; text-decoration: underline; }
+  .dashboard-management { display: grid; gap: 1rem; margin-top: 2rem; }
+  .dashboard-goal-selector { display: grid; grid-template-columns: minmax(12rem, .6fr) minmax(18rem, 1.4fr); gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; }
+  .dashboard-goal-selector h2 { margin: .3rem 0 0; font-size: 1.1rem; } .dashboard-goal-selector > div:last-child { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+  .dashboard-goal-selector button { padding: .65rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
+  .dashboard-goal-selector button[aria-pressed='true'] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, var(--surface)); }
+  .dashboard-reset { border: 1px solid var(--line); border-radius: .7rem; padding: .8rem 1rem; } .dashboard-reset summary { cursor: pointer; font-size: .8rem; }
+  .dashboard-reset > div { max-width: 48rem; padding-top: .8rem; color: var(--text-soft); font-size: .75rem; } .dashboard-reset label { display: block; margin-block: .7rem; }
+  .dashboard-reset button { margin: 0 .4rem .4rem 0; padding: .5rem .65rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--text); cursor: pointer; }
+  .dashboard-reset [data-reset-confirm] { border-color: var(--rose); }
+  @media (max-width: 680px) { .dashboard-heading, .dashboard-project { align-items: start; flex-direction: column; } .dashboard-continue, .dashboard-goal-selector { grid-template-columns: 1fr; } .dashboard-next { border-top: 1px solid var(--line); border-left: 0; } .dashboard-columns { grid-template-columns: 1fr; } .dashboard-goal-selector > div:last-child { grid-template-columns: 1fr; } }
+  @media (max-width: 430px) { .dashboard-stats { grid-template-columns: repeat(2, 1fr); } .dashboard-stats div:nth-child(2) { border-right: 0; } .dashboard-stats div:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
+</style>

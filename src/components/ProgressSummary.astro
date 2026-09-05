@@ -19,24 +19,15 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
     <div><dt data-summary-bookmarks>0</dt><dd>Bookmarked</dd></div>
   </dl>
   <small>Saved only in this browser</small>
+  <a href="/learning/">My learning ↗</a>
 </aside>
 
 <script>
-  const SUMMARY_PROGRESS_KEY = 'atlas-progress:v1';
-  const SUMMARY_BOOKMARK_KEY = 'atlas-bookmarks:v1';
-
-  const readSummaryRecord = (key: string): Record<string, string | boolean> => {
-    try {
-      const value = JSON.parse(window.localStorage.getItem(key) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    } catch {
-      return {};
-    }
-  };
+  import { KEYS, readRecord } from '../lib/learningStorage';
 
   const updateProgressSummaries = () => {
-    const progress = readSummaryRecord(SUMMARY_PROGRESS_KEY);
-    const bookmarks = readSummaryRecord(SUMMARY_BOOKMARK_KEY);
+    const progress = readRecord<string>(KEYS.progress);
+    const bookmarks = readRecord<boolean>(KEYS.bookmarks);
 
     document.querySelectorAll<HTMLElement>('[data-progress-summary]').forEach((summary) => {
       let slugs: string[] = [];
@@ -61,13 +52,14 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
 
   updateProgressSummaries();
   window.addEventListener('storage', updateProgressSummaries);
+  window.addEventListener('pageshow', updateProgressSummaries);
   window.addEventListener('atlas-learning-state-changed', updateProgressSummaries);
 </script>
 
 <style>
   .progress-summary {
     display: grid;
-    grid-template-columns: minmax(12rem, 1.4fr) minmax(18rem, 2fr) auto;
+    grid-template-columns: minmax(12rem, 1.4fr) minmax(18rem, 2fr) auto auto;
     align-items: center;
     gap: 1rem;
     margin-top: 1.1rem;
@@ -92,6 +84,7 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
 
   .progress-summary > div:first-child span { color: var(--cyan); }
   .progress-summary > div:first-child strong { font-size: .78rem; }
+  .progress-summary > a { font-size: .62rem; text-decoration: underline; text-underline-offset: .18em; }
 
   .progress-summary dl {
     display: grid;

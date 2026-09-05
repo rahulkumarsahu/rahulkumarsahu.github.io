@@ -1,6 +1,7 @@
 ---
 title: Array Fundamentals in Java
 date: 2026-08-01 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Build a clear mental model for array indexing, traversal, updates, and common problem solving patterns.
 categories: [Data Structures and Algorithms]
 tags: [dsa, arrays, java, fundamentals]

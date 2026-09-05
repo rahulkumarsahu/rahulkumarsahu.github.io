@@ -1,6 +1,7 @@
 ---
 title: Back of the Envelope Estimation
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Estimate traffic, storage, bandwidth, and concurrency with simple numbers that guide design choices.
 categories: [System Design]
 tags: [system-design, estimation, capacity-planning]

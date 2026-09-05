@@ -5,6 +5,8 @@ import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ArticleLearningControls from '../components/ArticleLearningControls.astro';
 import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
+import ArticleTrustPanel from '../components/ArticleTrustPanel.astro';
+import ArticleFeedback from '../components/ArticleFeedback.astro';
 import ApproachComparison from '../components/ApproachComparison.astro';
 import EngineeringConnection from '../components/EngineeringConnection.astro';
 import JDoodlePractice from '../components/JDoodlePractice.astro';
@@ -14,6 +16,7 @@ import PostCard from '../components/PostCard.astro';
 import PostBanner from '../components/PostBanner.astro';
 import RecursionCallStack from '../components/RecursionCallStack.astro';
 import SubsetBacktracking from '../components/SubsetBacktracking.astro';
+import SystemDesignCaseStudyOutline from '../components/SystemDesignCaseStudyOutline.astro';
 import { SITE } from '../data/site';
 import { ENGINEERING_CONNECTIONS } from '../data/engineeringConnections';
 import { ARTICLE_LEARNING_LINKS } from '../data/articleLearningLinks';
@@ -55,6 +58,7 @@ const interactive = post.data.interactive
 const practiceProblem = getPracticeProblem(postSlug);
 const isSubsetsPractice = postSlug === 'subsets-in-java';
 const isMoveZeroesPractice = postSlug === 'move-zeroes-to-end';
+const isSystemDesignCaseStudy = topic.slug === 'system-design' && post.data.contentType === 'case-study';
 const engineeringConnection = ENGINEERING_CONNECTIONS[postSlug];
 const learningLinks = ARTICLE_LEARNING_LINKS[postSlug];
 const knowledgeQuestions = KNOWLEDGE_CHECKS[postSlug];
@@ -142,6 +146,7 @@ const jsonLd = {
         </div>
         <PostBanner {post} variant="hero" />
         <ArticleLearningControls {post} sectionLabel={parentLabel} />
+        <ArticleTrustPanel {post} />
       </header>
 
       <div class="article-divider">
@@ -151,6 +156,7 @@ const jsonLd = {
 
       {hasContent ? (
         <div class="article-content">
+          {isSystemDesignCaseStudy && <SystemDesignCaseStudyOutline />}
           {practiceProblem && <JDoodlePractice problem={practiceProblem} />}
           {practiceProblem ? (
             <>
@@ -194,6 +200,8 @@ const jsonLd = {
           <a class="button button-secondary" href={`/topics/${topic.slug}/`}>Explore {topic.shortTitle}</a>
         </div>
       )}
+
+      <ArticleFeedback {post} />
 
       <footer class="article-end">
         <div>

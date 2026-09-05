@@ -3,12 +3,15 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ConnectedProjectCard from '../../components/ConnectedProjectCard.astro';
+import LearningEstimate from '../../components/LearningEstimate.astro';
+import LearningGoals from '../../components/LearningGoals.astro';
 import PostCard from '../../components/PostCard.astro';
 import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { DSA_SECTIONS, getLearningPath } from '../../data/learningPaths';
+import { DSA_STARTER_SLUGS, LEARNING_GOALS } from '../../data/learningGoals';
 import { TOPICS } from '../../data/site';
 import { getPostSlug, getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
 
@@ -26,15 +29,8 @@ const isDsa = topic.slug === 'dsa';
 const isNotes = topic.slug === 'engineering-notes';
 const curriculum = getLearningPath(topic.slug);
 const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
-const startHereSlugs = [
-  'array-fundamentals',
-  'largest-element-in-array',
-  'check-array-sorted',
-  'move-zeroes-to-end',
-  'recursion-in-java-beginners-guide',
-  'subsets-in-java',
-];
-const startHerePosts = startHereSlugs
+const hasGoal = LEARNING_GOALS.some((goal) => goal.topics.includes(topic.slug));
+const startHerePosts = DSA_STARTER_SLUGS
   .map((slug) => allPosts.find((post) => !post.data.draft && getPostSlug(post) === slug))
   .filter((post) => Boolean(post));
 const dsaDirectory = DSA_SECTIONS.map((section) => ({
@@ -42,6 +38,19 @@ const dsaDirectory = DSA_SECTIONS.map((section) => ({
   posts: getPostsForSeries(allPosts, section.slug),
 }));
 const unpublishedDsaSections = dsaDirectory.filter((item) => item.posts.length === 0);
+// Keep each existing group anchor, but present all published subsections before the plan.
+const curriculumGroups = curriculum?.groups.map((group) => ({
+  group,
+  sections: group.sections.map((section) => ({ section, posts: getPostsForLearningSection(allPosts, section.slug) })),
+})) ?? [];
+const curriculumBands = [
+  { available: true, label: 'PUBLISHED AND AVAILABLE', description: 'Open a section with lessons you can read now.' },
+  { available: false, label: 'PLANNED FOR LATER', description: 'These sections outline future coverage. Articles have not been published yet.' },
+].map((band) => ({ ...band, groups: curriculumGroups.map(({ group, sections }) => ({
+  group,
+  id: !band.available && sections.some((item) => item.posts.length > 0) ? `${group.slug}-planned` : group.slug,
+  sections: sections.filter((item) => (item.posts.length > 0) === band.available),
+})).filter((item) => item.sections.length > 0) }));
 const dsaDirectoryGroups = [
   {
     key: 'available',
@@ -86,11 +95,14 @@ const dsaDirectoryGroups = [
     />
     <div class="banner-page-intro">
       <p>{topic.description}</p>
-      <a class="button button-primary" href={isDsa ? '#start-here' : '#curriculum'}>
-        {isDsa ? 'Start the beginner path' : isNotes ? 'Browse note collections' : 'Browse sections'}
+      <a class="button button-primary" href={hasGoal ? '#choose-your-goal' : '#curriculum'}>
+        {hasGoal ? 'Find your first lesson' : isNotes ? 'Browse note collections' : 'Browse sections'}
       </a>
     </div>
+    <LearningEstimate {posts} label={`Time for available ${topic.shortTitle} lessons`} />
   </section>
+
+  <LearningGoals posts={allPosts} topic={topic.slug} />
 
   {isDsa ? (
     <>
@@ -173,6 +185,14 @@ const dsaDirectoryGroups = [
       {['java', 'lld', 'system-design', 'cloud-native'].includes(topic.slug) && (
         <section class="topic-connected-project section-wrap"><ConnectedProjectCard compact /></section>
       )}
+      {posts.length > 0 && (
+        <section class="topic-posts topic-posts-curriculum section-wrap">
+          <div class="section-heading section-heading-notes">
+            <div><p class="section-index">AVAILABLE NOW / {String(posts.length).padStart(2, '0')}</p><h2>Articles you can read today.</h2></div>
+          </div>
+          <div class="post-grid">{posts.map((post) => <PostCard {post} />)}</div>
+        </section>
+      )}
       <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
         <div class="section-heading">
           <div>
@@ -192,16 +212,18 @@ const dsaDirectoryGroups = [
         />
 
         <div class="curriculum-groups" id="curriculum-directory">
-          {curriculum.groups.map((group) => (
-            <section class="curriculum-group" id={group.slug} data-filter-group>
+          {curriculumBands.map((band) => band.groups.length > 0 && (
+            <section class:list={['curriculum-availability-band', { 'curriculum-future-band': !band.available }]} data-filter-group>
+              <div class="curriculum-band-heading"><h3>{band.label}</h3><p>{band.description}</p></div>
+              {band.groups.map(({ group, id, sections }) => (
+            <section class="curriculum-group" id={id} data-filter-group>
               <div class="curriculum-group-heading">
                 <span>{group.number}</span>
                 <div><p>{group.title}</p><small>{group.description}</small></div>
-                <i>{String(group.sections.length).padStart(2, '0')} SUBSECTIONS</i>
+                <i>{String(sections.length).padStart(2, '0')} SUBSECTIONS</i>
               </div>
               <div class="topic-cover-grid banner-subsection-grid">
-                {group.sections.map((section) => {
-                  const sectionPosts = getPostsForLearningSection(allPosts, section.slug);
+                {sections.map(({ section, posts: sectionPosts }) => {
                   return (
                     <TopicCard
                       topic={topic.slug}
@@ -218,18 +240,12 @@ const dsaDirectoryGroups = [
                 })}
               </div>
             </section>
+              ))}
+            </section>
           ))}
         </div>
       </section>
 
-      {posts.length > 0 && (
-        <section class="topic-posts topic-posts-curriculum section-wrap">
-          <div class="section-heading section-heading-notes">
-            <div><p class="section-index">AVAILABLE NOW / {String(posts.length).padStart(2, '0')}</p><h2>Start with these field notes.</h2></div>
-          </div>
-          <div class="post-grid">{posts.map((post) => <PostCard {post} />)}</div>
-        </section>
-      )}
     </>
   ) : null}
 
@@ -266,6 +282,11 @@ const dsaDirectoryGroups = [
 </BaseLayout>
 
 <style>
+  .curriculum-availability-band { display: grid; gap: 2rem; }
+  .curriculum-band-heading h3 { margin: 0; color: var(--amber); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .06em; }
+  .curriculum-band-heading p { margin: .4rem 0 0; color: var(--text-soft); font-size: .9rem; }
+  .curriculum-future-band { border-top: 1px solid var(--line); padding-top: 2rem; }
+  .curriculum-future-band :global(.topic-cover-card) { background: var(--bg-soft); }
   .dsa-start-here { padding-top: 4.5rem; }
   .dsa-learning-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding-top: 1rem; }
   .dsa-learning-tools a { display: grid; gap: .3rem; padding: .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--text); }

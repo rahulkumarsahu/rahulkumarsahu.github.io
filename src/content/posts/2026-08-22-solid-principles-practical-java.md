@@ -1,6 +1,7 @@
 ---
 title: SOLID Principles in Practical Java
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Use SOLID as a set of design questions instead of a list of definitions to memorize.
 categories: [Low Level Design]
 tags: [lld, solid, java, object-oriented-design]

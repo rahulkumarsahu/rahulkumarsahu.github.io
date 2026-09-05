@@ -1,7 +1,6 @@
 ---
 import type { Post } from '../lib/posts';
 import { estimateReadTime, formatDate, getPostSlug, getTopicForPost } from '../lib/posts';
-import { SITE } from '../data/site';
 
 interface Props {
   post: Post;
@@ -11,9 +10,7 @@ interface Props {
 const { post, sectionLabel } = Astro.props;
 const slug = getPostSlug(post);
 const topic = getTopicForPost(post);
-const reviewedOn = post.data.lastReviewed ?? post.data.updated ?? post.data.date;
-const reportSubject = encodeURIComponent(`Correction for: ${post.data.title}`);
-const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWhat should be corrected?\n`);
+const reviewedOn = post.data.lastReviewed;
 ---
 
 <section class="article-learning-controls" data-learning-controls data-post-slug={slug} aria-labelledby="article-details-title">
@@ -31,7 +28,7 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWh
     <div><dt>Section</dt><dd>{sectionLabel}</dd></div>
     <div><dt>Reading time</dt><dd>{estimateReadTime(post)} min</dd></div>
     {post.data.javaVersion && <div><dt>Java</dt><dd>{post.data.javaVersion}</dd></div>}
-    <div><dt>Last reviewed</dt><dd>{formatDate(reviewedOn)}</dd></div>
+    <div><dt>Last reviewed</dt><dd>{reviewedOn ? formatDate(reviewedOn) : 'Not recorded'}</dd></div>
   </dl>
 
   <div class="article-learning-actions">
@@ -48,32 +45,15 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWh
       <span aria-hidden="true" data-bookmark-icon>☆</span>
       <span data-bookmark-label>Bookmark</span>
     </button>
-    <a href={`mailto:${SITE.email}?subject=${reportSubject}&body=${reportBody}`}>Report a mistake</a>
+    <a href="/learning/">My learning</a>
+    <a href="#article-trust">Trust &amp; sources</a>
   </div>
 </section>
 
 <script>
-  const PROGRESS_STORAGE_KEY = 'atlas-progress:v1';
-  const BOOKMARK_STORAGE_KEY = 'atlas-bookmarks:v1';
+  import { KEYS, readRecord, writeRecord, recordArticleVisit, setArticleProgress, storageIsAvailable } from '../lib/learningStorage';
+
   const VALID_PROGRESS = new Set(['not-started', 'attempted', 'solved', 'revisit']);
-
-  const readLearningRecord = (key: string): Record<string, string | boolean> => {
-    try {
-      const value = JSON.parse(window.localStorage.getItem(key) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    } catch {
-      return {};
-    }
-  };
-
-  const writeLearningRecord = (key: string, value: Record<string, string | boolean>) => {
-    try {
-      window.localStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch {
-      return false;
-    }
-  };
 
   document.querySelectorAll<HTMLElement>('[data-learning-controls]').forEach((controls) => {
     if (controls.dataset.learningReady === 'true') return;
@@ -87,37 +67,39 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWh
     const message = controls.querySelector<HTMLElement>('[data-learning-message]');
     if (!slug || !progressSelect || !bookmarkButton) return;
 
-    const progress = readLearningRecord(PROGRESS_STORAGE_KEY);
-    const savedProgress = progress[slug];
-    if (typeof savedProgress === 'string' && VALID_PROGRESS.has(savedProgress)) {
-      progressSelect.value = savedProgress;
-    }
-
     const renderBookmark = (bookmarked: boolean) => {
       bookmarkButton.setAttribute('aria-pressed', String(bookmarked));
       if (bookmarkIcon) bookmarkIcon.textContent = bookmarked ? '★' : '☆';
       if (bookmarkLabel) bookmarkLabel.textContent = bookmarked ? 'Bookmarked' : 'Bookmark';
     };
-    renderBookmark(readLearningRecord(BOOKMARK_STORAGE_KEY)[slug] === true);
+    const render = () => {
+      const savedProgress = readRecord(KEYS.progress)[slug];
+      progressSelect.value = typeof savedProgress === 'string' && VALID_PROGRESS.has(savedProgress) ? savedProgress : 'not-started';
+      renderBookmark(readRecord(KEYS.bookmarks)[slug] === true);
+    };
 
     const announce = (text: string, stored: boolean) => {
-      if (message) message.textContent = stored ? text : 'Browser storage is unavailable. The page still works, but this change was not saved.';
-      window.dispatchEvent(new CustomEvent('atlas-learning-state-changed'));
+      if (message) message.textContent = stored ? text : `${text} Kept for this page only because browser storage is unavailable.`;
     };
 
     progressSelect.addEventListener('change', () => {
-      const nextProgress = readLearningRecord(PROGRESS_STORAGE_KEY);
-      nextProgress[slug] = progressSelect.value;
-      announce(`Progress updated to ${progressSelect.options[progressSelect.selectedIndex].text}.`, writeLearningRecord(PROGRESS_STORAGE_KEY, nextProgress));
+      const selectedLabel = progressSelect.options[progressSelect.selectedIndex].text;
+      announce(`Progress updated to ${selectedLabel}.`, setArticleProgress(slug, progressSelect.value));
     });
 
     bookmarkButton.addEventListener('click', () => {
-      const bookmarks = readLearningRecord(BOOKMARK_STORAGE_KEY);
+      const bookmarks = readRecord(KEYS.bookmarks);
       const bookmarked = bookmarks[slug] !== true;
       bookmarks[slug] = bookmarked;
-      renderBookmark(bookmarked);
-      announce(bookmarked ? 'Article bookmarked.' : 'Bookmark removed.', writeLearningRecord(BOOKMARK_STORAGE_KEY, bookmarks));
+      announce(bookmarked ? 'Article bookmarked.' : 'Bookmark removed.', writeRecord(KEYS.bookmarks, bookmarks));
     });
+
+    recordArticleVisit(slug);
+    render();
+    if (message && !storageIsAvailable()) message.textContent = 'Browser storage is unavailable. Progress works here but will not survive leaving this page.';
+    window.addEventListener('pageshow', render);
+    window.addEventListener('storage', render);
+    window.addEventListener('atlas-learning-state-changed', render);
   });
 </script>
 
@@ -192,6 +174,7 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWh
 
   .article-learning-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: end;
     gap: .6rem;
     padding: .8rem 1rem;
@@ -235,7 +218,6 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nWh
   .article-learning-actions a {
     display: inline-flex;
     align-items: center;
-    margin-left: auto;
     text-decoration: none;
   }
 

@@ -10,6 +10,17 @@ const posts = defineCollection({
     updated: z.coerce.date().optional(),
     lastReviewed: z.coerce.date().optional(),
     javaVersion: z.string().optional(),
+    technologyVersions: z.array(z.string()).default([]),
+    officialReferences: z.array(z.object({
+      title: z.string(),
+      url: z.string().url(),
+    })).default([]),
+    sourceCodeUrl: z.string().url().optional(),
+    knownLimitations: z.array(z.string()).default([]),
+    corrections: z.array(z.object({
+      date: z.coerce.date(),
+      note: z.string(),
+    })).default([]),
     description: z.string().default(''),
     categories: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),

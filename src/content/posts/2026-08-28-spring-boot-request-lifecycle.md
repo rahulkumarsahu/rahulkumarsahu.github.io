@@ -1,6 +1,7 @@
 ---
 title: How a Spring Boot Request Flows Through an Application
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Follow an HTTP request from the controller through validation, business logic, persistence, and the response.
 categories: [Java and Spring Boot]
 tags: [java, spring-boot, rest-api, backend]

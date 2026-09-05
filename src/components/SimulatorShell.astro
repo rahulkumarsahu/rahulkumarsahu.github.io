@@ -1,8 +1,25 @@
 ---
-const { id, eyebrow, title, description } = Astro.props as { id: string; eyebrow: string; title: string; description: string };
+import ActiveSimulatorControls from './ActiveSimulatorControls.astro';
+import SimulatorPrediction from './SimulatorPrediction.astro';
+
+const { id, eyebrow, title, description, activeLearning = false } = Astro.props as {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  activeLearning?: boolean;
+};
 ---
 
-<section class="simulator-shell" id={id} data-simulator-root aria-labelledby={`${id}-title`}>
+<section
+  class:list={['simulator-shell', { 'simulator-shell-active': activeLearning }]}
+  id={id}
+  data-simulator-root
+  aria-labelledby={`${id}-title`}
+  aria-describedby={activeLearning ? `${id}-shortcuts` : undefined}
+  aria-keyshortcuts={activeLearning ? 'ArrowLeft ArrowRight Home End Space R' : undefined}
+  tabindex={activeLearning ? '0' : undefined}
+>
   <header class="simulator-header">
     <div><span>{eyebrow}</span><h2 id={`${id}-title`}>{title}</h2></div>
     <p>{description}</p>
@@ -13,14 +30,21 @@ const { id, eyebrow, title, description } = Astro.props as { id: string; eyebrow
     <div class="simulator-visual"><slot name="visual" /></div>
     <aside class="simulator-state" aria-live="polite"><slot name="state" /></aside>
   </div>
-  <div class="simulator-controls" aria-label="Simulation controls">
-    <button type="button" data-sim-action="previous">Previous</button>
-    <button type="button" data-sim-action="next">Next</button>
-    <button type="button" data-sim-action="play">Play</button>
-    <button type="button" data-sim-action="pause" disabled>Pause</button>
-    <button type="button" data-sim-action="reset">Reset</button>
-    <span data-sim-position>Step 0 of 0</span>
-  </div>
+  {activeLearning ? (
+    <>
+      <SimulatorPrediction {id} />
+      <ActiveSimulatorControls {id} />
+    </>
+  ) : (
+    <div class="simulator-controls" aria-label="Simulation controls">
+      <button type="button" data-sim-action="previous">Previous</button>
+      <button type="button" data-sim-action="next">Next</button>
+      <button type="button" data-sim-action="play">Play</button>
+      <button type="button" data-sim-action="pause" disabled>Pause</button>
+      <button type="button" data-sim-action="reset">Reset</button>
+      <span data-sim-position>Step 0 of 0</span>
+    </div>
+  )}
 </section>
 
 <style>
@@ -48,6 +72,7 @@ const { id, eyebrow, title, description } = Astro.props as { id: string; eyebrow
   .simulator-controls button:disabled { opacity: .45; cursor: not-allowed; }
   .simulator-controls span { margin-left: auto; color: var(--text-faint); font-family: var(--font-mono); font-size: .56rem; }
   .simulator-shell :global(:is(button, input, select):focus-visible) { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .simulator-shell-active:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
   @media (max-width: 760px) { .simulator-header { align-items: flex-start; flex-direction: column; } .simulator-header p { max-width: none; text-align: left; } .simulator-grid { grid-template-columns: 1fr; } .simulator-visual { min-height: 18rem; border-right: 0; border-bottom: 1px solid var(--line); } }
   @media (max-width: 440px) { .simulator-controls button { flex: 1 1 calc(33% - .45rem); } .simulator-controls span { width: 100%; margin-left: 0; text-align: center; } }
   @media (prefers-reduced-motion: reduce) { .simulator-shell * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

@@ -1,6 +1,7 @@
 ---
 title: "Stop Sending Entire CI/CD Logs to LLMs: Building an Intelligent Failure-Aware Log Reduction Pipeline"
 date: 2026-08-22 16:45:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Reduce noisy pipeline logs into a small, safe, failure focused context before asking an LLM to explain what went wrong.
 categories: [Engineering Notes]
 tags: [cicd, llm, developer-tooling, observability, logs]

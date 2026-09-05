@@ -2,6 +2,7 @@
 title: System Design Learning Path
 date: 2024-01-12 03:00:00 +0530
 updated: 2026-08-22 12:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: A practical route through requirements, estimation, data, communication, reliability, and system design case studies.
 categories: [System Design]
 tags: [system-design, distributed-systems, scalability, roadmap]

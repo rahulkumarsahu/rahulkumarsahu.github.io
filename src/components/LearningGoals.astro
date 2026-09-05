@@ -1,0 +1,153 @@
+---
+import { LEARNING_GOALS, resolveLearningGoal } from '../data/learningGoals';
+import { estimateReadTime, getPostSlug, type Post } from '../lib/posts';
+import { formatLearningDuration, getLearningEstimate } from '../lib/learningEstimates';
+
+interface Props {
+  posts: Post[];
+  topic?: string;
+  id?: string;
+}
+
+const { posts, topic, id = 'choose-your-goal' } = Astro.props;
+const goals = LEARNING_GOALS
+  .filter((goal) => !topic || goal.topics.includes(topic))
+  .map((goal) => resolveLearningGoal(goal, posts))
+  .sort((a, b) => Number(b.available.length > 0) - Number(a.available.length > 0));
+---
+
+{goals.length > 0 && (
+  <section class="learning-goals section-wrap" id={id} aria-labelledby={`${id}-title`}>
+    <div class="goal-heading">
+      <div><p class="section-index">START WITH A GOAL</p><h2 id={`${id}-title`}>{topic ? 'A place to begin.' : 'What do you want to learn?'}</h2></div>
+      <p>Pick a goal and open the first lesson. Each route lists what you can learn now and what is still being written. <a href="/learning/">Open my learning dashboard</a>.</p>
+    </div>
+    {goals.length > 1 && (
+      <nav class="goal-shortcuts" aria-label="Choose a learning goal">
+        {goals.map(({ goal }) => (
+          <a href={`#${id}-${goal.id}`}><span>{goal.title}</span><span aria-hidden="true">↓</span></a>
+        ))}
+      </nav>
+    )}
+    <div class:list={['goal-grid', { 'goal-grid-single': goals.length === 1 }]}>
+      {goals.map(({ goal, available, planned, first }, index) => {
+        const estimate = getLearningEstimate(available);
+        return (
+          <article class="goal-card" id={`${id}-${goal.id}`} style={`--goal-accent: var(--${goal.accent})`} aria-labelledby={`${id}-${goal.id}-title`} data-learning-goal={goal.id}>
+            <div class="goal-card-heading">
+              <span class="goal-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <div><h3 id={`${id}-${goal.id}-title`}>{goal.title}</h3><p>{goal.introduction}</p></div>
+            </div>
+            <dl class="goal-facts">
+              <div><dt>Who it is for</dt><dd>{goal.audience}</dd></div>
+              <div><dt>Before you begin</dt><dd>{goal.prerequisites}</dd></div>
+              <div><dt>With the available lessons, you can</dt><dd>{goal.outcome}</dd></div>
+            </dl>
+            <div class="goal-availability">
+              <strong>{available.length} available {available.length === 1 ? 'lesson' : 'lessons'}</strong>
+              <span>{planned.length} planned</span>
+            </div>
+            <p class="goal-time">
+              {available.length ? (
+                <><strong>{formatLearningDuration(estimate.totalMinutesMin)} to {formatLearningDuration(estimate.totalMinutesMax)}</strong> to read and practise the available lessons. Allow more time for revision. Planned lessons and project implementation are not included.</>
+              ) : 'A completion estimate will appear when lessons are published.'}
+            </p>
+            {first && (
+              <a class="goal-start" href={`/posts/${getPostSlug(first)}/`} data-learning-goal-link={goal.id}>
+                <span><small>START WITH THIS LESSON</small><strong>{first.data.title}</strong></span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            )}
+            <details class="goal-outline">
+              <summary>See lesson order and what is planned</summary>
+              <div class="goal-outline-content">
+                <h4>Published and available</h4>
+                {available.length ? (
+                  <ol class="goal-lessons">
+                    {available.map((post) => (
+                      <li><a href={`/posts/${getPostSlug(post)}/`} data-learning-goal-link={goal.id}>{post.data.title}</a><small>{estimateReadTime(post)} min read</small></li>
+                    ))}
+                  </ol>
+                ) : <p>The first lesson is being prepared.</p>}
+                {planned.length > 0 && (
+                  <div class="goal-planned">
+                    <h4>Planned for later</h4>
+                    <p>These lessons are not available yet. There is no fixed publication date.</p>
+                    <ul>{planned.map((lesson) => <li>{lesson.title}</li>)}</ul>
+                  </div>
+                )}
+                <p class="goal-estimate-note">Estimate: reading at about 210 words per minute, plus time to work through examples or attempt problems. It is a guide for your study session, not a deadline.</p>
+              </div>
+            </details>
+            <a class="goal-destination" href={goal.destination.href}>{goal.destination.title}<span aria-hidden="true"> →</span></a>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<script>
+  import { setLearningGoal } from '../lib/learningStorage';
+  document.querySelectorAll<HTMLElement>('[data-learning-goal-link]').forEach((link) => {
+    if (link.dataset.goalTrackingReady === 'true') return;
+    link.dataset.goalTrackingReady = 'true';
+    link.addEventListener('click', () => {
+      const goal = link.dataset.learningGoalLink;
+      if (goal) setLearningGoal(goal);
+    });
+  });
+</script>
+
+<style>
+  .learning-goals { padding-block: 3.5rem 1rem; scroll-margin-top: 1rem; }
+  .goal-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .goal-heading h2 { margin: .4rem 0 0; font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; }
+  .goal-heading > p { max-width: 27rem; margin: 0; color: var(--text-soft); font-size: .95rem; }
+  .goal-heading > p a { color: var(--text); text-decoration: underline; text-underline-offset: .18em; }
+  .goal-shortcuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; margin-bottom: 1.25rem; }
+  .goal-shortcuts a { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 3.5rem; padding: .7rem .85rem; border: 1px solid var(--line-strong); border-radius: .65rem; color: var(--text); background: var(--surface); font-size: .85rem; line-height: 1.4; }
+  .goal-shortcuts a:hover { border-color: var(--indigo); }
+  .goal-shortcuts a > span:last-child { color: var(--indigo); }
+  .goal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 1.25rem; }
+  .goal-grid-single { grid-template-columns: 1fr; }
+  .goal-card { min-width: 0; padding: 1.5rem; border: 1px solid var(--line-strong); border-top: 3px solid var(--goal-accent); border-radius: 1rem; background: var(--surface); scroll-margin-top: 7rem; }
+  .goal-card-heading { display: flex; align-items: start; gap: .8rem; }
+  .goal-number { display: grid; flex: 0 0 2.1rem; height: 2.1rem; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--goal-accent); font-family: var(--font-mono); font-size: .7rem; }
+  .goal-card h3 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.3; }
+  .goal-card-heading p { margin: .55rem 0 0; color: var(--text-soft); font-size: .9rem; line-height: 1.55; }
+  .goal-facts { display: grid; gap: .8rem; margin: 1.3rem 0; }
+  .goal-facts dt { margin-bottom: .15rem; color: var(--text); font-size: .8rem; font-weight: 650; }
+  .goal-facts dd { margin: 0; color: var(--text-soft); font-size: .88rem; line-height: 1.55; }
+  .goal-availability { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .85rem; }
+  .goal-availability strong { color: var(--text); }
+  .goal-availability span { color: var(--text-soft); }
+  .goal-time { margin: .6rem 0 1rem; color: var(--text-soft); font-size: .8rem; line-height: 1.6; }
+  .goal-time strong { color: var(--text); }
+  .goal-start { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 4.25rem; padding: .8rem 1rem; border: 1px solid var(--goal-accent); border-radius: .65rem; background: color-mix(in srgb, var(--goal-accent) 9%, var(--surface-strong)); }
+  .goal-start > span:first-child { display: grid; gap: .25rem; }
+  .goal-start small { color: var(--text-soft); font-size: .65rem; font-family: var(--font-mono); letter-spacing: .04em; }
+  .goal-start strong { font-size: .95rem; line-height: 1.5; }
+  .goal-start > span:last-child { color: var(--goal-accent); font-size: 1.4rem; }
+  .goal-start:hover { background: color-mix(in srgb, var(--goal-accent) 17%, var(--surface-strong)); }
+  .goal-outline { margin-top: 1rem; border-top: 1px solid var(--line); }
+  .goal-outline summary { min-height: 2.75rem; padding-block: .75rem; color: var(--text); cursor: pointer; font-size: .85rem; }
+  .goal-outline h4 { margin: .5rem 0; font-size: .85rem; }
+  .goal-lessons, .goal-planned ul { margin: .6rem 0 1.2rem; padding-left: 1.3rem; }
+  .goal-lessons li { margin-block: .6rem; padding-left: .25rem; font-size: .9rem; }
+  .goal-lessons a { text-decoration: underline; text-underline-offset: .18em; }
+  .goal-lessons a:hover { color: var(--goal-accent); }
+  .goal-lessons small { display: block; color: var(--text-soft); font-size: .75rem; }
+  .goal-planned { padding-top: .75rem; border-top: 1px solid var(--line); color: var(--text-soft); }
+  .goal-planned p, .goal-planned li { font-size: .85rem; }
+  .goal-planned li { margin-block: .4rem; }
+  .goal-estimate-note { color: var(--text-soft); font-size: .75rem; }
+  .goal-destination { display: inline-block; padding-block: .65rem; color: var(--text-soft); font-size: .85rem; text-decoration: underline; text-underline-offset: .2em; }
+  .goal-destination:hover { color: var(--text); }
+  .goal-card :is(a, summary):focus-visible { outline: 3px solid var(--goal-accent); outline-offset: 4px; }
+  @media (min-width: 900px) {
+    .goal-grid-single .goal-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+  }
+  @media (max-width: 850px) { .goal-heading { flex-direction: column; align-items: start; } .goal-heading > p { max-width: none; } .goal-grid { grid-template-columns: 1fr; } .goal-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .learning-goals { padding-top: 2.5rem; } .goal-card { padding: 1rem; } .goal-number { display: none; } }
+</style>

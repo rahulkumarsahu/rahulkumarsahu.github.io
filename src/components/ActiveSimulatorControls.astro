@@ -1,0 +1,72 @@
+---
+const { id } = Astro.props as { id: string };
+---
+
+<div class="active-simulator-controls">
+  <div class="simulator-timeline-row">
+    <div>
+      <label for={`${id}-timeline`}>Timeline</label>
+      <output for={`${id}-timeline`} data-sim-position>Step 0 of 0</output>
+    </div>
+    <div class="simulator-scrubber">
+      <button type="button" data-sim-action="first" aria-label="Jump to the first step">|← First</button>
+      <input
+        id={`${id}-timeline`}
+        type="range"
+        min="0"
+        max="0"
+        value="0"
+        step="1"
+        data-sim-timeline
+        aria-label="Simulation timeline"
+      />
+      <button type="button" data-sim-action="last" aria-label="Jump to the last step">Last →|</button>
+    </div>
+  </div>
+
+  <div class="simulator-playback" aria-label="Simulation controls">
+    <button type="button" data-sim-action="previous">← Previous</button>
+    <button type="button" data-sim-action="next">Next →</button>
+    <button type="button" data-sim-action="play">Play</button>
+    <button type="button" data-sim-action="pause" disabled>Pause</button>
+    <button type="button" data-sim-action="reset">Reset</button>
+    <label for={`${id}-speed`}>
+      <span>Playback speed</span>
+      <select id={`${id}-speed`} data-sim-speed>
+        <option value="0.5">0.5×</option>
+        <option value="1" selected>1×</option>
+        <option value="1.5">1.5×</option>
+        <option value="2">2×</option>
+      </select>
+    </label>
+  </div>
+
+  <p class="simulator-shortcuts" id={`${id}-shortcuts`}>
+    <strong>Keyboard:</strong> focus this simulator, then use <kbd>←</kbd> <kbd>→</kbd> to step, <kbd>Home</kbd> <kbd>End</kbd> to jump, <kbd>Space</kbd> to play or pause, and <kbd>R</kbd> to reset.
+  </p>
+</div>
+
+<style>
+  .active-simulator-controls { border-top: 1px solid var(--line); background: var(--surface-strong); }
+  .simulator-timeline-row { display: grid; gap: .55rem; padding: .8rem 1.2rem .65rem; }
+  .simulator-timeline-row > div:first-child { display: flex; justify-content: space-between; gap: 1rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .58rem; }
+  .simulator-timeline-row label { color: var(--text-soft); font-weight: 650; letter-spacing: .06em; text-transform: uppercase; }
+  .simulator-scrubber { display: grid; grid-template-columns: auto minmax(5rem, 1fr) auto; align-items: center; gap: .65rem; }
+  .simulator-scrubber input { width: 100%; accent-color: var(--indigo); cursor: pointer; }
+  .simulator-playback { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; padding: .65rem 1.2rem .75rem; border-top: 1px solid var(--line); }
+  .simulator-playback button,
+  .simulator-scrubber button,
+  .simulator-playback select { min-height: 2.35rem; padding: .48rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font: inherit; font-size: .65rem; font-weight: 650; cursor: pointer; }
+  .simulator-playback button:disabled,
+  .simulator-scrubber button:disabled { opacity: .45; cursor: not-allowed; }
+  .simulator-playback label { display: flex; align-items: center; gap: .5rem; margin-left: auto; color: var(--text-faint); font-family: var(--font-mono); font-size: .54rem; letter-spacing: .05em; text-transform: uppercase; }
+  .simulator-shortcuts { margin: 0; padding: .55rem 1.2rem .7rem; border-top: 1px solid var(--line); color: var(--text-faint); font-size: .58rem; line-height: 1.5; }
+  .simulator-shortcuts kbd { display: inline-block; min-width: 1.35rem; padding: .08rem .24rem; border: 1px solid var(--line-strong); border-radius: .25rem; background: var(--surface); color: var(--text); font: .56rem var(--font-mono); text-align: center; }
+  .active-simulator-controls :global(:is(button, input, select):focus-visible) { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 560px) {
+    .simulator-scrubber { grid-template-columns: 1fr 1fr; }
+    .simulator-scrubber input { grid-column: 1 / -1; grid-row: 1; }
+    .simulator-playback button { flex: 1 1 calc(33% - .45rem); }
+    .simulator-playback label { width: 100%; margin-left: 0; justify-content: space-between; }
+  }
+</style>

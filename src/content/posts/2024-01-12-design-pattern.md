@@ -2,6 +2,7 @@
 title: Design Patterns Learning Path
 date: 2024-01-12 03:00:00 +0530
 updated: 2026-08-22 12:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Learn design patterns through the design pressure each pattern resolves.
 categories: [Low Level Design]
 tags: [lld, design-patterns, java, object-oriented-design]

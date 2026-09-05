@@ -1,6 +1,7 @@
 ---
 title: Java Foundations for Backend Engineers
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: A practical route through the Java concepts that matter when building backend services.
 categories: [Java and Spring Boot]
 tags: [java, backend, fundamentals, roadmap]

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import LearningDashboard from '../../components/LearningDashboard.astro';
+---
+
+<BaseLayout title="My Learning" description="Continue your saved learning path, articles, code drafts, bookmarks, revision topics and connected project progress.">
+  <section class="page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'My learning' }]} />
+    <p class="section-index">LOCAL LEARNING DASHBOARD</p>
+    <h1>Pick up where you stopped.</h1>
+    <p>Your progress stays on this device. No account is required, and the rest of the Atlas works even when browser storage is unavailable.</p>
+  </section>
+  <LearningDashboard />
+</BaseLayout>

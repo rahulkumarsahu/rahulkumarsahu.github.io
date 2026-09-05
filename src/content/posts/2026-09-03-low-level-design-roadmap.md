@@ -1,6 +1,7 @@
 ---
 title: "Low Level Design Roadmap: From Beginner to Interview Ready"
 date: 2026-09-03 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: "A practical low level design roadmap covering OOP, UML, SOLID, design patterns, concurrency, interview planning, and the systems to practise next."
 categories: [Low Level Design]
 tags: [lld, roadmap, java, oop, solid, design-patterns, concurrency, interview-preparation]

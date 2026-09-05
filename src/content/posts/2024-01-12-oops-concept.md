@@ -2,6 +2,7 @@
 title: Object Oriented Design Fundamentals
 date: 2024-01-12 03:00:00 +0530
 updated: 2026-08-22 12:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Understand objects, responsibilities, encapsulation, composition, and polymorphism through practical Java examples.
 categories: [Low Level Design]
 tags: [java, oop, object-oriented-design, lld]

@@ -37,24 +37,9 @@ const { articleSlug, questions } = Astro.props as { articleSlug: string; questio
 </section>
 
 <script>
-  const KNOWLEDGE_KEY = 'atlas-knowledge-checks:v1';
-
-  const readKnowledge = (): Record<string, string[]> => {
-    try {
-      const value = JSON.parse(window.localStorage.getItem(KNOWLEDGE_KEY) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    } catch {
-      return {};
-    }
-  };
-
-  const writeKnowledge = (value: Record<string, string[]>) => {
-    try {
-      window.localStorage.setItem(KNOWLEDGE_KEY, JSON.stringify(value));
-    } catch {
-      // The questions remain fully usable when storage is blocked.
-    }
-  };
+  import { KEYS, readRecord, writeRecord } from '../lib/learningStorage';
+  const readKnowledge = () => readRecord<string[]>(KEYS.knowledge);
+  const writeKnowledge = (value: Record<string, string[]>) => writeRecord(KEYS.knowledge, value);
 
   document.querySelectorAll<HTMLElement>('[data-knowledge-check]').forEach((check) => {
     const slug = check.dataset.articleSlug;

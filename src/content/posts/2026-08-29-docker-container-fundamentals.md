@@ -1,6 +1,7 @@
 ---
 title: Docker and Container Fundamentals
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Understand images, containers, layers, processes, ports, and persistent data before writing Dockerfiles.
 categories: [Cloud Native]
 tags: [docker, containers, cloud-native, fundamentals]

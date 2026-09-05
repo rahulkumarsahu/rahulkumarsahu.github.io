@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import TopicBanner from '../../../components/TopicBanner.astro';
+import UrlShortenerDesignLab from '../../../components/UrlShortenerDesignLab.astro';
+---
+
+<BaseLayout
+  title="URL Shortener System Design Lab"
+  description="Build a production URL shortener through 12 architecture decisions, capacity estimates and five interactive failure scenarios."
+>
+  <section class="page-hero banner-page-hero section-wrap">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Production URL shortener', href: '/projects/production-url-shortener/' }, { label: 'System design lab' }]} />
+    <TopicBanner
+      topic="system-design"
+      section="production-url-shortener"
+      title="URL Shortener System Design Lab"
+      label="BUILD / TEST / EXPLAIN"
+      size="hero"
+      heading="h1"
+      portrait={false}
+      eager
+    />
+    <div class="banner-page-intro lab-intro">
+      <p>Start with product requirements, turn scale assumptions into numbers, build the request path and then test how it behaves under failure. Every choice shows what it gives you and what it costs.</p>
+      <div><a class="button button-primary" href="#url-shortener-design-lab">Start the lab</a><a class="button button-secondary" href="/projects/production-url-shortener/">View the complete project</a></div>
+    </div>
+  </section>
+
+  <main class="section-wrap lab-main">
+    <section class="lab-orientation" aria-labelledby="orientation-title">
+      <div><p class="section-index">HOW TO USE THIS LAB</p><h2 id="orientation-title">Make a decision before you see the finished system.</h2></div>
+      <div class="orientation-steps">
+        <article><span>01</span><h3>Choose</h3><p>Pick the option you would use at the current scale.</p></article>
+        <article><span>02</span><h3>Inspect</h3><p>Compare its benefit, cost and effect on the architecture.</p></article>
+        <article><span>03</span><h3>Stress it</h3><p>Run failure drills and decide how the service should degrade.</p></article>
+      </div>
+    </section>
+    <UrlShortenerDesignLab />
+  </main>
+</BaseLayout>
+
+<style>
+  .lab-intro > div { display: flex; flex-wrap: wrap; gap: .55rem; }
+  .lab-main { padding-block: 4rem 6rem; }
+  .lab-orientation { display: grid; grid-template-columns: minmax(15rem, .7fr) minmax(0, 1.3fr); gap: 2rem; align-items: center; margin-bottom: 4rem; }
+  .lab-orientation h2 { margin: .35rem 0 0; font-size: clamp(1.5rem, 3vw, 2.25rem); letter-spacing: -.035em; }
+  .orientation-steps { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); overflow: hidden; }
+  .orientation-steps article { padding: 1rem; }
+  .orientation-steps article + article { border-left: 1px solid var(--line); }
+  .orientation-steps span { color: var(--amber); font-family: var(--font-mono); font-size: .52rem; }
+  .orientation-steps h3 { margin: .7rem 0 .35rem; font-size: .85rem; }
+  .orientation-steps p { margin: 0; color: var(--text-soft); font-size: .65rem; line-height: 1.5; }
+  @media (max-width: 760px) { .lab-main { padding-top: 3rem; } .lab-orientation { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .orientation-steps { grid-template-columns: 1fr; } .orientation-steps article + article { border-top: 1px solid var(--line); border-left: 0; } }
+</style>

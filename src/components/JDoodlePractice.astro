@@ -11,6 +11,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 
 <section
   class="jdoodle-practice"
+  id="practice-workspace"
   aria-labelledby={`practice-${problem.slug}`}
   data-practice-workspace
   data-problem-slug={problem.slug}
@@ -97,24 +98,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 )}
 
 <script>
-  const CODE_STORAGE_KEY = 'atlas-code-drafts:v1';
-
-  const readDrafts = (): Record<string, string> => {
-    try {
-      return JSON.parse(window.localStorage.getItem(CODE_STORAGE_KEY) || '{}');
-    } catch {
-      return {};
-    }
-  };
-
-  const writeDrafts = (drafts: Record<string, string>) => {
-    try {
-      window.localStorage.setItem(CODE_STORAGE_KEY, JSON.stringify(drafts));
-      return true;
-    } catch {
-      return false;
-    }
-  };
+  import { KEYS, readRecord, writeRecord } from '../lib/learningStorage';
+  const readDrafts = () => readRecord<string | { code?: string }>(KEYS.drafts);
+  const writeDrafts = (drafts: Record<string, string | { code?: string }>) => writeRecord(KEYS.drafts, drafts);
 
   document.querySelectorAll<HTMLElement>('[data-practice-workspace]').forEach((workspace) => {
     const slug = workspace.dataset.problemSlug;
@@ -126,8 +112,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     if (!slug || !editor) return;
 
     const saved = readDrafts()[slug];
-    if (typeof saved === 'string') {
-      editor.value = saved;
+    const savedCode = typeof saved === 'string' ? saved : saved?.code;
+    if (typeof savedCode === 'string') {
+      editor.value = savedCode;
       if (state) state.textContent = 'Saved draft restored';
     }
 
@@ -144,8 +131,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 
     restore?.addEventListener('click', () => {
       const savedDraft = readDrafts()[slug];
-      if (typeof savedDraft === 'string') {
-        editor.value = savedDraft;
+      const savedDraftCode = typeof savedDraft === 'string' ? savedDraft : savedDraft?.code;
+      if (typeof savedDraftCode === 'string') {
+        editor.value = savedDraftCode;
         if (state) state.textContent = 'Saved draft restored';
       } else if (state) {
         state.textContent = 'No saved draft yet';

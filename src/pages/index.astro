@@ -2,22 +2,21 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ConnectedProjectCard from '../components/ConnectedProjectCard.astro';
+import LearningGoals from '../components/LearningGoals.astro';
+import LearningDashboard from '../components/LearningDashboard.astro';
 import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import { SITE, TOPICS } from '../data/site';
-import { getPostsForTopic, getSortedPosts } from '../lib/posts';
+import { DSA_STARTER_SLUGS } from '../data/learningGoals';
+import { getPostSlug, getPostsForTopic, getSortedPosts } from '../lib/posts';
 
 const posts = getSortedPosts(await getCollection('posts'));
 const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(posts, topic.slug).length]));
 
-const roadmap = [
-  ['01', 'Complexity and foundations', 'Start here', '/dsa/complexity/'],
-  ['02', 'Arrays', 'Core patterns', '/dsa/arrays/'],
-  ['03', 'Hashing', 'Fast lookups', '/dsa/hashing/'],
-  ['04', 'Binary search', 'Search space', '/dsa/binary-search/'],
-  ['05', 'Recursion and trees', 'Relationships', '/dsa/recursion-backtracking/'],
-  ['06', 'Graphs and dynamic programming', 'Optimization', '/dsa/graphs/'],
-];
+const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
+  const post = posts.find((candidate) => getPostSlug(candidate) === slug);
+  return post ? [post] : [];
+});
 ---
 
 <BaseLayout title={SITE.name} description={SITE.description} image="/og.png">
@@ -33,16 +32,16 @@ const roadmap = [
         I write practical guides on DSA, Java, system design, cloud native engineering and AI, along with deeper notes from real engineering work. We start with the basic idea, work through the implementation, and finish with the decisions that matter in a real system.
       </p>
       <div class="home-hero-actions">
-        <a class="button button-primary" href="/topics/dsa/">
-          Start with DSA
+        <a class="button button-primary" href="#choose-your-goal">
+          Choose your learning goal
           <span aria-hidden="true">↗</span>
         </a>
         <a class="button button-secondary" href="#learning-paths">See all topics</a>
       </div>
       <nav class="home-starting-points" aria-label="Popular starting points">
         <span>Popular starting points</span>
-        <a href="/dsa/arrays/">Arrays</a>
-        <a href="/dsa/binary-search/">Binary search</a>
+        <a href="/posts/array-fundamentals/">Array fundamentals</a>
+        <a href="/posts/java-backend-foundations/">Java foundations</a>
         <a href="/posts/system-design-foundations/">System design basics</a>
       </nav>
       <dl class="home-hero-proof" aria-label="What the Atlas contains">
@@ -97,6 +96,8 @@ const roadmap = [
     </div>
   </section>
 
+  <LearningDashboard compact />
+
   <section class="trust-strip" aria-label="Topics covered">
     <div class="trust-track">
       <div class="trust-group">
@@ -107,6 +108,8 @@ const roadmap = [
       </div>
     </div>
   </section>
+
+  <LearningGoals {posts} />
 
   <section class="learning-method section-wrap" data-reveal>
     <div class="section-heading">
@@ -166,15 +169,15 @@ const roadmap = [
         <p class="section-index">03 / A GOOD FIRST ROUTE</p>
         <div class="roadmap-chip">DSA · JAVA · STEP BY STEP</div>
         <h2>Build the instincts that make system design easier.</h2>
-        <p>Start with how data is stored and accessed. Move through search, recursion and relationships. Those same instincts show up later in databases, caches and distributed systems.</p>
-        <a class="text-link" href="/topics/dsa/">Open the complete DSA path <span>→</span></a>
+        <p>Start with arrays, practise finding and moving values, then trace recursion and generate subsets. Each lesson below is ready to read and try.</p>
+        <a class="text-link" href="/topics/dsa/">Explore the DSA learning path <span>→</span></a>
       </div>
       <ol class="roadmap-list">
-        {roadmap.map(([number, title, label, href], index) => (
+        {roadmap.map((post, index) => (
           <li class={index === 0 ? 'is-active' : ''}>
-            <a href={href}>
-              <span class="roadmap-number">{number}</span>
-              <div><strong>{title}</strong><small>{label}</small></div>
+            <a href={`/posts/${getPostSlug(post)}/`}>
+              <span class="roadmap-number">{String(index + 1).padStart(2, '0')}</span>
+              <div><strong>{post.data.title}</strong><small>{index === 0 ? 'Start here' : 'Published and available'}</small></div>
               <span class="roadmap-state">{index === 0 ? 'Begin' : '→'}</span>
             </a>
           </li>

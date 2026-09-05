@@ -1,6 +1,7 @@
 ---
 title: "Java OOP for LLD: Classes, Objects, Constructors, and this"
 date: 2026-09-03 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: "Learn Java OOP for low level design with classes, objects, constructors, references, shallow and deep copies, and the this keyword through clear examples."
 categories: [Low Level Design]
 tags: [lld, java, oop, classes, objects, constructors, object-references]

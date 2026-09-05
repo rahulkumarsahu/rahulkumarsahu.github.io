@@ -59,6 +59,7 @@ export const URL_SHORTENER_MILESTONES: ProjectMilestone[] = [
     id: 'distributed-scale', number: '06', title: 'Reason about distributed scaling', outcome: 'Estimate demand and decide how identifiers, storage, caches and redirects behave across many instances.',
     concepts: ['capacity estimation', 'key generation', 'replication and failure'],
     resources: [
+      { title: 'Interactive URL Shortener System Design Lab', href: '/projects/production-url-shortener/system-design-lab/', note: 'Build the architecture progressively and test its failure behaviour.' },
       { title: 'URL Shortener System Design', href: '/posts/url-shortener-system-design/', note: 'Connect requirements to the distributed architecture.' },
       { title: 'Back of the Envelope Estimation', href: '/posts/back-of-envelope-estimation/', note: 'Use workload numbers to guide the design.' },
     ],

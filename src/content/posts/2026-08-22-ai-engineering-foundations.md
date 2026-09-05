@@ -1,6 +1,7 @@
 ---
 title: AI Engineering Foundations
 date: 2026-08-22 16:30:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: A practical mental model for building AI features that remain useful, measurable, safe, and affordable after the first demo.
 categories: [AI Engineering]
 tags: [ai, llm, evaluation, production]

@@ -1,6 +1,7 @@
 ---
 title: A Production Minded Dockerfile for Java
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Build a smaller, safer Java container image with a multi stage Dockerfile and sensible runtime defaults.
 categories: [Cloud Native]
 tags: [docker, java, dockerfile, cloud-native]

@@ -1,6 +1,7 @@
 ---
 title: Kubernetes Workload Fundamentals
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Understand Pods, Deployments, Services, configuration, health checks, and resource settings as one workload.
 categories: [Cloud Native]
 tags: [kubernetes, cloud-native, deployment, containers]

@@ -1,6 +1,7 @@
 ---
 title: "Recursion in Java: A Beginner's Guide to Thinking in Smaller Problems"
 date: 2026-09-01 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: "Learn recursion in Java through base cases, smaller inputs, call-stack diagrams, dry runs, complexity analysis, and a guided interactive example."
 categories: [Data Structures and Algorithms]
 tags: [dsa, recursion, java, call-stack, fundamentals]

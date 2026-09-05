@@ -1,6 +1,7 @@
 ---
 title: System Design Foundations
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Learn the requirements, numbers, data, and failure questions that should come before an architecture diagram.
 categories: [System Design]
 tags: [system-design, fundamentals, scalability, reliability]

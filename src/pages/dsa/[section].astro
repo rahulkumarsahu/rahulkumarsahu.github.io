@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DsaArticleCard from '../../components/DsaArticleCard.astro';
 import GraphTraversalSimulator from '../../components/GraphTraversalSimulator.astro';
+import LearningEstimate from '../../components/LearningEstimate.astro';
 import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
@@ -24,7 +25,11 @@ const posts = getPostsForSeries(await getCollection('posts'), section.slug);
 const availablePatterns = Array.from(new Set(posts.flatMap((post) => post.data.patterns ?? [])))
   .map((slug) => ({ value: slug, label: getDsaPattern(slug)?.name ?? slug }))
   .sort((a, b) => a.label.localeCompare(b.label));
-const groups = ['basics', 'easy', 'medium', 'hard'] as const;
+const difficultyOrder = ['basics', 'easy', 'medium', 'hard'] as const;
+const groups = difficultyOrder.map((difficulty) => ({
+  difficulty,
+  articles: posts.filter((post) => (post.data.difficulty ?? 'basics') === difficulty),
+})).sort((a, b) => Number(b.articles.length > 0) - Number(a.articles.length > 0));
 const groupCopy = {
   basics: ['01', 'Learn the idea', 'Build the mental model and learn the reusable implementation pattern.'],
   easy: ['02', 'Easy practice', 'Use the core idea in a direct problem with one main decision.'],
@@ -49,6 +54,7 @@ const groupCopy = {
     <div class="dsa-topic-pills">
       {section.topics.map((topic) => <span>{topic}</span>)}
     </div>
+    <LearningEstimate {posts} />
     <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />
     <div class="dsa-tool-links">
       <a href="/dsa/patterns/">Browse DSA patterns</a>
@@ -74,13 +80,12 @@ const groupCopy = {
   </div>
 
   <div class="difficulty-sections section-wrap" id="difficulty-list">
-    {groups.map((group) => {
-      const matching = posts.filter((post) => (post.data.difficulty ?? 'basics') === group);
-      const [number, title, description] = groupCopy[group];
+    {groups.map(({ difficulty, articles: matching }, index) => {
+      const [, title, description] = groupCopy[difficulty];
       return (
         <section class="difficulty-section" data-filter-group>
           <div class="difficulty-heading">
-            <span>{number}</span>
+            <span>{String(index + 1).padStart(2, '0')}</span>
             <div><h2>{title}</h2><p>{description}</p></div>
             <small>{String(matching.length).padStart(2, '0')} ARTICLES</small>
           </div>

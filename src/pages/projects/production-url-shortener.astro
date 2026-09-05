@@ -9,7 +9,7 @@ import { URL_SHORTENER_MILESTONES } from '../../data/connectedProject';
   <section class="page-hero banner-page-hero section-wrap">
     <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Projects' }, { label: 'Production URL shortener' }]} />
     <TopicBanner topic="system-design" section="production-url-shortener" title="Production URL Shortener" label="CONNECTED PROJECT / 09 MILESTONES" size="hero" heading="h1" eager />
-    <div class="banner-page-intro project-intro"><p>Build one service all the way from its object model to a production deployment. Published resources are ready to open. Planned resources stay visible without pretending they already exist.</p><a class="button button-primary" href="#project-milestones">Start the project</a></div>
+    <div class="banner-page-intro project-intro"><p>Build one service all the way from its object model to a production deployment. Published resources are ready to open. Planned resources stay visible without pretending they already exist.</p><div class="project-hero-actions"><a class="button button-primary" href="#project-milestones">Start the project</a><a class="button button-secondary" href="/projects/production-url-shortener/system-design-lab/">Open system design lab</a></div></div>
   </section>
 
   <main class="project-main section-wrap" data-project-hub>
@@ -17,6 +17,7 @@ import { URL_SHORTENER_MILESTONES } from '../../data/connectedProject';
       <div><p class="section-index">WHAT YOU WILL BUILD</p><h2>A short-link service whose engineering decisions remain visible.</h2></div>
       <p>The finished system accepts a long URL, creates a short code, redirects readers quickly, resists abuse, scales across instances and exposes enough operational signals to debug failures.</p>
       <div class="project-progress" aria-live="polite"><span data-project-progress-label>0 of {URL_SHORTENER_MILESTONES.length} milestones complete</span><div><i data-project-progress-bar style="--project-progress: 0%"></i></div></div>
+      <a class="project-dashboard-link" href="/learning/">View in my learning dashboard ↗</a>
     </section>
 
     <section class="project-architecture" aria-labelledby="architecture-title">
@@ -34,7 +35,7 @@ import { URL_SHORTENER_MILESTONES } from '../../data/connectedProject';
       </div>
       <ol>
         {URL_SHORTENER_MILESTONES.map((milestone) => (
-          <li data-project-milestone data-milestone-id={milestone.id}>
+          <li id={milestone.id} data-project-milestone data-milestone-id={milestone.id}>
             <div class="milestone-number"><span>{milestone.number}</span><i data-milestone-state>Not started</i></div>
             <div class="milestone-copy"><h3>{milestone.title}</h3><p>{milestone.outcome}</p><div>{milestone.concepts.map((concept) => <span>{concept}</span>)}</div></div>
             <div class="milestone-resources">
@@ -61,43 +62,54 @@ import { URL_SHORTENER_MILESTONES } from '../../data/connectedProject';
 </BaseLayout>
 
 <script>
-  const PROJECT_PROGRESS_KEY = 'atlas-project-progress:v1';
+  import { KEYS, readRecord, writeRecord } from '../../lib/learningStorage';
   document.querySelectorAll<HTMLElement>('[data-project-hub]').forEach((hub) => {
     const milestones = Array.from(hub.querySelectorAll<HTMLElement>('[data-project-milestone]'));
-    const read = (): Record<string, string> => {
-      try { const value = JSON.parse(window.localStorage.getItem(PROJECT_PROGRESS_KEY) || '{}'); return value && typeof value === 'object' ? value : {}; }
-      catch { return {}; }
-    };
-    const write = (value: Record<string, string>) => { try { window.localStorage.setItem(PROJECT_PROGRESS_KEY, JSON.stringify(value)); } catch { /* Local progress is optional. */ } };
+    const read = () => readRecord<string>(KEYS.project);
+    const write = (value: Record<string, string>) => writeRecord(KEYS.project, value);
     const updateSummary = () => {
       const complete = milestones.filter((milestone) => milestone.querySelector<HTMLSelectElement>('[data-milestone-progress]')?.value === 'complete').length;
       const label = hub.querySelector<HTMLElement>('[data-project-progress-label]'); if (label) label.textContent = `${complete} of ${milestones.length} milestones complete`;
       const bar = hub.querySelector<HTMLElement>('[data-project-progress-bar]'); if (bar) bar.style.setProperty('--project-progress', `${milestones.length ? complete / milestones.length * 100 : 0}%`);
     };
-    const saved = read();
     milestones.forEach((milestone) => {
       const id = milestone.dataset.milestoneId || '';
       const select = milestone.querySelector<HTMLSelectElement>('[data-milestone-progress]');
       const label = milestone.querySelector<HTMLElement>('[data-milestone-state]');
       if (!select) return;
-      if (saved[id]) select.value = saved[id];
       const update = () => {
         milestone.dataset.progress = select.value;
         if (label) label.textContent = select.options[select.selectedIndex]?.text || 'Not started';
         const value = read(); value[id] = select.value; write(value); updateSummary();
       };
       select.addEventListener('change', update);
-      milestone.dataset.progress = select.value;
-      if (label) label.textContent = select.options[select.selectedIndex]?.text || 'Not started';
     });
-    updateSummary();
+    const render = () => {
+      const saved = read();
+      milestones.forEach((milestone) => {
+        const select = milestone.querySelector<HTMLSelectElement>('[data-milestone-progress]');
+        const label = milestone.querySelector<HTMLElement>('[data-milestone-state]');
+        const state = saved[milestone.dataset.milestoneId || ''];
+        if (!select) return;
+        select.value = ['not-started', 'in-progress', 'complete', 'revisit'].includes(state) ? state : 'not-started';
+        milestone.dataset.progress = select.value;
+        if (label) label.textContent = select.options[select.selectedIndex]?.text || 'Not started';
+      });
+      updateSummary();
+    };
+    render();
+    window.addEventListener('pageshow', render);
+    window.addEventListener('storage', render);
+    window.addEventListener('atlas-learning-state-changed', render);
   });
 </script>
 
 <style>
   .project-main { display: grid; gap: 4rem; padding-block: 4rem 6rem; }
+  .project-hero-actions { display: flex; flex-wrap: wrap; gap: .55rem; }
   .project-outcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .9fr); gap: 1rem 2rem; align-items: end; }
   .project-outcome h2, .project-architecture h2 { margin: .35rem 0 0; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+  .project-dashboard-link { width: fit-content; color: var(--text-soft); font-size: .72rem; text-decoration: underline; text-underline-offset: .2em; }
   .project-outcome > p { margin: 0; color: var(--text-soft); font-size: .78rem; line-height: 1.65; }
   .project-progress { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .7rem; padding: .75rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); color: var(--text-soft); font-size: .65rem; }
   .project-progress > div { overflow: hidden; height: .45rem; border-radius: 999px; background: var(--surface-strong); }

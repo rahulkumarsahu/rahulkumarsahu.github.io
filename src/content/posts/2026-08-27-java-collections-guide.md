@@ -1,6 +1,7 @@
 ---
 title: Choosing the Right Java Collection
 date: 2026-08-22 09:00:00 +0530
+lastReviewed: 2026-09-06 09:00:00 +0530
 description: Compare the Java collections most backend applications use and choose by behavior instead of habit.
 categories: [Java and Spring Boot]
 tags: [java, collections, arraylist, hashmap]

@@ -1,0 +1,26 @@
+---
+const { id } = Astro.props as { id: string };
+---
+
+<section class="simulator-prediction" data-sim-prediction hidden aria-labelledby={`${id}-prediction-title`}>
+  <span>PREDICT BEFORE REVEALING</span>
+  <h3 id={`${id}-prediction-title`} data-sim-prediction-question>What happens next?</h3>
+  <div class="prediction-options" data-sim-prediction-options role="group" aria-label="Prediction choices"></div>
+  <p data-sim-prediction-feedback aria-live="polite"></p>
+  <button type="button" data-sim-prediction-continue disabled>Reveal the next state</button>
+</section>
+
+<style>
+  .simulator-prediction { margin: 0; padding: 1rem 1.2rem; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--amber) 7%, var(--surface)); }
+  .simulator-prediction > span { color: var(--amber); font: 650 .55rem var(--font-mono); letter-spacing: .09em; }
+  .simulator-prediction h3 { margin: .35rem 0 .75rem; font-size: .9rem; }
+  .prediction-options { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .prediction-options :global(button),
+  .simulator-prediction > button { min-height: 2.45rem; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .66rem; cursor: pointer; }
+  .prediction-options :global(button[aria-pressed='true']) { border-color: var(--indigo); box-shadow: inset 0 -3px var(--indigo); }
+  .simulator-prediction > p { min-height: 1.5rem; margin: .7rem 0; color: var(--text-soft); font-size: .7rem; line-height: 1.5; }
+  .simulator-prediction > button { border-color: var(--indigo); background: var(--indigo); color: white; font-weight: 650; }
+  .simulator-prediction > button:disabled { opacity: .45; cursor: not-allowed; }
+  .simulator-prediction :global(:is(button):focus-visible) { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 560px) { .prediction-options :global(button) { flex: 1 1 100%; text-align: left; } .simulator-prediction > button { width: 100%; } }
+</style>

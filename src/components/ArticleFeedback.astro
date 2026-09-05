@@ -1,0 +1,73 @@
+---
+import type { Post } from '../lib/posts';
+import { getPostSlug } from '../lib/posts';
+import { SITE } from '../data/site';
+
+const { post } = Astro.props as { post: Post };
+const slug = getPostSlug(post);
+const subject = encodeURIComponent(`Technical correction for: ${post.data.title}`);
+const body = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nSection or code sample:\n\nWhat appears incorrect:\n\nSuggested correction or supporting source:\n`);
+---
+
+<section class="article-feedback" data-article-feedback data-article-slug={slug} aria-labelledby={`feedback-title-${slug}`}>
+  <div>
+    <span>CLARITY CHECK</span>
+    <h2 id={`feedback-title-${slug}`}>Did this explanation help?</h2>
+    <p>Your answer stays in this browser. It is not transmitted anywhere.</p>
+  </div>
+  <div class="feedback-actions" role="group" aria-label={`Clarity feedback for ${post.data.title}`}>
+    <button type="button" data-feedback-value="helped" aria-pressed="false">Yes, it helped</button>
+    <button type="button" data-feedback-value="partially" aria-pressed="false">Partially</button>
+    <button type="button" data-feedback-value="confused" aria-pressed="false">I am still confused</button>
+    <a href={`mailto:${SITE.email}?subject=${subject}&body=${body}`}>Report a technical mistake</a>
+  </div>
+  <p class="feedback-message" data-feedback-message aria-live="polite"></p>
+</section>
+
+<script>
+  import { KEYS, readRecord, storageIsAvailable, writeRecord } from '../lib/learningStorage';
+
+  const VALID_FEEDBACK = new Set(['helped', 'partially', 'confused']);
+  document.querySelectorAll<HTMLElement>('[data-article-feedback]').forEach((root) => {
+    if (root.dataset.feedbackReady === 'true') return;
+    root.dataset.feedbackReady = 'true';
+    const slug = root.dataset.articleSlug || '';
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-feedback-value]'));
+    const message = root.querySelector<HTMLElement>('[data-feedback-message]');
+
+    const render = () => {
+      const current = readRecord<string>(KEYS.articleFeedback)[slug];
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.feedbackValue === current)));
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      const value = button.dataset.feedbackValue || '';
+      if (!slug || !VALID_FEEDBACK.has(value)) return;
+      const feedback = readRecord<string>(KEYS.articleFeedback);
+      feedback[slug] = value;
+      const persisted = writeRecord(KEYS.articleFeedback, feedback);
+      render();
+      if (message) message.textContent = persisted
+        ? 'Thanks. Your clarity note has been saved on this device.'
+        : 'Your clarity note is available on this page only because browser storage is blocked.';
+    }));
+
+    render();
+    if (message && !storageIsAvailable()) message.textContent = 'Browser storage is blocked, so clarity feedback will not persist after this page closes.';
+  });
+</script>
+
+<style>
+  .article-feedback { display: grid; grid-template-columns: minmax(12rem, .7fr) minmax(0, 1.3fr); gap: 1rem 1.5rem; margin: 2.5rem 0 1.5rem; padding: 1rem; border: 1px solid var(--line-strong); border-radius: .8rem; background: color-mix(in srgb, var(--indigo) 5%, var(--surface)); }
+  .article-feedback > div:first-child > span { color: var(--amber); font-family: var(--font-mono); font-size: .5rem; font-weight: 700; letter-spacing: .1em; }
+  .article-feedback h2 { margin: .3rem 0 .35rem; padding: 0; border: 0; font-size: 1rem; }
+  .article-feedback p { margin: 0; color: var(--text-faint); font-size: .58rem; line-height: 1.45; }
+  .feedback-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+  .feedback-actions button, .feedback-actions a { min-height: 2.45rem; display: inline-flex; align-items: center; justify-content: center; padding: .5rem .65rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font: inherit; font-size: .61rem; font-weight: 650; text-align: center; text-decoration: none; cursor: pointer; }
+  .feedback-actions button[aria-pressed='true'] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 11%, var(--surface)); color: var(--indigo); box-shadow: inset 3px 0 var(--indigo); }
+  .feedback-actions a { color: var(--text-soft); }
+  .feedback-message { grid-column: 2; min-height: .85rem; }
+  .article-feedback :is(button, a):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  @media (max-width: 640px) { .article-feedback { grid-template-columns: 1fr; } .feedback-message { grid-column: 1; } }
+  @media (max-width: 420px) { .feedback-actions { grid-template-columns: 1fr; } }
+</style>

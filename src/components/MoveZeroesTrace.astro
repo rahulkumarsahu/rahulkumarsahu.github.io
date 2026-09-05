@@ -1,4 +1,16 @@
-<section class="move-zeroes-trace" data-move-zeroes-trace aria-labelledby="move-zeroes-trace-title">
+---
+import ActiveSimulatorControls from './ActiveSimulatorControls.astro';
+import SimulatorPrediction from './SimulatorPrediction.astro';
+---
+
+<section
+  class="move-zeroes-trace"
+  data-move-zeroes-trace
+  aria-labelledby="move-zeroes-trace-title"
+  aria-describedby="move-zeroes-shortcuts"
+  aria-keyshortcuts="ArrowLeft ArrowRight Home End Space R"
+  tabindex="0"
+>
   <header class="trace-header">
     <div>
       <span>INTERACTIVE DRY RUN</span>
@@ -12,9 +24,11 @@
     <div>
       <input id="move-zeroes-input" value="0, 1, 0, 3, 12" inputmode="text" data-trace-input aria-describedby="move-zeroes-input-help" />
       <button type="submit">Load array</button>
+      <button type="button" class="trace-share" data-trace-share>Copy share link</button>
     </div>
     <small id="move-zeroes-input-help">Enter 1 to 12 integers separated by commas.</small>
     <p data-trace-error role="alert" hidden></p>
+    <p class="trace-share-status" data-trace-share-status aria-live="polite"></p>
   </form>
 
   <div class="trace-workspace">
@@ -55,13 +69,8 @@
     </div>
   </div>
 
-  <div class="trace-controls" aria-label="Dry run controls">
-    <button type="button" data-trace-previous>← Previous</button>
-    <button type="button" data-trace-next>Next →</button>
-    <button type="button" data-trace-play>Play</button>
-    <button type="button" data-trace-pause disabled>Pause</button>
-    <button type="button" data-trace-reset>Reset</button>
-  </div>
+  <SimulatorPrediction id="move-zeroes" />
+  <ActiveSimulatorControls id="move-zeroes" />
 
   <p class="trace-accessible-description">
     Each array cell includes its index and value. Text labels identify the read and write positions, so the dry run does not depend on colour.
@@ -69,6 +78,11 @@
 </section>
 
 <script>
+  import { connectActiveSimulatorControls } from '../lib/activeSimulator';
+  import { connectSimulatorPrediction, type SimulatorPrediction as Prediction } from '../lib/simulatorPrediction';
+
+  type MoveZeroesAction = 'start' | 'copy' | 'skip' | 'replace' | 'complete';
+
   interface MoveZeroesState {
     values: number[];
     read: number | null;
@@ -77,6 +91,8 @@
     phase: string;
     explanation: string;
     complete: boolean;
+    action: MoveZeroesAction;
+    inspectedValue: number | null;
   }
 
   const buildMoveZeroesStates = (input: number[]): MoveZeroesState[] => {
@@ -84,6 +100,7 @@
     const states: MoveZeroesState[] = [{
       values: [...values], read: 0, write: 0, line: 1, phase: 'Ready', complete: false,
       explanation: 'Start with the write position at index 0.',
+      action: 'start', inspectedValue: values[0] ?? null,
     }];
     let write = 0;
 
@@ -96,11 +113,13 @@
         states.push({
           values: [...values], read, write, line: 4, phase: 'Compact nonzero values', complete: false,
           explanation: `Value ${current} is nonzero, so copy it from index ${read} to index ${destination}. The next write position is ${write}.`,
+          action: 'copy', inspectedValue: current,
         });
       } else {
         states.push({
           values: [...values], read, write, line: 3, phase: 'Compact nonzero values', complete: false,
           explanation: `Value 0 at index ${read} is skipped. The write position stays at index ${write}.`,
+          action: 'skip', inspectedValue: 0,
         });
       }
     }
@@ -112,12 +131,14 @@
       states.push({
         values: [...values], read: null, write, line: 9, phase: 'Fill remaining positions', complete: false,
         explanation: `Write 0 at index ${destination}. Every nonzero value is already in its final relative order.`,
+        action: 'replace', inspectedValue: 0,
       });
     }
 
     states.push({
       values: [...values], read: null, write, line: 11, phase: 'Complete', complete: true,
       explanation: 'The nonzero prefix is stable and every remaining position contains 0.',
+      action: 'complete', inspectedValue: null,
     });
     return states;
   };
@@ -135,27 +156,51 @@
     const pointerView = trace.querySelector<HTMLElement>('[data-trace-pointers]');
     const explanationView = trace.querySelector<HTMLElement>('[data-trace-explanation]');
     const outputView = trace.querySelector<HTMLElement>('[data-trace-output]');
-    const previous = trace.querySelector<HTMLButtonElement>('[data-trace-previous]');
-    const next = trace.querySelector<HTMLButtonElement>('[data-trace-next]');
-    const play = trace.querySelector<HTMLButtonElement>('[data-trace-play]');
-    const pause = trace.querySelector<HTMLButtonElement>('[data-trace-pause]');
-    const reset = trace.querySelector<HTMLButtonElement>('[data-trace-reset]');
+    const share = trace.querySelector<HTMLButtonElement>('[data-trace-share]');
+    const shareStatus = trace.querySelector<HTMLElement>('[data-trace-share-status]');
     if (!form || !input || !arrayView || !stepView || !phaseView || !pointerView || !explanationView || !outputView) return;
 
     let states = buildMoveZeroesStates([0, 1, 0, 3, 12]);
     let currentIndex = 0;
     let timer: number | undefined;
+    let predictionCheckpoints = new Set<number>();
+    let answeredPredictions = new Set<number>();
+    const prediction = connectSimulatorPrediction(trace);
+
+    const isPlaying = () => timer !== undefined;
+
+    const rebuildPredictionCheckpoints = () => {
+      predictionCheckpoints = new Set();
+      (['skip', 'copy', 'replace'] as MoveZeroesAction[]).forEach((action) => {
+        const index = states.findIndex((state, stateIndex) => stateIndex > 0 && state.action === action);
+        if (index > 0) predictionCheckpoints.add(index);
+      });
+      answeredPredictions = new Set();
+      prediction.hide();
+    };
+
+    const predictionFor = (state: MoveZeroesState): Prediction => ({
+      question: state.action === 'replace'
+        ? `The read scan is finished and write points to index ${state.write - 1}. What happens next?`
+        : `The read position sees ${state.inspectedValue} at index ${state.read}. What will the algorithm do?`,
+      options: [
+        { id: 'copy', label: 'Copy the value to the write position' },
+        { id: 'skip', label: 'Skip it and keep the write position' },
+        { id: 'replace', label: 'Write zero into the remaining position' },
+      ],
+      correct: state.action,
+      explanation: state.explanation,
+    });
 
     const stop = () => {
-      if (timer !== undefined) window.clearInterval(timer);
+      if (timer !== undefined) window.clearTimeout(timer);
       timer = undefined;
-      if (play) play.disabled = currentIndex >= states.length - 1;
-      if (pause) pause.disabled = true;
+      controls.refresh();
     };
 
     const render = () => {
       const state = states[currentIndex];
-      stepView.textContent = `Step ${currentIndex + 1} of ${states.length}`;
+      stepView.textContent = `Step ${currentIndex} of ${states.length - 1}`;
       phaseView.textContent = state.phase;
       pointerView.textContent = `read = ${state.read ?? 'done'} · write = ${state.write}`;
       explanationView.textContent = state.explanation;
@@ -181,10 +226,58 @@
         else line.removeAttribute('aria-current');
       });
 
-      if (previous) previous.disabled = currentIndex === 0;
-      if (next) next.disabled = currentIndex === states.length - 1;
-      if (play && timer === undefined) play.disabled = currentIndex === states.length - 1;
+      controls.refresh();
     };
+
+    const startPlayback = () => {
+      stop();
+      if (currentIndex >= states.length - 1) currentIndex = 0;
+      timer = window.setTimeout(() => {
+        timer = undefined;
+        requestStep(currentIndex + 1, true);
+      }, controls.delay());
+      controls.refresh();
+    };
+
+    const requestStep = (targetIndex: number, resumePlayback = false) => {
+      const target = Math.min(Math.max(0, targetIndex), states.length - 1);
+      const isSequentialPrediction = target === currentIndex + 1
+        && predictionCheckpoints.has(target)
+        && !answeredPredictions.has(target);
+      stop();
+      if (isSequentialPrediction) {
+        prediction.show(predictionFor(states[target]), () => {
+          answeredPredictions.add(target);
+          currentIndex = target;
+          render();
+          if (resumePlayback && currentIndex < states.length - 1) startPlayback();
+        });
+        return;
+      }
+      prediction.hide();
+      currentIndex = target;
+      render();
+      if (resumePlayback && currentIndex < states.length - 1) startPlayback();
+    };
+
+    const controls = connectActiveSimulatorControls(trace, {
+      getIndex: () => currentIndex,
+      getLength: () => states.length,
+      isPlaying,
+      first: () => requestStep(0),
+      previous: () => requestStep(currentIndex - 1),
+      next: () => requestStep(currentIndex + 1),
+      last: () => requestStep(states.length - 1),
+      play: startPlayback,
+      pause: stop,
+      reset: () => {
+        stop();
+        rebuildPredictionCheckpoints();
+        currentIndex = 0;
+        render();
+      },
+      scrub: (index) => requestStep(index),
+    });
 
     const parseInput = () => {
       const normalized = input.value.trim().replace(/^\[/, '').replace(/\]$/, '');
@@ -193,16 +286,28 @@
         throw new Error('Enter integers separated by commas, for example: 0, 1, 0, 3, 12.');
       }
       if (parts.length > 12) throw new Error('Use at most 12 values so every step remains readable.');
-      return parts.map(Number);
+      const values = parts.map(Number);
+      if (!values.every(Number.isSafeInteger)) throw new Error('Keep every value within JavaScript’s safe integer range so the trace remains accurate.');
+      return values;
     };
 
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
+    const updateShareUrl = () => {
+      const values = parseInput();
+      const url = new URL(window.location.href);
+      url.searchParams.set('moveZeroes', values.join(','));
+      window.history.replaceState({}, '', url);
+      return url.toString();
+    };
+
+    const rebuild = (updateUrl = true) => {
       stop();
       try {
         states = buildMoveZeroesStates(parseInput());
         currentIndex = 0;
+        rebuildPredictionCheckpoints();
         if (error) error.hidden = true;
+        if (shareStatus) shareStatus.textContent = '';
+        if (updateUrl) updateShareUrl();
         render();
       } catch (problem) {
         if (error) {
@@ -210,25 +315,23 @@
           error.hidden = false;
         }
       }
+    };
+
+    form.addEventListener('submit', (event) => { event.preventDefault(); rebuild(); });
+    share?.addEventListener('click', async () => {
+      try {
+        const url = updateShareUrl();
+        await navigator.clipboard.writeText(url);
+        if (shareStatus) shareStatus.textContent = 'Share link copied. It will open with this array.';
+      } catch {
+        if (shareStatus) shareStatus.textContent = 'The shareable input is now in the address bar. Copy the page URL to share it.';
+      }
     });
 
-    previous?.addEventListener('click', () => { stop(); currentIndex = Math.max(0, currentIndex - 1); render(); });
-    next?.addEventListener('click', () => { stop(); currentIndex = Math.min(states.length - 1, currentIndex + 1); render(); });
-    reset?.addEventListener('click', () => { stop(); currentIndex = 0; render(); });
-    play?.addEventListener('click', () => {
-      if (currentIndex >= states.length - 1) currentIndex = 0;
-      if (play) play.disabled = true;
-      if (pause) pause.disabled = false;
-      render();
-      timer = window.setInterval(() => {
-        if (currentIndex >= states.length - 1) { stop(); render(); return; }
-        currentIndex++;
-        render();
-      }, 900);
-    });
-    pause?.addEventListener('click', () => { stop(); render(); });
-
-    render();
+    const sharedInput = new URL(window.location.href).searchParams.get('moveZeroes');
+    if (sharedInput) input.value = sharedInput;
+    rebuildPredictionCheckpoints();
+    rebuild(false);
   });
 </script>
 
@@ -295,9 +398,11 @@
     font-weight: 650;
     cursor: pointer;
   }
-  .trace-input button { border-color: color-mix(in srgb, var(--indigo) 58%, var(--line)); background: var(--indigo); color: white; }
+  .trace-input button[type='submit'] { border-color: color-mix(in srgb, var(--indigo) 58%, var(--line)); background: var(--indigo); color: white; }
+  .trace-input .trace-share { background: var(--surface); color: var(--text); }
   .trace-input small { display: block; margin-top: .35rem; color: var(--text-faint); font-size: .6rem; }
   .trace-input [role='alert'] { margin: .5rem 0 0; color: #c84a3a; font-size: .68rem; }
+  .trace-share-status { min-height: 1rem; margin: .35rem 0 0; color: var(--text-soft); font-size: .62rem; }
 
   .trace-workspace { display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(20rem, 1.1fr); }
   .trace-code-panel { min-width: 0; background: #10182a; color: #dbe6f8; }
@@ -342,6 +447,7 @@
   .trace-controls button:disabled { opacity: .42; cursor: not-allowed; }
   .trace-controls :is(button):focus-visible,
   .trace-input :is(input, button):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .move-zeroes-trace:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
   .trace-accessible-description { margin: 0; border-top: 1px solid var(--line); color: var(--text-faint); font-size: .62rem; line-height: 1.5; }
 
   @media (max-width: 760px) {
