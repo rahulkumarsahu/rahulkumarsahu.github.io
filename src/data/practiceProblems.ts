@@ -4,6 +4,7 @@ export interface PracticeProblem {
   instruction: string;
   input: string;
   expected: string;
+  testCases: Array<{ label: string; input: string; expected: string; reason: string }>;
   rules: Array<{ label: string; value: string }>;
   starterCode: string;
   hints: Array<{ title: string; text: string }>;
@@ -18,6 +19,11 @@ export const PRACTICE_PROBLEMS: Record<string, PracticeProblem> = {
       'Given a nonempty integer array, return its largest value. Your solution should also work when every value is negative.',
     input: '[-8, -3, -11, -5]',
     expected: '-3',
+    testCases: [
+      { label: 'All negative', input: '[-8, -3, -11, -5]', expected: '-3', reason: 'Rejects an unsafe initial answer of zero.' },
+      { label: 'Single value', input: '[7]', expected: '7', reason: 'Checks the smallest valid array.' },
+      { label: 'Repeated maximum', input: '[4, 9, 2, 9]', expected: '9', reason: 'Confirms duplicates do not change the result.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'A nonempty integer array' },
       { label: 'RETURN', value: 'The greatest value' },
@@ -58,6 +64,11 @@ public class Main {
       'Return the second largest distinct value in an integer array. Return null when fewer than two distinct values exist.',
     input: '[7, 2, 7, 5]',
     expected: '5',
+    testCases: [
+      { label: 'Duplicate maximum', input: '[7, 2, 7, 5]', expected: '5', reason: 'Checks that the answer must be distinct.' },
+      { label: 'Two values', input: '[2, 9]', expected: '2', reason: 'Checks the smallest successful input.' },
+      { label: 'No second value', input: '[4, 4, 4]', expected: 'null', reason: 'Checks the missing-answer contract.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'An integer array with possible duplicates' },
       { label: 'RETURN', value: 'Second largest distinct value, or null' },
@@ -89,6 +100,11 @@ public class Main {
       'Return true when every value is at least as large as the value immediately before it. Equal neighbors are allowed.',
     input: '[1, 2, 2, 5]',
     expected: 'true',
+    testCases: [
+      { label: 'Equal neighbours', input: '[1, 2, 2, 5]', expected: 'true', reason: 'Confirms nondecreasing order allows equality.' },
+      { label: 'First inversion', input: '[3, 2, 4]', expected: 'false', reason: 'Finds a descending adjacent pair.' },
+      { label: 'One value', input: '[6]', expected: 'true', reason: 'Checks the smallest nonempty input.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'An integer array' },
       { label: 'RETURN', value: 'true for nondecreasing order' },
@@ -120,6 +136,11 @@ public class Main {
       'Modify a sorted array so its first positions contain one copy of each distinct value, then return the number of distinct values.',
     input: '[1, 1, 2, 2, 3]',
     expected: 'length = 3, prefix = [1, 2, 3]',
+    testCases: [
+      { label: 'Several duplicates', input: '[1, 1, 2, 2, 3]', expected: '3, [1, 2, 3]', reason: 'Checks normal in-place compaction.' },
+      { label: 'All equal', input: '[5, 5, 5]', expected: '1, [5]', reason: 'Checks repeated values at every position.' },
+      { label: 'Already unique', input: '[1, 2, 3]', expected: '3, [1, 2, 3]', reason: 'Confirms valid input remains unchanged.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'A sorted integer array' },
       { label: 'CHANGE', value: 'Update the same array' },
@@ -152,6 +173,11 @@ public class Main {
       'Move the first k values to the end while preserving the order within both parts. Update the same array.',
     input: '[1, 2, 3, 4, 5], k = 2',
     expected: '[3, 4, 5, 1, 2]',
+    testCases: [
+      { label: 'Normal rotation', input: '[1, 2, 3, 4, 5], k = 2', expected: '[3, 4, 5, 1, 2]', reason: 'Checks all three reversals.' },
+      { label: 'Large k', input: '[1, 2, 3], k = 5', expected: '[3, 1, 2]', reason: 'Requires normalizing k by the length.' },
+      { label: 'Full rotation', input: '[4, 8], k = 2', expected: '[4, 8]', reason: 'Checks the no-change case.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'An array and rotation count k' },
       { label: 'CHANGE', value: 'Rotate the same array' },
@@ -187,6 +213,11 @@ public class Main {
       'Move every zero to the end of the same array. The relative order of all nonzero values must remain unchanged.',
     input: '[0, 1, 0, 3, 12]',
     expected: '[1, 3, 12, 0, 0]',
+    testCases: [
+      { label: 'Mixed values', input: '[0, 1, 0, 3, 12]', expected: '[1, 3, 12, 0, 0]', reason: 'Checks stable movement of nonzero values.' },
+      { label: 'All zeroes', input: '[0, 0]', expected: '[0, 0]', reason: 'Checks an array with nothing to copy.' },
+      { label: 'No zeroes', input: '[2, -1, 4]', expected: '[2, -1, 4]', reason: 'Confirms an already compact array is preserved.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'An integer array' },
       { label: 'CHANGE', value: 'Update the same array' },
@@ -227,6 +258,11 @@ public class Main {
       'Return all distinct values from two sorted arrays in sorted order. A value that appears in either input belongs in the result once.',
     input: '[1, 1, 3, 5] and [2, 3, 4]',
     expected: '[1, 2, 3, 4, 5]',
+    testCases: [
+      { label: 'Overlapping values', input: '[1, 1, 3, 5] and [2, 3, 4]', expected: '[1, 2, 3, 4, 5]', reason: 'Checks merging and duplicate removal.' },
+      { label: 'One empty input', input: '[] and [2, 2, 4]', expected: '[2, 4]', reason: 'Checks the remaining-elements loop.' },
+      { label: 'Same values', input: '[1, 2] and [1, 2]', expected: '[1, 2]', reason: 'Checks duplicates across both arrays.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'Two sorted integer arrays' },
       { label: 'RETURN', value: 'A sorted list of distinct values' },
@@ -260,6 +296,11 @@ public class Main {
       'The array contains n minus one distinct values from the range 1 through n. Return the single value that is absent.',
     input: 'values = [1, 2, 4, 5], n = 5',
     expected: '3',
+    testCases: [
+      { label: 'Middle missing', input: '[1, 2, 4, 5], n = 5', expected: '3', reason: 'Checks cancellation in the middle.' },
+      { label: 'First missing', input: '[2, 3], n = 3', expected: '1', reason: 'Checks the lower boundary.' },
+      { label: 'Last missing', input: '[1, 2, 3], n = 4', expected: '4', reason: 'Checks the upper boundary.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'Distinct values from 1 through n' },
       { label: 'MISSING', value: 'Exactly one range value' },
@@ -289,6 +330,11 @@ public class Main {
       'Return the maximum length of a contiguous subarray whose values add to k. Values may be positive, zero or negative.',
     input: '[1, -1, 5, -2, 3], k = 3',
     expected: '4',
+    testCases: [
+      { label: 'Includes negatives', input: '[1, -1, 5, -2, 3], k = 3', expected: '4', reason: 'Checks why a normal sliding window is unsafe.' },
+      { label: 'Whole array', input: '[2, -2, 2], k = 2', expected: '3', reason: 'Checks the prefix sum from index zero.' },
+      { label: 'No match', input: '[1, 2], k = 9', expected: '0', reason: 'Checks the missing-range result.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'Integers may include negatives' },
       { label: 'RETURN', value: 'Maximum matching subarray length' },
@@ -321,6 +367,11 @@ public class Main {
       'Given a set of distinct positive integers, return every subset that can be formed from those values, including the empty subset.',
     input: '[1, 2, 3]',
     expected: '[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]',
+    testCases: [
+      { label: 'Three values', input: '[1, 2, 3]', expected: '8 subsets', reason: 'Checks the complete include and exclude tree.' },
+      { label: 'One value', input: '[5]', expected: '[[], [5]]', reason: 'Checks the smallest nonempty set.' },
+      { label: 'Empty set', input: '[]', expected: '[[]]', reason: 'Checks that the empty subset is still produced.' },
+    ],
     rules: [
       { label: 'INPUT', value: 'A set of distinct positive integers' },
       { label: 'RETURN', value: 'All possible subsets' },

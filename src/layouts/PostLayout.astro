@@ -75,6 +75,8 @@ const coverImage = banner.custom
   ? await getImage({ src: banner.image, width: 1200, format: 'webp', quality: 85 })
   : undefined;
 const socialImage = post.data.image ?? coverImage?.src ?? banner.imageUrl;
+const absoluteSocialImage = new URL(socialImage, Astro.site ?? SITE.url).href;
+const wordCount = post.body?.trim() ? post.body.trim().split(/\s+/).length : 0;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -82,18 +84,28 @@ const jsonLd = {
   description,
   datePublished: post.data.date.toISOString(),
   dateModified: (post.data.updated ?? post.data.date).toISOString(),
-  mainEntityOfPage: articleUrl,
-  image: new URL(socialImage, Astro.site ?? SITE.url).href,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+  image: [absoluteSocialImage],
+  thumbnailUrl: absoluteSocialImage,
+  inLanguage: 'en-IN',
+  articleSection: parentLabel,
+  about: post.data.tags,
+  wordCount,
   author: {
     '@type': 'Person',
+    '@id': `${SITE.url}/about/#rahul-kumar`,
     name: SITE.author,
     url: `${SITE.url}/about/`,
+    sameAs: [SITE.github, SITE.linkedin],
   },
   publisher: {
     '@type': 'Person',
+    '@id': `${SITE.url}/about/#rahul-kumar`,
     name: SITE.author,
+    url: `${SITE.url}/about/`,
   },
-  keywords: post.data.tags.join(', '),
+  keywords: post.data.tags,
+  isPartOf: { '@type': 'WebSite', '@id': `${SITE.url}/#website`, name: SITE.name, url: SITE.url },
 };
 ---
 
@@ -106,6 +118,13 @@ const jsonLd = {
   bodyClass="article-page"
   jsonLd={jsonLd}
 >
+  <Fragment slot="head">
+    <meta property="article:published_time" content={post.data.date.toISOString()} />
+    <meta property="article:modified_time" content={(post.data.updated ?? post.data.date).toISOString()} />
+    <meta property="article:author" content={SITE.author} />
+    <meta property="article:section" content={parentLabel} />
+    {post.data.tags.map((tag) => <meta property="article:tag" content={tag} />)}
+  </Fragment>
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
 
   <div class="article-shell section-wrap">

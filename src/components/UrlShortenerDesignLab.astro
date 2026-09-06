@@ -200,16 +200,44 @@ import { URL_SHORTENER_LAB_SCENARIOS, URL_SHORTENER_LAB_STAGES } from '../data/u
       Object.entries(values).forEach(([selector, value]) => { const target = impact.querySelector<HTMLElement>(selector); if (target) target.textContent = value; });
     };
 
-    const architectureThresholds: Record<string, number> = { client: 0, edge: 3, 'rate-limiter': 7, 'load-balancer': 5, application: 5, database: 4, cache: 6, replica: 8, observability: 10 };
     const renderArchitecture = () => {
-      const complete = completedCount();
+      const api = choiceFor('api');
+      const dataModel = choiceFor('data-model');
+      const compute = choiceFor('architecture');
+      const cache = choiceFor('cache');
+      const limiter = choiceFor('rate-limit');
+      const databaseScale = choiceFor('database-scale');
+      const telemetry = choiceFor('observability');
+      const activeNodes: Record<string, boolean> = {
+        client: true,
+        edge: Boolean(api),
+        'rate-limiter': limiter === 'token' || limiter === 'fixed',
+        'load-balancer': compute === 'stateless',
+        application: Boolean(compute),
+        database: Boolean(dataModel) && cache !== 'cache-source',
+        cache: Boolean(cache),
+        replica: databaseScale === 'replica-shard',
+        observability: Boolean(telemetry),
+      };
+      const nodeTitles: Record<string, string> = {
+        edge: api === 'rpc' ? 'RPC gateway' : api === 'query' ? 'HTTP query edge' : 'API edge',
+        'rate-limiter': limiter === 'fixed' ? 'Per-instance limits' : 'Rate limiter',
+        application: compute === 'single' ? 'Single application' : compute === 'functions' ? 'Managed functions' : 'Application pool',
+        database: dataModel === 'event-only' ? 'Event log + view' : 'Primary store',
+        cache: cache === 'cache-source' ? 'Cache-only store' : 'Redis cache',
+        replica: 'Read replicas',
+        observability: telemetry === 'logs' ? 'Application logs' : telemetry === 'everything' ? 'Full telemetry capture' : 'Observability',
+      };
       root.querySelectorAll<HTMLElement>('[data-architecture-node]').forEach((node) => {
         const id = node.dataset.architectureNode || '';
-        const active = complete > (architectureThresholds[id] ?? 99) || id === 'client';
+        const active = Boolean(activeNodes[id]);
         node.classList.toggle('is-active', active);
         node.classList.remove('is-affected', 'is-protected');
+        const title = node.querySelector('strong');
+        if (title && nodeTitles[id]) title.textContent = nodeTitles[id];
         const status = node.querySelector('small');
-        if (status) status.textContent = active ? 'In the design' : 'Planned';
+        if (status) status.textContent = active ? 'Selected design' : 'Not selected';
+        node.setAttribute('aria-label', `${title?.textContent || id}: ${active ? 'included because of your decisions' : 'not included in the current design'}`);
       });
       const list = root.querySelector<HTMLOListElement>('[data-architecture-decisions]');
       if (list) {

@@ -90,6 +90,18 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
         <div><span>CHANGE PATH</span><h2 id="dashboard-goal-selector-title">What are you working toward?</h2></div>
         <div>{goals.map((goal) => <button type="button" data-dashboard-goal-choice={goal.id} aria-pressed="false">{goal.title}</button>)}</div>
       </section>
+      <section class="dashboard-transfer" aria-labelledby="dashboard-transfer-title">
+        <div>
+          <span>BACKUP AND RESTORE</span>
+          <h2 id="dashboard-transfer-title">Keep your learning progress portable</h2>
+          <p>Download one private JSON backup containing your progress, bookmarks, drafts and lab choices. Nothing is uploaded.</p>
+        </div>
+        <div class="dashboard-transfer-actions">
+          <button type="button" data-export-learning>Download backup</button>
+          <label class="dashboard-import-button">Restore backup<input type="file" accept="application/json,.json" data-import-learning /></label>
+          <p data-transfer-message aria-live="polite"></p>
+        </div>
+      </section>
       <details class="dashboard-reset">
         <summary>Reset my local learning data</summary>
         <div>
@@ -107,7 +119,7 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
 
 <script>
   import { createDashboardModel } from '../lib/learningDashboard';
-  import { markReviewed, resetLearningData, setLearningGoal } from '../lib/learningStorage';
+  import { exportLearningData, importLearningData, markReviewed, resetLearningData, setLearningGoal } from '../lib/learningStorage';
 
   const addArticleLinks = (container: HTMLElement | null, articles: Array<{ title: string; href: string; topic?: string }>, empty: string, fragment = '') => {
     if (!container) return;
@@ -188,6 +200,36 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
       const goal = button.dataset.dashboardGoalChoice;
       if (goal) setLearningGoal(goal);
     }));
+    const transferMessage = dashboard.querySelector<HTMLElement>('[data-transfer-message]');
+    dashboard.querySelector<HTMLButtonElement>('[data-export-learning]')?.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(exportLearningData(), null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `atlas-learning-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      if (transferMessage) transferMessage.textContent = 'Backup downloaded. Keep it private because it may contain your saved code.';
+    });
+    dashboard.querySelector<HTMLInputElement>('[data-import-learning]')?.addEventListener('change', async (event) => {
+      const picker = event.currentTarget as HTMLInputElement;
+      const file = picker.files?.[0];
+      if (!file) return;
+      if (file.size > 2_000_000) {
+        if (transferMessage) transferMessage.textContent = 'That file is too large. Choose an Atlas JSON backup smaller than 2 MB.';
+        picker.value = '';
+        return;
+      }
+      try {
+        const result = importLearningData(JSON.parse(await file.text()));
+        if (transferMessage) transferMessage.textContent = result.persisted
+          ? `Backup restored. ${result.importedKeys} learning sections were imported.`
+          : 'The backup is available for this visit, but browser storage is blocked.';
+      } catch (reason) {
+        if (transferMessage) transferMessage.textContent = reason instanceof Error ? reason.message : 'This backup could not be read.';
+      } finally {
+        picker.value = '';
+      }
+    });
     dashboard.querySelector<HTMLButtonElement>('[data-reset-confirm]')?.addEventListener('click', () => {
       const includeDrafts = dashboard.querySelector<HTMLInputElement>('[data-reset-drafts]')?.checked ?? false;
       const persisted = resetLearningData(includeDrafts);
@@ -238,10 +280,19 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
   .dashboard-goal-selector h2 { margin: .3rem 0 0; font-size: 1.1rem; } .dashboard-goal-selector > div:last-child { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
   .dashboard-goal-selector button { padding: .65rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
   .dashboard-goal-selector button[aria-pressed='true'] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, var(--surface)); }
+  .dashboard-transfer { display: grid; grid-template-columns: minmax(14rem, .85fr) minmax(18rem, 1.15fr); gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
+  .dashboard-transfer span { color: var(--text-soft); font: .6rem var(--font-mono); letter-spacing: .09em; }
+  .dashboard-transfer h2 { margin: .3rem 0; font-size: 1.1rem; }
+  .dashboard-transfer p { margin: 0; color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
+  .dashboard-transfer-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .dashboard-transfer button, .dashboard-import-button { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); font: 650 .65rem var(--font-sans); cursor: pointer; }
+  .dashboard-import-button input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .dashboard-import-button:focus-within { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .dashboard-transfer-actions p { flex-basis: 100%; min-height: 1rem; }
   .dashboard-reset { border: 1px solid var(--line); border-radius: .7rem; padding: .8rem 1rem; } .dashboard-reset summary { cursor: pointer; font-size: .8rem; }
   .dashboard-reset > div { max-width: 48rem; padding-top: .8rem; color: var(--text-soft); font-size: .75rem; } .dashboard-reset label { display: block; margin-block: .7rem; }
   .dashboard-reset button { margin: 0 .4rem .4rem 0; padding: .5rem .65rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--text); cursor: pointer; }
   .dashboard-reset [data-reset-confirm] { border-color: var(--rose); }
-  @media (max-width: 680px) { .dashboard-heading, .dashboard-project { align-items: start; flex-direction: column; } .dashboard-continue, .dashboard-goal-selector { grid-template-columns: 1fr; } .dashboard-next { border-top: 1px solid var(--line); border-left: 0; } .dashboard-columns { grid-template-columns: 1fr; } .dashboard-goal-selector > div:last-child { grid-template-columns: 1fr; } }
+  @media (max-width: 680px) { .dashboard-heading, .dashboard-project { align-items: start; flex-direction: column; } .dashboard-continue, .dashboard-goal-selector, .dashboard-transfer { grid-template-columns: 1fr; } .dashboard-next { border-top: 1px solid var(--line); border-left: 0; } .dashboard-columns { grid-template-columns: 1fr; } .dashboard-goal-selector > div:last-child { grid-template-columns: 1fr; } }
   @media (max-width: 430px) { .dashboard-stats { grid-template-columns: repeat(2, 1fr); } .dashboard-stats div:nth-child(2) { border-right: 0; } .dashboard-stats div:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
 </style>

@@ -5,6 +5,18 @@ interface Item {
 }
 
 const { items = [] } = Astro.props as { items: Item[] };
+const siteOrigin = Astro.site ?? new URL('https://rahulkumarsahu.github.io');
+const currentUrl = new URL(Astro.url.pathname, siteOrigin).href;
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    item: item.href ? new URL(item.href, siteOrigin).href : currentUrl,
+  })),
+};
 ---
 
 <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -17,3 +29,4 @@ const { items = [] } = Astro.props as { items: Item[] };
     ))}
   </ol>
 </nav>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />

@@ -4,11 +4,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { SITE } from '../data/site';
 import aboutPortrait from '../assets/about/rahul-about-portrait.png';
+
+const aboutJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  '@id': `${SITE.url}/about/#profile-page`,
+  url: `${SITE.url}/about/`,
+  name: `About ${SITE.author}`,
+  description: 'Senior Backend Engineer writing practical guides about Java, distributed systems, cloud platforms, and software design.',
+  inLanguage: 'en-IN',
+  mainEntity: { '@id': `${SITE.url}/about/#rahul-kumar` },
+};
 ---
 
 <BaseLayout
   title="About Rahul Kumar"
   description="I’m Rahul Kumar, a Senior Backend Engineer who writes about Java, distributed systems, cloud platforms, and practical software design."
+  jsonLd={aboutJsonLd}
 >
   <section class="page-hero about-page-hero section-wrap">
     <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'About' }]} />

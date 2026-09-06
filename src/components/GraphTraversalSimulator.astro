@@ -2,7 +2,7 @@
 import SimulatorShell from './SimulatorShell.astro';
 ---
 
-<SimulatorShell id="graph-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Graph traversal simulator" description="Follow BFS or DFS while the frontier and visited set make every decision visible.">
+<SimulatorShell id="graph-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Graph traversal simulator" description="Follow BFS or DFS while the frontier and visited set make every decision visible." activeLearning>
   <div slot="setup" class="sim-fields">
     <label>Traversal
       <select data-graph-mode aria-label="Graph traversal strategy"><option value="bfs">Breadth first</option><option value="dfs">Depth first</option></select>
@@ -30,6 +30,8 @@ import SimulatorShell from './SimulatorShell.astro';
 </SimulatorShell>
 
 <script>
+  import { connectActiveSimulatorControls } from '../lib/activeSimulator';
+  import { connectSimulatorPrediction, type SimulatorPrediction as Prediction } from '../lib/simulatorPrediction';
   type GraphStep = { current: string | null; frontier: string[]; visited: string[]; order: string[]; line: string; explanation: string; final?: boolean };
   document.querySelectorAll<HTMLElement>('#graph-traversal-simulator').forEach((root) => {
     const input = root.querySelector<HTMLInputElement>('[data-graph-input]');
@@ -38,12 +40,13 @@ import SimulatorShell from './SimulatorShell.astro';
     const canvas = root.querySelector<HTMLElement>('[data-graph-canvas]');
     const error = root.querySelector<HTMLElement>('[data-simulator-error]');
     const get = (selector: string) => root.querySelector<HTMLElement>(selector);
-    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
     let nodes: string[] = [];
     let edgeLabels: string[] = [];
     let steps: GraphStep[] = [];
     let stepIndex = 0;
     let timer: number | undefined;
+    let controls: ReturnType<typeof connectActiveSimulatorControls> | undefined;
+    const prediction = connectSimulatorPrediction(root);
 
     const parse = () => {
       const parts = (input?.value || '').split(',').map((part) => part.trim()).filter(Boolean);
@@ -112,18 +115,48 @@ import SimulatorShell from './SimulatorShell.astro';
       Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
       const label = get('[data-graph-frontier-label]'); if (label) label.textContent = mode?.value === 'bfs' ? 'Queue, front first' : 'Stack, top last';
       const edgeText = get('[data-graph-edges]'); if (edgeText) edgeText.textContent = edgeLabels.join('  ·  ');
-      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
-      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
-      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+      controls?.refresh();
     };
-    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
-    const rebuild = () => { stop(); try { const parsed = parse(); edgeLabels = parsed.labels; nodes = Array.from(parsed.adjacency.keys()); steps = makeSteps(parsed.adjacency); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Enter a small graph using A-B pairs.'; } } };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; controls?.refresh(); };
+    const moveTo = (index: number) => { stop(); prediction.hide(); stepIndex = Math.max(0, Math.min(steps.length - 1, index)); render(); };
+    const advance = () => { if (stepIndex < steps.length - 1) { stepIndex++; render(); } };
+    const nextPrediction = (): Prediction => {
+      const next = steps[Math.min(stepIndex + 1, steps.length - 1)];
+      const nextLabel = next.final || !next.current ? 'Finish because the frontier is empty' : `Process node ${next.current}`;
+      return {
+        question: `What will ${mode?.value === 'bfs' ? 'the queue' : 'the stack'} produce next?`,
+        options: [{ id: 'advance', label: nextLabel }, { id: 'skip', label: 'Choose any unvisited node' }, { id: 'restart', label: 'Restart from the first node' }],
+        correct: 'advance', explanation: next.explanation,
+      };
+    };
+    const rebuild = () => {
+      stop(); prediction.hide();
+      try {
+        const parsed = parse(); edgeLabels = parsed.labels; nodes = Array.from(parsed.adjacency.keys()); steps = makeSteps(parsed.adjacency); stepIndex = 0;
+        if (error) error.hidden = true;
+        const url = new URL(window.location.href);
+        url.searchParams.set('graphEdges', edgeLabels.map((edge) => edge.replace('–', '-')).join(','));
+        url.searchParams.set('graphMode', mode?.value || 'bfs');
+        history.replaceState(null, '', url);
+        render();
+      } catch (reason) {
+        if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Enter a small graph using A-B pairs.'; }
+      }
+    };
+    const initialUrl = new URL(window.location.href);
+    const sharedEdges = initialUrl.searchParams.get('graphEdges');
+    const sharedMode = initialUrl.searchParams.get('graphMode');
+    if (sharedEdges && input) input.value = sharedEdges;
+    if (sharedMode && mode && ['bfs', 'dfs'].includes(sharedMode)) mode.value = sharedMode;
+    controls = connectActiveSimulatorControls(root, {
+      getIndex: () => stepIndex, getLength: () => steps.length, isPlaying: () => timer !== undefined,
+      first: () => moveTo(0), previous: () => moveTo(stepIndex - 1),
+      next: () => { stop(); if (stepIndex < steps.length - 1) prediction.show(nextPrediction(), advance); },
+      last: () => moveTo(steps.length - 1),
+      play: () => { stop(); prediction.hide(); if (stepIndex >= steps.length - 1) stepIndex = 0; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, controls?.delay(900)); controls?.refresh(); },
+      pause: stop, reset: () => moveTo(0), scrub: moveTo,
+    });
     apply?.addEventListener('click', rebuild); mode?.addEventListener('change', rebuild);
-    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
-    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
-    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
-    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
-    action('pause')?.addEventListener('click', stop);
     rebuild();
   });
 </script>

@@ -30,18 +30,32 @@ const pageTitle = title === SITE.name ? SITE.title : `${title} — ${SITE.shortN
 const siteOrigin = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, siteOrigin);
 const imageUrl = image ? new URL(image, siteOrigin) : undefined;
-const defaultJsonLd = {
+const personId = `${SITE.url}/about/#rahul-kumar`;
+const websiteId = `${SITE.url}/#website`;
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': personId,
+  name: SITE.author,
+  url: `${SITE.url}/about/`,
+  image: `${SITE.url}/images/rahul-avatar.png`,
+  jobTitle: 'Senior Backend Engineer',
+  sameAs: [SITE.github, SITE.linkedin, SITE.portfolio, SITE.medium],
+};
+const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': websiteId,
   name: SITE.name,
+  alternateName: SITE.shortName,
   url: SITE.url,
   description: SITE.description,
-  author: {
-    '@type': 'Person',
-    name: SITE.author,
-    url: `${SITE.url}/about/`,
-  },
+  inLanguage: 'en-IN',
+  author: { '@id': personId },
+  publisher: { '@id': personId },
 };
+const suppliedJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
 ---
 
 <!doctype html>
@@ -52,7 +66,12 @@ const defaultJsonLd = {
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
     <meta name="theme-color" content="#172033" />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta
+      name="robots"
+      content={noindex
+        ? 'noindex, follow'
+        : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+    />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -62,6 +81,7 @@ const defaultJsonLd = {
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
@@ -76,7 +96,7 @@ const defaultJsonLd = {
     {imageUrl && <meta name="twitter:image:alt" content={imageAlt} />}
 
     <title>{pageTitle}</title>
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? defaultJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <script is:inline>
       let storedTheme = null;
       try {

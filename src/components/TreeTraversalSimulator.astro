@@ -2,7 +2,7 @@
 import SimulatorShell from './SimulatorShell.astro';
 ---
 
-<SimulatorShell id="tree-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Tree traversal simulator" description="Watch the current node, call stack or queue, and visited order change one step at a time.">
+<SimulatorShell id="tree-traversal-simulator" eyebrow="INTERACTIVE TRACE" title="Tree traversal simulator" description="Watch the current node, call stack or queue, and visited order change one step at a time." activeLearning>
   <div slot="setup" class="sim-fields">
     <label>Traversal
       <select data-tree-mode aria-label="Tree traversal order"><option value="preorder">Preorder</option><option value="inorder">Inorder</option><option value="postorder">Postorder</option><option value="bfs">Breadth first</option></select>
@@ -28,6 +28,8 @@ import SimulatorShell from './SimulatorShell.astro';
 </SimulatorShell>
 
 <script>
+  import { connectActiveSimulatorControls } from '../lib/activeSimulator';
+  import { connectSimulatorPrediction, type SimulatorPrediction as Prediction } from '../lib/simulatorPrediction';
   type TreeStep = { current: number | null; visited: number[]; frontier: number[]; line: string; explanation: string; final?: boolean };
 
   document.querySelectorAll<HTMLElement>('#tree-traversal-simulator').forEach((root) => {
@@ -43,12 +45,12 @@ import SimulatorShell from './SimulatorShell.astro';
     const visited = root.querySelector<HTMLElement>('[data-tree-visited]');
     const explanation = root.querySelector<HTMLElement>('[data-tree-explanation]');
     const result = root.querySelector<HTMLElement>('[data-tree-result]');
-    const position = root.querySelector<HTMLElement>('[data-sim-position]');
-    const buttons = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
     let values: number[] = [];
     let steps: TreeStep[] = [];
     let stepIndex = 0;
     let timer: number | undefined;
+    let controls: ReturnType<typeof connectActiveSimulatorControls> | undefined;
+    const prediction = connectSimulatorPrediction(root);
 
     const parse = () => {
       const parts = (input?.value || '').split(',').map((value) => value.trim()).filter(Boolean);
@@ -120,12 +122,26 @@ import SimulatorShell from './SimulatorShell.astro';
       if (visited) visited.textContent = state.visited.length ? state.visited.map((index) => values[index]).join(' → ') : 'Empty';
       if (explanation) explanation.textContent = state.explanation;
       if (result) result.textContent = state.final ? state.visited.map((index) => values[index]).join(' → ') : 'Complete the trace to reveal the traversal.';
-      if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
-      if (buttons('previous')) buttons('previous')!.disabled = stepIndex === 0;
-      if (buttons('next')) buttons('next')!.disabled = stepIndex >= steps.length - 1;
+      controls?.refresh();
     };
 
-    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (buttons('play')) buttons('play')!.disabled = false; if (buttons('pause')) buttons('pause')!.disabled = true; };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; controls?.refresh(); };
+    const moveTo = (index: number) => { stop(); prediction.hide(); stepIndex = Math.max(0, Math.min(steps.length - 1, index)); render(); };
+    const advance = () => { if (stepIndex < steps.length - 1) { stepIndex++; render(); } };
+    const nextPrediction = (): Prediction => {
+      const next = steps[Math.min(stepIndex + 1, steps.length - 1)];
+      const label = next.final || next.current === null ? 'Finish the traversal' : `Visit node ${values[next.current]}`;
+      return {
+        question: mode?.value === 'bfs' ? 'Which node leaves the queue next?' : 'What is the next visible traversal event?',
+        options: [
+          { id: 'advance', label },
+          { id: 'wait', label: 'Keep the current state unchanged' },
+          { id: 'restart', label: 'Return to the root' },
+        ],
+        correct: 'advance',
+        explanation: next.explanation,
+      };
+    };
     const rebuild = () => {
       stop();
       try {
@@ -133,18 +149,40 @@ import SimulatorShell from './SimulatorShell.astro';
         steps = buildSteps();
         stepIndex = 0;
         if (error) error.hidden = true;
+        const url = new URL(window.location.href);
+        url.searchParams.set('treeValues', values.join(','));
+        url.searchParams.set('treeMode', mode?.value || 'preorder');
+        history.replaceState(null, '', url);
         render();
       } catch (reason) {
         if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Use a short comma-separated list of integers.'; }
       }
     };
+    const initialUrl = new URL(window.location.href);
+    const sharedValues = initialUrl.searchParams.get('treeValues');
+    const sharedMode = initialUrl.searchParams.get('treeMode');
+    if (sharedValues && input) input.value = sharedValues;
+    if (sharedMode && mode && ['preorder', 'inorder', 'postorder', 'bfs'].includes(sharedMode)) mode.value = sharedMode;
+    controls = connectActiveSimulatorControls(root, {
+      getIndex: () => stepIndex,
+      getLength: () => steps.length,
+      isPlaying: () => timer !== undefined,
+      first: () => moveTo(0),
+      previous: () => moveTo(stepIndex - 1),
+      next: () => { stop(); if (stepIndex < steps.length - 1) prediction.show(nextPrediction(), advance); },
+      last: () => moveTo(steps.length - 1),
+      play: () => {
+        stop(); prediction.hide();
+        if (stepIndex >= steps.length - 1) stepIndex = 0;
+        timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, controls?.delay(900));
+        controls?.refresh();
+      },
+      pause: stop,
+      reset: () => moveTo(0),
+      scrub: moveTo,
+    });
     apply?.addEventListener('click', rebuild);
     mode?.addEventListener('change', rebuild);
-    buttons('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
-    buttons('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
-    buttons('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
-    buttons('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (buttons('play')) buttons('play')!.disabled = true; if (buttons('pause')) buttons('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
-    buttons('pause')?.addEventListener('click', stop);
     rebuild();
   });
 </script>

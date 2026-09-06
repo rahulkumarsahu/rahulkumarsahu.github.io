@@ -7,18 +7,21 @@ const { post } = Astro.props as { post: Post };
 const slug = getPostSlug(post);
 const subject = encodeURIComponent(`Technical correction for: ${post.data.title}`);
 const body = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nSection or code sample:\n\nWhat appears incorrect:\n\nSuggested correction or supporting source:\n`);
+const claritySubject = encodeURIComponent(`Clarity feedback for: ${post.data.title}`);
+const clarityBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nThe part I found unclear:\n\nWhat I expected to understand:\n\nA suggestion or question:\n`);
 ---
 
 <section class="article-feedback" data-article-feedback data-article-slug={slug} aria-labelledby={`feedback-title-${slug}`}>
   <div>
     <span>CLARITY CHECK</span>
     <h2 id={`feedback-title-${slug}`}>Did this explanation help?</h2>
-    <p>Your answer stays in this browser. It is not transmitted anywhere.</p>
+    <p>Your quick rating stays in this browser. Use the email option if you want the feedback to reach Rahul.</p>
   </div>
   <div class="feedback-actions" role="group" aria-label={`Clarity feedback for ${post.data.title}`}>
     <button type="button" data-feedback-value="helped" aria-pressed="false">Yes, it helped</button>
     <button type="button" data-feedback-value="partially" aria-pressed="false">Partially</button>
     <button type="button" data-feedback-value="confused" aria-pressed="false">I am still confused</button>
+    <a href={`mailto:${SITE.email}?subject=${claritySubject}&body=${clarityBody}`}>Explain what was unclear</a>
     <a href={`mailto:${SITE.email}?subject=${subject}&body=${body}`}>Report a technical mistake</a>
   </div>
   <p class="feedback-message" data-feedback-message aria-live="polite"></p>

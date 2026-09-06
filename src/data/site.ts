@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'The System Design Atlas',
   shortName: 'System Design Atlas',
-  title: 'The System Design Atlas — Rahul Kumar',
+  title: 'The System Design Atlas | DSA, Java & System Design',
   description:
     'Practical guides on DSA, Java, system design, cloud native engineering, AI engineering, and the ideas that improve real software teams.',
   tagline: 'Navigate from algorithms to intelligent, distributed systems.',

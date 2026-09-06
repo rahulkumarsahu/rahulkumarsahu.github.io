@@ -13,6 +13,13 @@ export const KEYS = {
 
 export type LearningStorageKey = typeof KEYS[keyof typeof KEYS];
 
+export interface LearningDataBundle {
+  format: 'the-system-design-atlas-learning-data';
+  version: 1;
+  exportedAt: string;
+  data: Partial<Record<LearningStorageKey, Record<string, unknown>>>;
+}
+
 const memoryStore = new Map<string, Record<string, unknown>>();
 let persistentStorageAvailable: boolean | undefined;
 
@@ -128,4 +135,35 @@ export function resetLearningData(includeDrafts = false): boolean {
   }
   emitLearningChange();
   return persisted;
+}
+
+export function exportLearningData(): LearningDataBundle {
+  const data: LearningDataBundle['data'] = {};
+  for (const key of Object.values(KEYS)) data[key] = readRecord(key);
+  return {
+    format: 'the-system-design-atlas-learning-data',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data,
+  };
+}
+
+export function importLearningData(value: unknown): { importedKeys: number; persisted: boolean } {
+  if (!value || typeof value !== 'object') throw new Error('This file does not contain Atlas learning data.');
+  const bundle = value as Partial<LearningDataBundle>;
+  if (bundle.format !== 'the-system-design-atlas-learning-data' || bundle.version !== 1 || !bundle.data || typeof bundle.data !== 'object') {
+    throw new Error('This backup format is not supported. Please choose a version 1 Atlas backup.');
+  }
+
+  const allowed = new Set<LearningStorageKey>(Object.values(KEYS));
+  let importedKeys = 0;
+  let persisted = storageIsAvailable();
+  for (const [key, record] of Object.entries(bundle.data)) {
+    if (!allowed.has(key as LearningStorageKey) || !record || typeof record !== 'object' || Array.isArray(record)) continue;
+    persisted = writeRecord(key as LearningStorageKey, record as Record<string, unknown>) && persisted;
+    importedKeys++;
+  }
+  if (!importedKeys) throw new Error('The backup does not contain any recognised learning records.');
+  emitLearningChange();
+  return { importedKeys, persisted };
 }

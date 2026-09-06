@@ -2,7 +2,7 @@
 import SimulatorShell from './SimulatorShell.astro';
 ---
 
-<SimulatorShell id="load-balancing-simulator" eyebrow="SYSTEM BEHAVIOUR" title="Load-balancing simulator" description="Compare request assignment strategies and see how unhealthy servers leave the rotation.">
+<SimulatorShell id="load-balancing-simulator" eyebrow="SYSTEM BEHAVIOUR" title="Load-balancing simulator" description="Compare request assignment strategies and see how unhealthy servers leave the rotation." activeLearning>
   <div slot="setup" class="sim-fields lb-fields">
     <label>Strategy
       <select data-lb-strategy aria-label="Load-balancing strategy"><option value="round-robin">Round robin</option><option value="weighted">Weighted round robin</option><option value="least">Least connections</option></select>
@@ -31,6 +31,8 @@ import SimulatorShell from './SimulatorShell.astro';
 </SimulatorShell>
 
 <script>
+  import { connectActiveSimulatorControls } from '../lib/activeSimulator';
+  import { connectSimulatorPrediction, type SimulatorPrediction as Prediction } from '../lib/simulatorPrediction';
   type ServerName = 'A' | 'B' | 'C';
   type LbStep = { request: number | null; selected: ServerName | null; active: Record<ServerName, number>; distribution: Record<ServerName, number>; healthy: ServerName[]; rule: string; explanation: string; final?: boolean };
   document.querySelectorAll<HTMLElement>('#load-balancing-simulator').forEach((root) => {
@@ -41,11 +43,12 @@ import SimulatorShell from './SimulatorShell.astro';
     const error = root.querySelector<HTMLElement>('[data-simulator-error]');
     const healthInputs = Array.from(root.querySelectorAll<HTMLInputElement>('[data-lb-health]'));
     const get = (selector: string) => root.querySelector<HTMLElement>(selector);
-    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-sim-action="${name}"]`);
     const weights: Record<ServerName, number> = { A: 1, B: 2, C: 3 };
     let steps: LbStep[] = [];
     let stepIndex = 0;
     let timer: number | undefined;
+    let controls: ReturnType<typeof connectActiveSimulatorControls> | undefined;
+    const prediction = connectSimulatorPrediction(root);
 
     const clone = (value: Record<ServerName, number>) => ({ A: value.A, B: value.B, C: value.C });
     const parse = () => {
@@ -108,18 +111,52 @@ import SimulatorShell from './SimulatorShell.astro';
         '[data-lb-result]': state.final ? summary(state.distribution) : 'Complete the trace to compare the distribution.',
       };
       Object.entries(values).forEach(([selector, value]) => { const target = get(selector); if (target) target.textContent = value; });
-      const position = get('[data-sim-position]'); if (position) position.textContent = `Step ${stepIndex} of ${Math.max(0, steps.length - 1)}`;
-      if (action('previous')) action('previous')!.disabled = stepIndex === 0;
-      if (action('next')) action('next')!.disabled = stepIndex >= steps.length - 1;
+      controls?.refresh();
     };
-    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; if (action('play')) action('play')!.disabled = false; if (action('pause')) action('pause')!.disabled = true; };
-    const rebuild = () => { stop(); try { const parsed = parse(); steps = makeSteps(parsed.count, parsed.healthy); stepIndex = 0; if (error) error.hidden = true; render(); } catch (reason) { if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Choose valid server and request settings.'; } } };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; controls?.refresh(); };
+    const moveTo = (index: number) => { stop(); prediction.hide(); stepIndex = Math.max(0, Math.min(steps.length - 1, index)); render(); };
+    const advance = () => { if (stepIndex < steps.length - 1) { stepIndex++; render(); } };
+    const nextPrediction = (): Prediction => {
+      const next = steps[Math.min(stepIndex + 1, steps.length - 1)];
+      const correctLabel = next.final || !next.selected ? 'Finish and show the distribution' : `Assign request ${next.request} to server ${next.selected}`;
+      const alternatives = next.healthy.filter((name) => name !== next.selected).slice(0, 2).map((name) => ({ id: `server-${name}`, label: `Assign it to server ${name}` }));
+      if (alternatives.length < 2) alternatives.push({ id: 'skip', label: 'Drop the request without evaluating a server' });
+      return { question: 'Where will the next request go?', options: [{ id: 'advance', label: correctLabel }, ...alternatives], correct: 'advance', explanation: next.explanation };
+    };
+    const syncUrl = (healthy: ServerName[], count: number) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('lbStrategy', strategy?.value || 'round-robin');
+      url.searchParams.set('lbRequests', String(count));
+      url.searchParams.set('lbHealthy', healthy.join(''));
+      history.replaceState(null, '', url);
+    };
+    const rebuild = () => {
+      stop(); prediction.hide();
+      try {
+        const parsed = parse(); steps = makeSteps(parsed.count, parsed.healthy); stepIndex = 0;
+        if (error) error.hidden = true;
+        syncUrl(parsed.healthy, parsed.count);
+        render();
+      } catch (reason) {
+        if (error) { error.hidden = false; error.textContent = reason instanceof Error ? reason.message : 'Choose valid server and request settings.'; }
+      }
+    };
+    const initialUrl = new URL(window.location.href);
+    const sharedStrategy = initialUrl.searchParams.get('lbStrategy');
+    const sharedCount = Number(initialUrl.searchParams.get('lbRequests'));
+    const sharedHealthy = initialUrl.searchParams.get('lbHealthy');
+    if (strategy && sharedStrategy && ['round-robin', 'weighted', 'least'].includes(sharedStrategy)) strategy.value = sharedStrategy;
+    if (countInput && Number.isInteger(sharedCount) && sharedCount >= 1 && sharedCount <= 20) countInput.value = String(sharedCount);
+    if (sharedHealthy && /^[ABC]+$/.test(sharedHealthy)) healthInputs.forEach((field) => field.checked = sharedHealthy.includes(field.dataset.lbHealth || ''));
+    controls = connectActiveSimulatorControls(root, {
+      getIndex: () => stepIndex, getLength: () => steps.length, isPlaying: () => timer !== undefined,
+      first: () => moveTo(0), previous: () => moveTo(stepIndex - 1),
+      next: () => { stop(); if (stepIndex < steps.length - 1) prediction.show(nextPrediction(), advance); },
+      last: () => moveTo(steps.length - 1),
+      play: () => { stop(); prediction.hide(); if (stepIndex >= steps.length - 1) stepIndex = 0; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, controls?.delay(900)); controls?.refresh(); },
+      pause: stop, reset: () => moveTo(0), scrub: moveTo,
+    });
     apply?.addEventListener('click', rebuild); strategy?.addEventListener('change', rebuild); healthInputs.forEach((input) => input.addEventListener('change', rebuild));
-    action('previous')?.addEventListener('click', () => { stop(); stepIndex = Math.max(0, stepIndex - 1); render(); });
-    action('next')?.addEventListener('click', () => { stop(); stepIndex = Math.min(steps.length - 1, stepIndex + 1); render(); });
-    action('reset')?.addEventListener('click', () => { stop(); stepIndex = 0; render(); });
-    action('play')?.addEventListener('click', () => { stop(); if (stepIndex >= steps.length - 1) stepIndex = 0; if (action('play')) action('play')!.disabled = true; if (action('pause')) action('pause')!.disabled = false; timer = window.setInterval(() => { if (stepIndex >= steps.length - 1) return stop(); stepIndex++; render(); }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1200 : 750); });
-    action('pause')?.addEventListener('click', stop);
     rebuild();
   });
 </script>

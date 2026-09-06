@@ -80,8 +80,15 @@ for (const page of postPages) {
   assert.equal(meta(html, 'twitter:image'), social);
   assert.equal(meta(html, 'og:image:alt'), cover.alt);
   assert.equal(meta(html, 'twitter:image:alt'), cover.alt);
-  const json = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
-  assert.equal(json.image, social, `${page}: inconsistent article structured data`);
+  const structuredData = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .flatMap((match) => {
+      const document = JSON.parse(match[1]);
+      return Array.isArray(document) ? document : [document];
+    });
+  const articleData = structuredData.find((document) => document['@type'] === 'BlogPosting');
+  assert(articleData, `${page}: BlogPosting structured data missing`);
+  const structuredImage = Array.isArray(articleData.image) ? articleData.image[0] : articleData.image;
+  assert.equal(structuredImage, social, `${page}: inconsistent article structured data`);
   // The existing notebook image keeps its public URL; other covers share the
   // exact generated image used on their article page.
   if (!social.endsWith('/images/dsa/recursion-call-stack.webp')) {

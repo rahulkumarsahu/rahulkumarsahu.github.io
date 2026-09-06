@@ -40,6 +40,23 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
       <pre class="jdoodle-example-code">{`Input:    ${problem.input}\nExpected: ${problem.expected}`}</pre>
     </div>
 
+    <details class="practice-tests">
+      <summary>Open the test pack <span>{problem.testCases.length} cases</span></summary>
+      <div class="practice-test-intro">
+        <p>Run your method with each input in <code>Main.java</code>. Compare the printed value with the expected result before revealing the solution.</p>
+      </div>
+      <div class="practice-test-table" tabindex="0" role="region" aria-label={`Test cases for ${problem.title}`}>
+        <table>
+          <thead><tr><th scope="col">Case</th><th scope="col">Input</th><th scope="col">Expected</th><th scope="col">What it checks</th></tr></thead>
+          <tbody>
+            {problem.testCases.map((test) => (
+              <tr><th scope="row">{test.label}</th><td><code>{test.input}</code></td><td><code>{test.expected}</code></td><td>{test.reason}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+
     {problem.officialUrl && (
       <a href={problem.officialUrl} target="_blank" rel="noopener noreferrer">Open the official problem ↗</a>
     )}
@@ -239,6 +256,19 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     color: var(--amber);
     letter-spacing: 0;
   }
+
+  .practice-tests { margin-top: 1rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); }
+  .practice-tests summary { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem .85rem; color: var(--text); font-size: .72rem; font-weight: 700; cursor: pointer; }
+  .practice-tests summary span { color: var(--indigo); letter-spacing: .04em; }
+  .practice-test-intro { padding: 0 .85rem .65rem; }
+  .practice-test-intro p { margin: 0; font-size: .7rem; }
+  .practice-test-table { max-width: 100%; overflow-x: auto; border-top: 1px solid var(--line); }
+  .practice-test-table table { width: 100%; min-width: 38rem; border-collapse: collapse; font-size: .66rem; }
+  .practice-test-table :is(th, td) { padding: .65rem .75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .practice-test-table thead th { color: var(--text-faint); font: 650 .52rem var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
+  .practice-test-table tbody th { color: var(--text); }
+  .practice-test-table td:last-child { color: var(--text-soft); }
+  .practice-test-table code { color: var(--indigo); white-space: nowrap; }
 
   .jdoodle-problem h3,
   .jdoodle-build-heading h3 {

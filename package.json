@@ -9,7 +9,15 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "check:content": "node scripts/check-content-quality.mjs",
+    "check:java": "node scripts/check-java-solutions.mjs",
+    "check:links": "node scripts/check-internal-links.mjs",
+    "check:banners": "node scripts/check-article-banners.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "prebuild": "npm run check:content && npm run check:java",
     "build": "astro build",
+    "postbuild": "npm run check:seo && npm run check:banners && npm run check:links",
+    "validate": "npm run build",
     "preview": "astro preview"
   },
   "dependencies": {
