@@ -129,6 +129,8 @@ const dsaDirectoryGroups = [
       </section>
 
       <nav class="dsa-learning-tools section-wrap" aria-label="DSA learning tools">
+        <a href="/dsa/master-sheet/"><span>PRACTICE</span><strong>DSA Master Sheet</strong><small>164 curated problems with local progress and revision marks</small></a>
+        <a href="/dsa/companies/"><span>COMPANIES</span><strong>Company Practice</strong><small>Google, Meta and Uber starter tracks by DSA topic</small></a>
         <a href="/dsa/patterns/"><span>RECOGNIZE</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
         <a href="/dsa/revision/"><span>REVISE</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>
         <a href="/projects/production-url-shortener/"><span>CONNECT</span><strong>Connected Project</strong><small>Carry ideas from code into a production system</small></a>
@@ -288,7 +290,7 @@ const dsaDirectoryGroups = [
   .curriculum-future-band { border-top: 1px solid var(--line); padding-top: 2rem; }
   .curriculum-future-band :global(.topic-cover-card) { background: var(--bg-soft); }
   .dsa-start-here { padding-top: 4.5rem; }
-  .dsa-learning-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding-top: 1rem; }
+  .dsa-learning-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .65rem; padding-top: 1rem; }
   .dsa-learning-tools a { display: grid; gap: .3rem; padding: .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--text); }
   .dsa-learning-tools a:hover { border-color: var(--indigo); transform: translateY(-2px); }
   .dsa-learning-tools span { color: var(--amber); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .08em; }
@@ -332,7 +334,7 @@ const dsaDirectoryGroups = [
   .dsa-directory-coming,
   .dsa-directory-planned { opacity: .84; }
   .dsa-directory-planned { opacity: .68; }
-  @media (max-width: 900px) { .dsa-start-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .dsa-start-list, .dsa-learning-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 620px) {
     .dsa-start-here { padding-top: 3rem; }
     .dsa-start-list { grid-template-columns: 1fr; }

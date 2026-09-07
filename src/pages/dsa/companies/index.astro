@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import CompanyPracticeDirectory from '../../../components/CompanyPracticeDirectory.astro';
+import { COMPANY_TRACKS } from '../../../data/dsaCompanyTracks';
+
+const description = 'Prepare for Google, Meta and Uber coding interviews with topic-wise DSA starter tracks, official problem links and private local progress.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Company-wise DSA Practice',
+  description,
+  url: new URL('/dsa/companies/', Astro.site).href,
+  about: COMPANY_TRACKS.map((company) => `${company.name} coding interview preparation`),
+  numberOfItems: COMPANY_TRACKS.reduce((count, company) => count + company.problems.length, 0),
+};
+---
+
+<BaseLayout title="Company-wise DSA Practice" {description} {jsonLd}>
+  <main class="section-wrap company-page">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Company Practice' }]} />
+    <CompanyPracticeDirectory />
+  </main>
+</BaseLayout>
+
+<style>
+  .company-page { padding-top: 1.25rem; }
+</style>

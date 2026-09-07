@@ -1,0 +1,376 @@
+---
+import { MASTER_PROBLEMS, MASTER_TOPICS } from '../data/dsaMasterSheet';
+
+const difficultyOrder = ['easy', 'medium', 'hard'] as const;
+const counts = {
+  easy: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'easy').length,
+  medium: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'medium').length,
+  hard: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'hard').length,
+  important: MASTER_PROBLEMS.filter((problem) => problem.important).length,
+};
+const groupedTopics = MASTER_TOPICS.map((topic) => ({
+  ...topic,
+  problems: MASTER_PROBLEMS.filter((problem) => problem.topic === topic.id),
+}));
+const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform))];
+---
+
+<section class="master-sheet" data-master-sheet data-total={MASTER_PROBLEMS.length}>
+  <header class="master-heading">
+    <div>
+      <p class="section-index">PRACTICE DIRECTORY / PHASE 1</p>
+      <h1>DSA Master Sheet</h1>
+      <p>Build consistency with an original topic-wise problem list. Open the source problem, mark your progress, and return to revision questions when you need them.</p>
+    </div>
+    <div class="master-heading-actions">
+      <a class="button button-secondary" href="/dsa/companies/">Company practice</a>
+      <button type="button" class="button button-secondary" data-reset-filters>Reset filters</button>
+      <button type="button" class="button button-danger" data-open-clear>Clear progress</button>
+    </div>
+  </header>
+
+  <div class="master-stats" aria-label="Master sheet summary">
+    <article class="master-progress-card">
+      <div class="progress-ring" data-progress-ring style="--progress: 0"><strong data-progress-percent>0%</strong></div>
+      <div><span>OVERALL PROGRESS</span><strong><i data-solved-total>0</i> / {MASTER_PROBLEMS.length}</strong><small data-progress-copy>Start with one problem today.</small></div>
+    </article>
+    <article><span>TOPICS</span><strong>{MASTER_TOPICS.length}</strong><small>Structured learning sections</small></article>
+    <article><span>EASY</span><strong>{counts.easy}</strong><small>Foundation problems</small></article>
+    <article><span>MEDIUM</span><strong>{counts.medium}</strong><small>Pattern-building practice</small></article>
+    <article><span>HARD</span><strong>{counts.hard}</strong><small>Advanced problem solving</small></article>
+    <article><span>IMPORTANT</span><strong>{counts.important}</strong><small>Recommended interview core</small></article>
+  </div>
+
+  <section class="master-filters" aria-labelledby="master-filter-title">
+    <h2 id="master-filter-title" class="sr-only">Filter problems</h2>
+    <label class="master-search"><span class="sr-only">Search problems</span><input type="search" placeholder="Search by title, topic, or pattern" data-master-search /></label>
+    <label><span>Topic</span><select data-topic-filter><option value="all">All topics</option>{MASTER_TOPICS.map((topic) => <option value={topic.id}>{topic.title}</option>)}</select></label>
+    <label><span>Difficulty</span><select data-difficulty-filter><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></label>
+    <label><span>Platform</span><select data-platform-filter><option value="all">All platforms</option>{platforms.map((platform) => <option value={platform.toLowerCase()}>{platform}</option>)}</select></label>
+    <button type="button" aria-pressed="false" data-toggle-filter="important">Important only</button>
+    <button type="button" aria-pressed="false" data-toggle-filter="revision">Revision only</button>
+    <button type="button" aria-pressed="false" data-toggle-filter="solved">Solved only</button>
+  </section>
+
+  <div class="master-result-bar" role="status" aria-live="polite">
+    <span><strong data-visible-count>{MASTER_PROBLEMS.length}</strong> questions shown</span>
+    <span>Your progress is stored only in this browser.</span>
+  </div>
+
+  <div class="master-topics" data-master-topics>
+    {groupedTopics.map((topic, topicIndex) => (
+      <details class="master-topic" data-topic-group={topic.id} open={topicIndex === 0}>
+        <summary>
+          <span class="topic-chevron" aria-hidden="true">›</span>
+          <div><strong>{topic.title}</strong><small>{topic.description}</small></div>
+          <div class="topic-summary-progress"><span><i data-topic-solved>0</i> / {topic.problems.length}</span><progress value="0" max={topic.problems.length} data-topic-progress aria-label={`${topic.title} progress`}></progress></div>
+        </summary>
+
+        <div class="master-difficulties">
+          {difficultyOrder.map((difficulty) => {
+            const problems = topic.problems.filter((problem) => problem.difficulty === difficulty);
+            return problems.length > 0 && (
+              <details class="master-difficulty" data-difficulty-group={difficulty} open>
+                <summary>
+                  <span class="difficulty-chevron" aria-hidden="true">›</span>
+                  <strong>{difficulty}</strong>
+                  <i data-difficulty-visible>{problems.length}</i>
+                </summary>
+                <div class="problem-list">
+                  {problems.map((problem, index) => (
+                    <article
+                      class="master-problem"
+                      data-problem
+                      data-id={problem.id}
+                      data-topic={problem.topic}
+                      data-difficulty={problem.difficulty}
+                      data-platform={problem.platform.toLowerCase()}
+                      data-important={String(problem.important)}
+                      data-search={`${problem.title} ${topic.title} ${problem.patterns.join(' ')}`.toLowerCase()}
+                    >
+                      <span class="problem-number">{String(index + 1).padStart(2, '0')}</span>
+                      <button type="button" class="solve-control" aria-pressed="false" aria-label={`Mark ${problem.title} as solved`} data-solve><span aria-hidden="true">✓</span></button>
+                      <div class="problem-copy">
+                        <h3>{problem.title}</h3>
+                        <div>{problem.patterns.slice(0, 3).map((pattern) => <span>{pattern.replaceAll('-', ' ')}</span>)}</div>
+                      </div>
+                      <span class:list={['difficulty-chip', `difficulty-${problem.difficulty}`]}>{problem.difficulty}</span>
+                      {problem.important ? <span class="important-chip"><span aria-hidden="true">★</span> Important</span> : <span></span>}
+                      <button type="button" class="revision-control" aria-pressed="false" aria-label={`Add ${problem.title} to revision`} data-revision><span aria-hidden="true">↻</span><span>Revise</span></button>
+                      <a href={problem.url} target="_blank" rel="noopener noreferrer" class="open-problem" aria-label={`Open ${problem.title} on ${problem.platform}`}>Open <span aria-hidden="true">↗</span></a>
+                    </article>
+                  ))}
+                </div>
+              </details>
+            );
+          })}
+        </div>
+      </details>
+    ))}
+  </div>
+
+  <div class="master-empty" data-master-empty hidden>
+    <strong>No questions match these filters.</strong>
+    <p>Try removing one filter or searching with a shorter phrase.</p>
+    <button type="button" class="button button-secondary" data-empty-reset>Reset filters</button>
+  </div>
+
+  <dialog class="clear-dialog" data-clear-dialog aria-labelledby="clear-dialog-title">
+    <form method="dialog">
+      <span>LOCAL PROGRESS</span>
+      <h2 id="clear-dialog-title">Clear your master sheet progress?</h2>
+      <p>This removes solved and revision marks stored by this browser. It does not change your article progress or saved code.</p>
+      <div><button value="cancel" class="button button-secondary">Keep progress</button><button value="confirm" class="button button-danger" data-confirm-clear>Clear progress</button></div>
+    </form>
+  </dialog>
+</section>
+
+<script>
+  const STORAGE_KEY = 'atlas-master-sheet:v1';
+  type ProblemState = { solved?: boolean; revision?: boolean };
+
+  document.querySelectorAll<HTMLElement>('[data-master-sheet]').forEach((sheet) => {
+    const rows = [...sheet.querySelectorAll<HTMLElement>('[data-problem]')];
+    const search = sheet.querySelector<HTMLInputElement>('[data-master-search]');
+    const topicFilter = sheet.querySelector<HTMLSelectElement>('[data-topic-filter]');
+    const difficultyFilter = sheet.querySelector<HTMLSelectElement>('[data-difficulty-filter]');
+    const platformFilter = sheet.querySelector<HTMLSelectElement>('[data-platform-filter]');
+    const toggleButtons = [...sheet.querySelectorAll<HTMLButtonElement>('[data-toggle-filter]')];
+    const clearDialog = sheet.querySelector<HTMLDialogElement>('[data-clear-dialog]');
+    let state: Record<string, ProblemState> = {};
+
+    const readState = () => {
+      try {
+        const value = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}');
+        state = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+      } catch { state = {}; }
+    };
+
+    const writeState = () => {
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* The sheet still works for this visit. */ }
+    };
+
+    const updateControls = () => {
+      rows.forEach((row) => {
+        const current = state[row.dataset.id || ''] || {};
+        const solve = row.querySelector<HTMLButtonElement>('[data-solve]');
+        const revision = row.querySelector<HTMLButtonElement>('[data-revision]');
+        row.dataset.solved = String(Boolean(current.solved));
+        row.dataset.revision = String(Boolean(current.revision));
+        solve?.setAttribute('aria-pressed', String(Boolean(current.solved)));
+        revision?.setAttribute('aria-pressed', String(Boolean(current.revision)));
+      });
+    };
+
+    const activeToggle = (name: string) => toggleButtons.some((button) => button.dataset.toggleFilter === name && button.getAttribute('aria-pressed') === 'true');
+
+    const applyFilters = () => {
+      const term = search?.value.trim().toLowerCase() || '';
+      let visible = 0;
+      rows.forEach((row) => {
+        const matches = (!term || row.dataset.search?.includes(term))
+          && (!topicFilter || topicFilter.value === 'all' || row.dataset.topic === topicFilter.value)
+          && (!difficultyFilter || difficultyFilter.value === 'all' || row.dataset.difficulty === difficultyFilter.value)
+          && (!platformFilter || platformFilter.value === 'all' || row.dataset.platform === platformFilter.value)
+          && (!activeToggle('important') || row.dataset.important === 'true')
+          && (!activeToggle('revision') || row.dataset.revision === 'true')
+          && (!activeToggle('solved') || row.dataset.solved === 'true');
+        row.hidden = !matches;
+        if (matches) visible++;
+      });
+
+      sheet.querySelectorAll<HTMLElement>('[data-difficulty-group]').forEach((group) => {
+        const count = [...group.querySelectorAll<HTMLElement>('[data-problem]')].filter((row) => !row.hidden).length;
+        group.hidden = count === 0;
+        const output = group.querySelector<HTMLElement>('[data-difficulty-visible]');
+        if (output) output.textContent = String(count);
+      });
+      sheet.querySelectorAll<HTMLDetailsElement>('[data-topic-group]').forEach((group) => {
+        group.hidden = !group.querySelector('[data-problem]:not([hidden])');
+      });
+      const output = sheet.querySelector<HTMLElement>('[data-visible-count]');
+      if (output) output.textContent = String(visible);
+      const empty = sheet.querySelector<HTMLElement>('[data-master-empty]');
+      if (empty) empty.hidden = visible !== 0;
+    };
+
+    const updateProgress = () => {
+      const solved = rows.filter((row) => state[row.dataset.id || '']?.solved).length;
+      const total = rows.length;
+      const percent = total ? Math.round((solved / total) * 100) : 0;
+      const solvedOutput = sheet.querySelector<HTMLElement>('[data-solved-total]');
+      const percentOutput = sheet.querySelector<HTMLElement>('[data-progress-percent]');
+      const ring = sheet.querySelector<HTMLElement>('[data-progress-ring]');
+      const copy = sheet.querySelector<HTMLElement>('[data-progress-copy]');
+      if (solvedOutput) solvedOutput.textContent = String(solved);
+      if (percentOutput) percentOutput.textContent = `${percent}%`;
+      ring?.style.setProperty('--progress', String(percent));
+      if (copy) copy.textContent = solved ? `${total - solved} questions remain.` : 'Start with one problem today.';
+
+      sheet.querySelectorAll<HTMLElement>('[data-topic-group]').forEach((group) => {
+        const topicRows = [...group.querySelectorAll<HTMLElement>('[data-problem]')];
+        const topicSolved = topicRows.filter((row) => state[row.dataset.id || '']?.solved).length;
+        const value = group.querySelector<HTMLElement>('[data-topic-solved]');
+        const progress = group.querySelector<HTMLProgressElement>('[data-topic-progress]');
+        if (value) value.textContent = String(topicSolved);
+        if (progress) progress.value = topicSolved;
+      });
+    };
+
+    const resetFilters = () => {
+      if (search) search.value = '';
+      if (topicFilter) topicFilter.value = 'all';
+      if (difficultyFilter) difficultyFilter.value = 'all';
+      if (platformFilter) platformFilter.value = 'all';
+      toggleButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
+      applyFilters();
+    };
+
+    rows.forEach((row) => {
+      row.querySelector<HTMLButtonElement>('[data-solve]')?.addEventListener('click', () => {
+        const id = row.dataset.id || '';
+        state[id] = { ...state[id], solved: !state[id]?.solved };
+        writeState(); updateControls(); updateProgress(); applyFilters();
+      });
+      row.querySelector<HTMLButtonElement>('[data-revision]')?.addEventListener('click', () => {
+        const id = row.dataset.id || '';
+        state[id] = { ...state[id], revision: !state[id]?.revision };
+        writeState(); updateControls(); applyFilters();
+      });
+    });
+    search?.addEventListener('input', applyFilters);
+    [topicFilter, difficultyFilter, platformFilter].forEach((control) => control?.addEventListener('change', applyFilters));
+    toggleButtons.forEach((button) => button.addEventListener('click', () => {
+      button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
+      applyFilters();
+    }));
+    sheet.querySelector('[data-reset-filters]')?.addEventListener('click', resetFilters);
+    sheet.querySelector('[data-empty-reset]')?.addEventListener('click', resetFilters);
+    sheet.querySelector('[data-open-clear]')?.addEventListener('click', () => clearDialog?.showModal());
+    sheet.querySelector('[data-confirm-clear]')?.addEventListener('click', () => {
+      state = {}; writeState(); updateControls(); updateProgress(); applyFilters();
+    });
+
+    readState(); updateControls(); updateProgress(); applyFilters();
+  });
+</script>
+
+<style>
+  .master-sheet { padding: clamp(1.5rem, 3vw, 3rem) 0 5rem; }
+  .master-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
+  .master-heading h1 { margin: .35rem 0 .5rem; font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: -.055em; }
+  .master-heading p:last-child { max-width: 54rem; margin: 0; color: var(--text-soft); line-height: 1.65; }
+  .master-heading-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; gap: .6rem; }
+  .button-danger { border-color: color-mix(in srgb, #ef6a6a 45%, var(--line)); color: #d94d57; }
+  .master-stats { display: grid; grid-template-columns: 2fr repeat(5, 1fr); gap: .75rem; margin-bottom: 1rem; }
+  .master-stats article { min-width: 0; display: grid; align-content: center; min-height: 8rem; padding: 1rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); box-shadow: var(--shadow-soft); }
+  .master-stats article > span, .master-progress-card span { color: var(--text-faint); font-family: var(--font-mono); font-size: .56rem; font-weight: 700; letter-spacing: .09em; }
+  .master-stats article > strong, .master-progress-card > div > strong { margin: .35rem 0; color: var(--text); font-size: 1.6rem; font-style: normal; }
+  .master-stats article > small, .master-progress-card small { color: var(--text-faint); font-size: .56rem; line-height: 1.45; }
+  .master-progress-card { grid-template-columns: auto 1fr; gap: 1rem; }
+  .master-progress-card > div:last-child { display: grid; align-content: center; }
+  .master-progress-card i { font-style: normal; }
+  .progress-ring { --progress: 0; width: 5.2rem; height: 5.2rem; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, var(--surface) 59%, transparent 61%), conic-gradient(var(--amber) calc(var(--progress) * 1%), var(--line) 0); }
+  .progress-ring strong { color: var(--amber); font-size: .85rem; }
+  .master-filters { display: grid; grid-template-columns: minmax(15rem, 1.7fr) repeat(3, minmax(8rem, .7fr)) repeat(3, auto); gap: .55rem; padding: .75rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface-strong); }
+  .master-filters label { min-width: 0; }
+  .master-filters label > span:not(.sr-only) { display: none; }
+  .master-filters input, .master-filters select, .master-filters button { width: 100%; min-height: 2.8rem; border: 1px solid var(--line); border-radius: .6rem; background: var(--surface); color: var(--text); font: inherit; font-size: .68rem; }
+  .master-filters input { padding: 0 .8rem; }
+  .master-filters select { padding: 0 2rem 0 .75rem; }
+  .master-filters button { padding: .55rem .75rem; white-space: nowrap; cursor: pointer; }
+  .master-filters button[aria-pressed="true"] { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, var(--surface)); color: var(--text); }
+  .master-filters :is(input, select, button):focus-visible, .master-problem :is(button, a):focus-visible, .master-topic summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .master-result-bar { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem .2rem 1rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .55rem; }
+  .master-result-bar strong { color: var(--text); }
+  .master-topics { display: grid; gap: .8rem; }
+  .master-topic { overflow: hidden; border: 1px solid var(--line); border-radius: .95rem; background: var(--surface); box-shadow: var(--shadow-soft); }
+  .master-topic > summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .8rem; min-height: 5.5rem; padding: 1rem 1.2rem; cursor: pointer; list-style: none; }
+  .master-topic > summary::-webkit-details-marker { display: none; }
+  .topic-chevron { color: var(--amber); font-size: 1.8rem; transition: transform .2s ease; }
+  .master-topic[open] .topic-chevron { transform: rotate(90deg); }
+  .master-topic summary strong { display: block; font-size: 1rem; }
+  .master-topic summary small { display: block; margin-top: .25rem; color: var(--text-faint); font-size: .58rem; line-height: 1.45; }
+  .topic-summary-progress { min-width: 8rem; display: grid; grid-template-columns: auto 5rem; align-items: center; gap: .55rem; color: var(--text-soft); font-family: var(--font-mono); font-size: .56rem; }
+  .topic-summary-progress i { font-style: normal; }
+  .topic-summary-progress progress { width: 5rem; height: .35rem; accent-color: var(--amber); }
+  .master-difficulties { display: grid; gap: .75rem; padding: 0 .9rem .9rem; border-top: 1px solid var(--line); }
+  .master-difficulty { padding-top: .75rem; }
+  .master-difficulty > summary { width: 100%; display: flex; align-items: center; gap: .5rem; min-height: 2.6rem; margin: 0 0 .5rem; padding: .35rem .45rem; border-radius: .55rem; color: var(--text); cursor: pointer; font-family: var(--font-mono); list-style: none; text-transform: uppercase; }
+  .master-difficulty > summary::-webkit-details-marker { display: none; }
+  .master-difficulty > summary:hover { background: color-mix(in srgb, var(--indigo) 6%, transparent); }
+  .difficulty-chevron { color: var(--amber); font-size: 1.25rem; line-height: 1; transition: transform .2s ease; }
+  .master-difficulty[open] .difficulty-chevron { transform: rotate(90deg); }
+  .master-difficulty > summary strong { font-size: .62rem; letter-spacing: .06em; }
+  .master-difficulty > summary i { display: grid; min-width: 1.35rem; height: 1.35rem; padding: 0 .3rem; place-items: center; border-radius: 999px; background: var(--surface-strong); color: var(--text-faint); font-size: .5rem; font-style: normal; }
+  .problem-list { overflow: hidden; border: 1px solid var(--line); border-radius: .7rem; }
+  .master-problem { display: grid; grid-template-columns: 2rem 2rem minmax(13rem, 1fr) 5rem 6rem 5.2rem 5rem; align-items: center; gap: .65rem; min-height: 4.25rem; padding: .65rem .8rem; background: var(--surface-strong); }
+  .master-problem + .master-problem { border-top: 1px solid var(--line); }
+  .master-problem[data-solved="true"] { background: color-mix(in srgb, var(--green) 6%, var(--surface-strong)); }
+  .problem-number { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; }
+  .solve-control { width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: transparent; cursor: pointer; }
+  .solve-control[aria-pressed="true"] { border-color: var(--green); background: var(--green); color: #07130e; }
+  .problem-copy { min-width: 0; }
+  .problem-copy h3 { margin: 0 0 .3rem; overflow: hidden; font-size: .7rem; text-overflow: ellipsis; white-space: nowrap; }
+  .problem-copy > div { display: flex; flex-wrap: wrap; gap: .25rem; }
+  .problem-copy span { color: var(--text-faint); font-family: var(--font-mono); font-size: .46rem; }
+  .difficulty-chip, .important-chip { width: fit-content; padding: .25rem .4rem; border-radius: 999px; font-family: var(--font-mono); font-size: .48rem; text-transform: capitalize; }
+  .difficulty-easy { background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); }
+  .difficulty-medium { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
+  .difficulty-hard { background: color-mix(in srgb, #ef6a6a 14%, transparent); color: #d94d57; }
+  .important-chip { color: var(--amber); }
+  .revision-control, .open-problem { min-height: 2rem; display: inline-flex; align-items: center; justify-content: center; gap: .25rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--text-soft); font-size: .55rem; text-decoration: none; cursor: pointer; }
+  .revision-control[aria-pressed="true"] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, var(--surface)); color: var(--indigo); }
+  .open-problem { border-color: color-mix(in srgb, var(--indigo) 35%, var(--line)); color: var(--indigo); }
+  .master-empty { padding: 3rem 1rem; text-align: center; }
+  .master-empty strong { font-size: 1rem; }
+  .master-empty p { color: var(--text-soft); }
+  .clear-dialog { width: min(28rem, calc(100% - 2rem)); padding: 0; border: 1px solid var(--line-strong); border-radius: .9rem; background: var(--surface); color: var(--text); }
+  .clear-dialog::backdrop { background: rgba(4, 8, 16, .68); backdrop-filter: blur(4px); }
+  .clear-dialog form { padding: 1.25rem; }
+  .clear-dialog form > span { color: #d94d57; font-family: var(--font-mono); font-size: .52rem; font-weight: 700; letter-spacing: .09em; }
+  .clear-dialog h2 { margin: .35rem 0; font-size: 1.15rem; }
+  .clear-dialog p { color: var(--text-soft); font-size: .65rem; line-height: 1.55; }
+  .clear-dialog form > div { display: flex; justify-content: end; gap: .55rem; margin-top: 1rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 1180px) {
+    .master-stats { grid-template-columns: 2fr repeat(2, 1fr); }
+    .master-filters { grid-template-columns: 1.5fr repeat(3, 1fr); }
+    .master-filters button { grid-column: span 1; }
+    .master-problem { grid-template-columns: 2rem 2rem minmax(12rem, 1fr) 5rem 5.2rem 5rem; }
+    .master-problem > .important-chip, .master-problem > span:empty { display: none; }
+  }
+  @media (max-width: 760px) {
+    .master-heading { align-items: start; flex-direction: column; }
+    .master-heading-actions { width: 100%; }
+    .master-heading-actions .button { flex: 1 1 8rem; }
+    .master-stats { grid-template-columns: repeat(2, 1fr); }
+    .master-progress-card { grid-column: 1 / -1; }
+    .master-filters { grid-template-columns: 1fr 1fr; }
+    .master-search { grid-column: 1 / -1; }
+    .master-result-bar span:last-child { display: none; }
+    .topic-summary-progress { min-width: auto; grid-template-columns: 1fr; justify-items: end; }
+    .topic-summary-progress progress { display: none; }
+    .master-problem { grid-template-columns: 1.8rem minmax(0, 1fr) auto; gap: .5rem; padding: .7rem; }
+    .problem-number { display: none; }
+    .solve-control { grid-row: 1 / 3; }
+    .problem-copy { grid-column: 2 / 4; }
+    .problem-copy h3 { white-space: normal; line-height: 1.4; }
+    .difficulty-chip { grid-column: 2; }
+    .revision-control { grid-column: 3; grid-row: 2; padding: 0 .5rem; }
+    .open-problem { grid-column: 3; grid-row: 3; min-width: 4.5rem; }
+  }
+  @media (max-width: 460px) {
+    .master-stats { grid-template-columns: 1fr 1fr; }
+    .master-stats article { min-height: 6rem; }
+    .master-progress-card { grid-template-columns: auto 1fr; }
+    .progress-ring { width: 4.4rem; height: 4.4rem; }
+    .master-filters { grid-template-columns: 1fr; }
+    .master-search { grid-column: auto; }
+    .master-topic > summary { grid-template-columns: auto minmax(0, 1fr); }
+    .topic-summary-progress { grid-column: 2; justify-items: start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .topic-chevron, .difficulty-chevron { transition: none; } }
+</style>

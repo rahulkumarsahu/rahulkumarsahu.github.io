@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import DsaMasterSheet from '../../../components/DsaMasterSheet.astro';
+import { MASTER_PROBLEMS, MASTER_TOPICS } from '../../../data/dsaMasterSheet';
+
+const description = `Practice ${MASTER_PROBLEMS.length} curated DSA problems across ${MASTER_TOPICS.length} topics with search, filters, revision marks, and private local progress.`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'DSA Master Sheet',
+  description,
+  url: new URL('/dsa/master-sheet/', Astro.site).href,
+  about: ['Data structures', 'Algorithms', 'Coding interview practice'],
+  numberOfItems: MASTER_PROBLEMS.length,
+};
+---
+
+<BaseLayout title="DSA Master Sheet" {description} {jsonLd}>
+  <main class="section-wrap master-sheet-page">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'DSA', href: '/topics/dsa/' }, { label: 'Master Sheet' }]} />
+    <DsaMasterSheet />
+  </main>
+</BaseLayout>
+
+<style>
+  .master-sheet-page { padding-top: 1.25rem; }
+</style>

@@ -1,0 +1,252 @@
+---
+import { COMPANY_TRACKS } from '../data/dsaCompanyTracks';
+import { MASTER_TOPICS } from '../data/dsaMasterSheet';
+
+const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + company.problems.length, 0);
+---
+
+<section class="company-directory" data-company-directory>
+  <header class="company-heading">
+    <div>
+      <p class="section-index">COMPANY PRACTICE / STARTER COLLECTION</p>
+      <h1>Prepare by company without losing the fundamentals.</h1>
+      <p>Each track contains one carefully selected problem from every DSA topic. Use it to find gaps, then return to the full master sheet for deeper practice.</p>
+    </div>
+    <a class="button button-secondary" href="/dsa/master-sheet/">Open full master sheet</a>
+  </header>
+
+  <aside class="company-note" aria-label="Company question accuracy note">
+    <strong>How to read these tracks</strong>
+    <p>Interview questions change and employers do not publish an official question bank. These are preparation tracks based on recurring community-reported topics. They are not a promise that the same question will appear in an interview.</p>
+  </aside>
+
+  <div class="company-stats" aria-label="Company practice summary">
+    <article><span>COMPANIES</span><strong>{COMPANY_TRACKS.length}</strong><small>Google, Meta and Uber</small></article>
+    <article><span>TOPICS PER TRACK</span><strong>{MASTER_TOPICS.length}</strong><small>One starting problem per topic</small></article>
+    <article><span>RECOMMENDATIONS</span><strong>{totalRecommendations}</strong><small>Linked to official practice pages</small></article>
+  </div>
+
+  <section class="company-filters" aria-label="Filter company questions">
+    <label class="company-search"><span class="sr-only">Search company questions</span><input type="search" placeholder="Search problem, topic, or pattern" data-company-search /></label>
+    <label><span class="sr-only">Filter by company</span><select data-company-filter><option value="all">All companies</option>{COMPANY_TRACKS.map((company) => <option value={company.id}>{company.name}</option>)}</select></label>
+    <label><span class="sr-only">Filter by topic</span><select data-topic-filter><option value="all">All topics</option>{MASTER_TOPICS.map((topic) => <option value={topic.id}>{topic.title}</option>)}</select></label>
+    <label><span class="sr-only">Filter by difficulty</span><select data-difficulty-filter><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></label>
+    <button type="button" class="button button-secondary" data-reset-company-filters>Reset filters</button>
+  </section>
+
+  <p class="company-result" role="status" aria-live="polite"><strong data-company-result>{totalRecommendations}</strong> recommendations shown</p>
+
+  <div class="company-groups">
+    {COMPANY_TRACKS.map((company, companyIndex) => (
+      <details class="company-group" data-company-group={company.id} open={companyIndex === 0}>
+        <summary>
+          <span class:list={['company-mark', `company-${company.id}`]} aria-hidden="true">{company.mark}</span>
+          <div><strong>{company.name}</strong><small>{company.description}</small></div>
+          <span class="company-count"><i data-company-visible>{company.problems.length}</i> / {company.problems.length}</span>
+          <span class="company-chevron" aria-hidden="true">›</span>
+        </summary>
+        <div class="company-body">
+          <div class="company-source">
+            <span>Community context</span>
+            <a href={company.sourceUrl} target="_blank" rel="noopener noreferrer">{company.sourceLabel} <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="company-problem-grid">
+            {company.problems.map((problem) => (
+              <article
+                class="company-problem"
+                data-company-problem
+                data-id={problem.id}
+                data-company={company.id}
+                data-topic={problem.topic}
+                data-difficulty={problem.difficulty}
+                data-search={`${problem.title} ${problem.topicTitle} ${problem.patterns.join(' ')}`.toLowerCase()}
+              >
+                <div class="company-problem-top">
+                  <span>{String(problem.topicOrder).padStart(2, '0')} / {problem.topicTitle}</span>
+                  <span class:list={['company-difficulty', `company-difficulty-${problem.difficulty}`]}>{problem.difficulty}</span>
+                </div>
+                <h2>{problem.title}</h2>
+                <p>{problem.patterns.slice(0, 3).map((pattern) => pattern.replaceAll('-', ' ')).join(' · ')}</p>
+                <div class="company-problem-actions">
+                  <button type="button" aria-pressed="false" data-company-solved aria-label={`Mark ${problem.title} as solved`}><span aria-hidden="true">✓</span><span data-solved-label>Mark solved</span></button>
+                  <a href={problem.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${problem.title} on ${problem.platform}`}>Open on {problem.platform} <span aria-hidden="true">↗</span></a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </details>
+    ))}
+  </div>
+
+  <div class="company-empty" data-company-empty hidden>
+    <strong>No recommendations match those filters.</strong>
+    <p>Reset the filters or try a broader search.</p>
+  </div>
+</section>
+
+<script>
+  const MASTER_STORAGE_KEY = 'atlas-master-sheet:v1';
+  type ProblemState = { solved?: boolean; revision?: boolean };
+
+  document.querySelectorAll<HTMLElement>('[data-company-directory]').forEach((directory) => {
+    const cards = [...directory.querySelectorAll<HTMLElement>('[data-company-problem]')];
+    const search = directory.querySelector<HTMLInputElement>('[data-company-search]');
+    const companyFilter = directory.querySelector<HTMLSelectElement>('[data-company-filter]');
+    const topicFilter = directory.querySelector<HTMLSelectElement>('[data-topic-filter]');
+    const difficultyFilter = directory.querySelector<HTMLSelectElement>('[data-difficulty-filter]');
+    let state: Record<string, ProblemState> = {};
+
+    const readState = () => {
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(MASTER_STORAGE_KEY) || '{}');
+        state = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
+      } catch { state = {}; }
+    };
+
+    const writeState = () => {
+      try { window.localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(state)); } catch { /* In-memory state still works for this visit. */ }
+    };
+
+    const updateSolvedControls = () => {
+      cards.forEach((card) => {
+        const solved = Boolean(state[card.dataset.id || '']?.solved);
+        const button = card.querySelector<HTMLButtonElement>('[data-company-solved]');
+        const label = card.querySelector<HTMLElement>('[data-solved-label]');
+        card.dataset.solved = String(solved);
+        button?.setAttribute('aria-pressed', String(solved));
+        if (label) label.textContent = solved ? 'Solved' : 'Mark solved';
+      });
+    };
+
+    const applyFilters = () => {
+      const term = search?.value.trim().toLowerCase() || '';
+      const filtersActive = Boolean(term)
+        || companyFilter?.value !== 'all'
+        || topicFilter?.value !== 'all'
+        || difficultyFilter?.value !== 'all';
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = (!term || card.dataset.search?.includes(term))
+          && (!companyFilter || companyFilter.value === 'all' || card.dataset.company === companyFilter.value)
+          && (!topicFilter || topicFilter.value === 'all' || card.dataset.topic === topicFilter.value)
+          && (!difficultyFilter || difficultyFilter.value === 'all' || card.dataset.difficulty === difficultyFilter.value);
+        card.hidden = !show;
+        if (show) visible++;
+      });
+
+      directory.querySelectorAll<HTMLDetailsElement>('[data-company-group]').forEach((group) => {
+        const count = [...group.querySelectorAll<HTMLElement>('[data-company-problem]')].filter((card) => !card.hidden).length;
+        group.hidden = count === 0;
+        if (filtersActive && count > 0) group.open = true;
+        const output = group.querySelector<HTMLElement>('[data-company-visible]');
+        if (output) output.textContent = String(count);
+      });
+      const result = directory.querySelector<HTMLElement>('[data-company-result]');
+      const empty = directory.querySelector<HTMLElement>('[data-company-empty]');
+      if (result) result.textContent = String(visible);
+      if (empty) empty.hidden = visible !== 0;
+    };
+
+    const resetFilters = () => {
+      if (search) search.value = '';
+      if (companyFilter) companyFilter.value = 'all';
+      if (topicFilter) topicFilter.value = 'all';
+      if (difficultyFilter) difficultyFilter.value = 'all';
+      applyFilters();
+    };
+
+    cards.forEach((card) => card.querySelector<HTMLButtonElement>('[data-company-solved]')?.addEventListener('click', () => {
+      const id = card.dataset.id || '';
+      state[id] = { ...state[id], solved: !state[id]?.solved };
+      writeState();
+      updateSolvedControls();
+    }));
+    search?.addEventListener('input', applyFilters);
+    [companyFilter, topicFilter, difficultyFilter].forEach((control) => control?.addEventListener('change', applyFilters));
+    directory.querySelector('[data-reset-company-filters]')?.addEventListener('click', resetFilters);
+
+    readState();
+    updateSolvedControls();
+    applyFilters();
+  });
+</script>
+
+<style>
+  .company-directory { padding: 2.5rem 0 5rem; }
+  .company-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; }
+  .company-heading > div { max-width: 52rem; }
+  .company-heading h1 { margin: .45rem 0 .75rem; font-size: clamp(2.1rem, 5vw, 4.4rem); letter-spacing: -.055em; line-height: 1; }
+  .company-heading p:last-child { margin: 0; color: var(--text-soft); line-height: 1.65; }
+  .company-heading > a { flex: 0 0 auto; }
+  .company-note { display: grid; grid-template-columns: auto 1fr; gap: 1rem; margin: 1.75rem 0 1rem; padding: 1rem 1.15rem; border: 1px solid color-mix(in srgb, var(--amber) 35%, var(--line)); border-radius: .8rem; background: color-mix(in srgb, var(--amber) 6%, var(--surface)); }
+  .company-note strong { color: var(--amber); font-family: var(--font-mono); font-size: .58rem; letter-spacing: .05em; text-transform: uppercase; }
+  .company-note p { margin: 0; color: var(--text-soft); font-size: .65rem; line-height: 1.55; }
+  .company-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; }
+  .company-stats article { display: grid; min-height: 7.5rem; align-content: center; padding: 1rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
+  .company-stats span { color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .08em; }
+  .company-stats strong { margin: .25rem 0; font-size: 1.55rem; }
+  .company-stats small { color: var(--text-faint); font-size: .56rem; }
+  .company-filters { display: grid; grid-template-columns: minmax(14rem, 1.5fr) repeat(3, minmax(8rem, .75fr)) auto; gap: .55rem; margin: .9rem 0 0; padding: .75rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface-strong); }
+  .company-filters input, .company-filters select { width: 100%; min-height: 2.8rem; padding: 0 .75rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); font: inherit; font-size: .66rem; }
+  .company-filters .button { min-height: 2.8rem; }
+  .company-result { margin: .6rem .2rem 1rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .54rem; }
+  .company-result strong { color: var(--text); }
+  .company-groups { display: grid; gap: .8rem; }
+  .company-group { overflow: hidden; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); box-shadow: var(--shadow-soft); }
+  .company-group > summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: .85rem; min-height: 5.75rem; padding: 1rem 1.15rem; cursor: pointer; list-style: none; }
+  .company-group > summary::-webkit-details-marker { display: none; }
+  .company-mark { width: 2.5rem; height: 2.5rem; display: grid; place-items: center; border-radius: .65rem; color: #fff; font-size: .85rem; font-weight: 800; }
+  .company-google { background: #4285f4; }
+  .company-meta { background: #0866ff; }
+  .company-uber { background: #151515; }
+  .company-group summary strong { display: block; font-size: .95rem; }
+  .company-group summary small { display: block; margin-top: .2rem; color: var(--text-faint); font-size: .58rem; line-height: 1.45; }
+  .company-count { color: var(--text-faint); font-family: var(--font-mono); font-size: .56rem; }
+  .company-count i { color: var(--text); font-style: normal; }
+  .company-chevron { color: var(--amber); font-size: 1.6rem; transition: transform .2s ease; }
+  .company-group[open] .company-chevron { transform: rotate(90deg); }
+  .company-body { padding: .9rem; border-top: 1px solid var(--line); }
+  .company-source { display: flex; justify-content: space-between; gap: 1rem; margin: 0 .25rem .75rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; }
+  .company-source a { color: var(--indigo); }
+  .company-problem-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+  .company-problem { min-width: 0; display: grid; grid-template-rows: auto auto 1fr auto; gap: .6rem; min-height: 12.5rem; padding: .9rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface-strong); }
+  .company-problem[data-solved='true'] { border-color: color-mix(in srgb, var(--green) 40%, var(--line)); }
+  .company-problem-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .company-problem-top > span:first-child { overflow: hidden; color: var(--text-faint); font-family: var(--font-mono); font-size: .48rem; letter-spacing: .04em; text-overflow: ellipsis; white-space: nowrap; }
+  .company-difficulty { padding: .22rem .38rem; border-radius: 999px; font-family: var(--font-mono); font-size: .46rem; text-transform: capitalize; }
+  .company-difficulty-easy { background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); }
+  .company-difficulty-medium { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
+  .company-difficulty-hard { background: color-mix(in srgb, #ef6a6a 14%, transparent); color: #d94d57; }
+  .company-problem h2 { margin: 0; font-size: .85rem; line-height: 1.35; }
+  .company-problem > p { margin: 0; color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; line-height: 1.5; }
+  .company-problem-actions { display: grid; grid-template-columns: auto 1fr; gap: .45rem; }
+  .company-problem-actions :is(button, a) { min-height: 2.25rem; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .4rem .55rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text-soft); font: inherit; font-size: .52rem; text-decoration: none; cursor: pointer; }
+  .company-problem-actions button[aria-pressed='true'] { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); color: var(--green); }
+  .company-problem-actions a { border-color: color-mix(in srgb, var(--indigo) 35%, var(--line)); color: var(--indigo); }
+  .company-directory :is(input, select, button, a, summary):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .company-empty { padding: 3rem 1rem; text-align: center; }
+  .company-empty p { color: var(--text-soft); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 980px) {
+    .company-problem-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .company-filters { grid-template-columns: 1fr 1fr; }
+    .company-search { grid-column: 1 / -1; }
+  }
+  @media (max-width: 650px) {
+    .company-heading { align-items: start; flex-direction: column; }
+    .company-heading > a { width: 100%; }
+    .company-note { grid-template-columns: 1fr; }
+    .company-stats { grid-template-columns: 1fr; }
+    .company-stats article { min-height: 5.8rem; }
+    .company-filters, .company-problem-grid { grid-template-columns: 1fr; }
+    .company-search { grid-column: auto; }
+    .company-group > summary { grid-template-columns: auto minmax(0, 1fr) auto; }
+    .company-count { grid-column: 2; }
+    .company-chevron { grid-column: 3; grid-row: 1 / 3; }
+    .company-problem { min-height: 11rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .company-chevron { transition: none; } }
+</style>

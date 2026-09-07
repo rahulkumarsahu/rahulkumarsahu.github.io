@@ -21,7 +21,11 @@ const groups = [
     <p class="section-index">DSA / TOPIC DIRECTORY</p>
     <h1>Learn one pattern at a time.</h1>
     <p>Each section starts with the basic idea, then moves through patterns and practice problems grouped by difficulty.</p>
-    <a class="button button-primary" href="/topics/dsa/#choose-your-goal">Find your first lesson</a>
+    <div class="page-hero-actions">
+      <a class="button button-primary" href="/topics/dsa/#choose-your-goal">Find your first lesson</a>
+      <a class="button button-secondary" href="/dsa/master-sheet/">Open the master sheet</a>
+      <a class="button button-secondary" href="/dsa/companies/">Practice by company</a>
+    </div>
     <LearningEstimate posts={getPostsForTopic(posts, 'dsa')} />
   </section>
 
@@ -54,4 +58,5 @@ const groups = [
 <style>
   .directory-band + .directory-band { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); }
   .directory-band > h2 { font-size: 1.3rem; }
+  .page-hero-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.25rem; }
 </style>
