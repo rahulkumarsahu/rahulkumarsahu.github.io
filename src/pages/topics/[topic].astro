@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ConnectedProjectCard from '../../components/ConnectedProjectCard.astro';
 import LearningEstimate from '../../components/LearningEstimate.astro';
+import { MASTER_PROBLEMS } from '../../data/dsaMasterSheet';
 import LearningGoals from '../../components/LearningGoals.astro';
 import PostCard from '../../components/PostCard.astro';
 import ProgressSummary from '../../components/ProgressSummary.astro';
@@ -129,7 +130,7 @@ const dsaDirectoryGroups = [
       </section>
 
       <nav class="dsa-learning-tools section-wrap" aria-label="DSA learning tools">
-        <a href="/dsa/master-sheet/"><span>PRACTICE</span><strong>DSA Master Sheet</strong><small>164 curated problems with local progress and revision marks</small></a>
+        <a href="/dsa/master-sheet/"><span>PRACTICE</span><strong>DSA Master Sheet</strong><small>{MASTER_PROBLEMS.length} curated problems with local progress and revision marks</small></a>
         <a href="/dsa/companies/"><span>COMPANIES</span><strong>Company Practice</strong><small>Google, Meta and Uber starter tracks by DSA topic</small></a>
         <a href="/dsa/patterns/"><span>RECOGNIZE</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
         <a href="/dsa/revision/"><span>REVISE</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>

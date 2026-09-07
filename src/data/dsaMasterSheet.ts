@@ -1,4 +1,7 @@
-export type MasterDifficulty = 'easy' | 'medium' | 'hard';
+import { IMPORTED_PROBLEM_NOTES, normalizeProblemTitle, problemTitleToId } from './dsaImportedProblems.ts';
+import { CURRICULUM_PROBLEMS, problemUrlKey } from './dsaCurriculum.ts';
+
+export type MasterDifficulty = 'easy' | 'medium' | 'hard' | 'unrated';
 export type MasterPlatform = 'LeetCode' | 'GeeksforGeeks' | 'HackerRank';
 
 export interface MasterTopic {
@@ -16,6 +19,7 @@ export interface MasterProblem {
   patterns: string[];
   platform: MasterPlatform;
   url: string;
+  linkType: 'direct' | 'search';
   important: boolean;
 }
 
@@ -235,7 +239,7 @@ const PROBLEM_SEEDS: ProblemSeed[] = [
   ['Remove Covered Intervals', 'intervals', 'medium', 'remove-covered-intervals', 'intervals,sorting'],
 ];
 
-export const MASTER_PROBLEMS: MasterProblem[] = PROBLEM_SEEDS.map(
+const ORIGINAL_PROBLEMS: MasterProblem[] = PROBLEM_SEEDS.map(
   ([title, topic, difficulty, slug, patterns, important = false, platform = 'LeetCode', sourceUrl]) => ({
     id: slug,
     title,
@@ -244,6 +248,72 @@ export const MASTER_PROBLEMS: MasterProblem[] = PROBLEM_SEEDS.map(
     patterns: patterns.split(','),
     platform,
     url: sourceUrl ?? `https://leetcode.com/problems/${slug}/`,
+    linkType: 'direct',
     important,
   }),
 );
+
+const originalTitles = new Set(ORIGINAL_PROBLEMS.map((problem) => normalizeProblemTitle(problem.title)));
+const importedProblems: MasterProblem[] = IMPORTED_PROBLEM_NOTES
+  .filter((problem) => !originalTitles.has(normalizeProblemTitle(problem.title)))
+  .map((problem) => ({
+    id: problemTitleToId(problem.title),
+    title: problem.title,
+    topic: problem.topic,
+    difficulty: 'unrated',
+    patterns: [problem.pattern],
+    platform: 'LeetCode',
+    url: `https://leetcode.com/problemset/?search=${encodeURIComponent(problem.title)}`,
+    linkType: 'search',
+    important: false,
+  }));
+
+const BASE_PROBLEMS: MasterProblem[] = [...ORIGINAL_PROBLEMS, ...importedProblems];
+const curriculumByTitle = new Map(
+  CURRICULUM_PROBLEMS.flatMap((problem) => problem.aliases.map((alias) => [normalizeProblemTitle(alias), problem] as const)),
+);
+const curriculumByUrl = new Map(CURRICULUM_PROBLEMS.map((problem) => [problemUrlKey(problem.url), problem] as const));
+const usedCurriculumProblems = new Set<string>();
+
+const classifiedBaseProblems = BASE_PROBLEMS.map((problem) => {
+  const titleMatch = curriculumByTitle.get(normalizeProblemTitle(problem.title));
+  const urlMatch = problem.linkType === 'direct' ? curriculumByUrl.get(problemUrlKey(problem.url)) : undefined;
+  const curriculumProblem = titleMatch ?? urlMatch;
+  if (!curriculumProblem) return problem;
+
+  usedCurriculumProblems.add(problemUrlKey(curriculumProblem.url));
+  return {
+    ...problem,
+    difficulty: curriculumProblem.difficulty,
+    patterns: [...new Set([...problem.patterns, ...curriculumProblem.patterns])],
+    platform: curriculumProblem.platform,
+    url: curriculumProblem.url,
+    linkType: 'direct' as const,
+    important: problem.important || curriculumProblem.important,
+  };
+});
+
+const usedIds = new Set(classifiedBaseProblems.map((problem) => problem.id));
+const curriculumAdditions: MasterProblem[] = CURRICULUM_PROBLEMS
+  .filter((problem) => !usedCurriculumProblems.has(problemUrlKey(problem.url)))
+  .map((problem) => {
+    const baseId = problemTitleToId(problem.title);
+    let id = baseId;
+    let suffix = 2;
+    while (usedIds.has(id)) id = `${baseId}-${suffix++}`;
+    usedIds.add(id);
+
+    return {
+      id,
+      title: problem.title,
+      topic: problem.topic,
+      difficulty: problem.difficulty,
+      patterns: problem.patterns,
+      platform: problem.platform,
+      url: problem.url,
+      linkType: 'direct',
+      important: problem.important,
+    };
+  });
+
+export const MASTER_PROBLEMS: MasterProblem[] = [...classifiedBaseProblems, ...curriculumAdditions];

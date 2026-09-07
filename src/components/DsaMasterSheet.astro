@@ -1,11 +1,12 @@
 ---
 import { MASTER_PROBLEMS, MASTER_TOPICS } from '../data/dsaMasterSheet';
 
-const difficultyOrder = ['easy', 'medium', 'hard'] as const;
+const difficultyOrder = ['easy', 'medium', 'hard', 'unrated'] as const;
 const counts = {
   easy: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'easy').length,
   medium: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'medium').length,
   hard: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'hard').length,
+  unrated: MASTER_PROBLEMS.filter((problem) => problem.difficulty === 'unrated').length,
   important: MASTER_PROBLEMS.filter((problem) => problem.important).length,
 };
 const groupedTopics = MASTER_TOPICS.map((topic) => ({
@@ -38,14 +39,17 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
     <article><span>EASY</span><strong>{counts.easy}</strong><small>Foundation problems</small></article>
     <article><span>MEDIUM</span><strong>{counts.medium}</strong><small>Pattern-building practice</small></article>
     <article><span>HARD</span><strong>{counts.hard}</strong><small>Advanced problem solving</small></article>
+    <article><span>UNRATED</span><strong>{counts.unrated}</strong><small>Difficulty review pending</small></article>
     <article><span>IMPORTANT</span><strong>{counts.important}</strong><small>Recommended interview core</small></article>
   </div>
+
+  <p class="master-import-note"><strong>About the question data:</strong> “Unrated” means neither the structured curriculum nor the earlier notes included a verified difficulty. “Find” opens an exact-title search until its direct problem URL is reviewed.</p>
 
   <section class="master-filters" aria-labelledby="master-filter-title">
     <h2 id="master-filter-title" class="sr-only">Filter problems</h2>
     <label class="master-search"><span class="sr-only">Search problems</span><input type="search" placeholder="Search by title, topic, or pattern" data-master-search /></label>
     <label><span>Topic</span><select data-topic-filter><option value="all">All topics</option>{MASTER_TOPICS.map((topic) => <option value={topic.id}>{topic.title}</option>)}</select></label>
-    <label><span>Difficulty</span><select data-difficulty-filter><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></label>
+    <label><span>Difficulty</span><select data-difficulty-filter><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="unrated">Unrated</option></select></label>
     <label><span>Platform</span><select data-platform-filter><option value="all">All platforms</option>{platforms.map((platform) => <option value={platform.toLowerCase()}>{platform}</option>)}</select></label>
     <button type="button" aria-pressed="false" data-toggle-filter="important">Important only</button>
     <button type="button" aria-pressed="false" data-toggle-filter="revision">Revision only</button>
@@ -97,7 +101,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
                       <span class:list={['difficulty-chip', `difficulty-${problem.difficulty}`]}>{problem.difficulty}</span>
                       {problem.important ? <span class="important-chip"><span aria-hidden="true">★</span> Important</span> : <span></span>}
                       <button type="button" class="revision-control" aria-pressed="false" aria-label={`Add ${problem.title} to revision`} data-revision><span aria-hidden="true">↻</span><span>Revise</span></button>
-                      <a href={problem.url} target="_blank" rel="noopener noreferrer" class="open-problem" aria-label={`Open ${problem.title} on ${problem.platform}`}>Open <span aria-hidden="true">↗</span></a>
+                      <a href={problem.url} target="_blank" rel="noopener noreferrer" class="open-problem" aria-label={`${problem.linkType === 'direct' ? 'Open' : 'Find'} ${problem.title} on ${problem.platform}`}>{problem.linkType === 'direct' ? 'Open' : 'Find'} <span aria-hidden="true">↗</span></a>
                     </article>
                   ))}
                 </div>
@@ -166,6 +170,13 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
 
     const applyFilters = () => {
       const term = search?.value.trim().toLowerCase() || '';
+      const filtersActive = Boolean(term)
+        || topicFilter?.value !== 'all'
+        || difficultyFilter?.value !== 'all'
+        || platformFilter?.value !== 'all'
+        || activeToggle('important')
+        || activeToggle('revision')
+        || activeToggle('solved');
       let visible = 0;
       rows.forEach((row) => {
         const matches = (!term || row.dataset.search?.includes(term))
@@ -182,11 +193,14 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
       sheet.querySelectorAll<HTMLElement>('[data-difficulty-group]').forEach((group) => {
         const count = [...group.querySelectorAll<HTMLElement>('[data-problem]')].filter((row) => !row.hidden).length;
         group.hidden = count === 0;
+        if (filtersActive && count > 0) group.open = true;
         const output = group.querySelector<HTMLElement>('[data-difficulty-visible]');
         if (output) output.textContent = String(count);
       });
       sheet.querySelectorAll<HTMLDetailsElement>('[data-topic-group]').forEach((group) => {
-        group.hidden = !group.querySelector('[data-problem]:not([hidden])');
+        const hasVisibleProblem = Boolean(group.querySelector('[data-problem]:not([hidden])'));
+        group.hidden = !hasVisibleProblem;
+        if (filtersActive && hasVisibleProblem) group.open = true;
       });
       const output = sheet.querySelector<HTMLElement>('[data-visible-count]');
       if (output) output.textContent = String(visible);
@@ -262,7 +276,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
   .master-heading p:last-child { max-width: 54rem; margin: 0; color: var(--text-soft); line-height: 1.65; }
   .master-heading-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; gap: .6rem; }
   .button-danger { border-color: color-mix(in srgb, #ef6a6a 45%, var(--line)); color: #d94d57; }
-  .master-stats { display: grid; grid-template-columns: 2fr repeat(5, 1fr); gap: .75rem; margin-bottom: 1rem; }
+  .master-stats { display: grid; grid-template-columns: 2fr repeat(6, 1fr); gap: .75rem; margin-bottom: 1rem; }
   .master-stats article { min-width: 0; display: grid; align-content: center; min-height: 8rem; padding: 1rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); box-shadow: var(--shadow-soft); }
   .master-stats article > span, .master-progress-card span { color: var(--text-faint); font-family: var(--font-mono); font-size: .56rem; font-weight: 700; letter-spacing: .09em; }
   .master-stats article > strong, .master-progress-card > div > strong { margin: .35rem 0; color: var(--text); font-size: 1.6rem; font-style: normal; }
@@ -272,6 +286,8 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
   .master-progress-card i { font-style: normal; }
   .progress-ring { --progress: 0; width: 5.2rem; height: 5.2rem; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, var(--surface) 59%, transparent 61%), conic-gradient(var(--amber) calc(var(--progress) * 1%), var(--line) 0); }
   .progress-ring strong { color: var(--amber); font-size: .85rem; }
+  .master-import-note { margin: 0 0 .75rem; padding: .7rem .85rem; border: 1px solid color-mix(in srgb, var(--amber) 28%, var(--line)); border-radius: .65rem; background: color-mix(in srgb, var(--amber) 5%, var(--surface)); color: var(--text-soft); font-size: .6rem; line-height: 1.55; }
+  .master-import-note strong { color: var(--amber); }
   .master-filters { display: grid; grid-template-columns: minmax(15rem, 1.7fr) repeat(3, minmax(8rem, .7fr)) repeat(3, auto); gap: .55rem; padding: .75rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface-strong); }
   .master-filters label { min-width: 0; }
   .master-filters label > span:not(.sr-only) { display: none; }
@@ -318,6 +334,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
   .difficulty-easy { background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); }
   .difficulty-medium { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
   .difficulty-hard { background: color-mix(in srgb, #ef6a6a 14%, transparent); color: #d94d57; }
+  .difficulty-unrated { background: color-mix(in srgb, var(--text-faint) 12%, transparent); color: var(--text-faint); }
   .important-chip { color: var(--amber); }
   .revision-control, .open-problem { min-height: 2rem; display: inline-flex; align-items: center; justify-content: center; gap: .25rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--text-soft); font-size: .55rem; text-decoration: none; cursor: pointer; }
   .revision-control[aria-pressed="true"] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, var(--surface)); color: var(--indigo); }
