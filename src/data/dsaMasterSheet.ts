@@ -1,5 +1,6 @@
 import { IMPORTED_PROBLEM_NOTES, normalizeProblemTitle, problemTitleToId } from './dsaImportedProblems.ts';
 import { CURRICULUM_PROBLEMS, problemUrlKey } from './dsaCurriculum.ts';
+import { REMOVED_UNVERIFIED_TITLES, UNRATED_RESOLUTIONS } from './dsaUnratedResolutions.ts';
 
 export type MasterDifficulty = 'easy' | 'medium' | 'hard' | 'unrated';
 export type MasterPlatform = 'LeetCode' | 'GeeksforGeeks' | 'HackerRank';
@@ -274,24 +275,41 @@ const curriculumByTitle = new Map(
 );
 const curriculumByUrl = new Map(CURRICULUM_PROBLEMS.map((problem) => [problemUrlKey(problem.url), problem] as const));
 const usedCurriculumProblems = new Set<string>();
+const resolutionByTitle = new Map(UNRATED_RESOLUTIONS.map((problem) => [normalizeProblemTitle(problem.sourceTitle), problem] as const));
+const removedUnverifiedTitles = new Set(REMOVED_UNVERIFIED_TITLES.map(normalizeProblemTitle));
 
-const classifiedBaseProblems = BASE_PROBLEMS.map((problem) => {
-  const titleMatch = curriculumByTitle.get(normalizeProblemTitle(problem.title));
-  const urlMatch = problem.linkType === 'direct' ? curriculumByUrl.get(problemUrlKey(problem.url)) : undefined;
-  const curriculumProblem = titleMatch ?? urlMatch;
-  if (!curriculumProblem) return problem;
+const classifiedBaseProblems = BASE_PROBLEMS
+  .filter((problem) => !removedUnverifiedTitles.has(normalizeProblemTitle(problem.title)))
+  .map((problem) => {
+    const titleMatch = curriculumByTitle.get(normalizeProblemTitle(problem.title));
+    const urlMatch = problem.linkType === 'direct' ? curriculumByUrl.get(problemUrlKey(problem.url)) : undefined;
+    const curriculumProblem = titleMatch ?? urlMatch;
+    if (curriculumProblem) {
+      usedCurriculumProblems.add(problemUrlKey(curriculumProblem.url));
+      return {
+        ...problem,
+        difficulty: curriculumProblem.difficulty,
+        patterns: [...new Set([...problem.patterns, ...curriculumProblem.patterns])],
+        platform: curriculumProblem.platform,
+        url: curriculumProblem.url,
+        linkType: 'direct' as const,
+        important: problem.important || curriculumProblem.important,
+      };
+    }
 
-  usedCurriculumProblems.add(problemUrlKey(curriculumProblem.url));
-  return {
-    ...problem,
-    difficulty: curriculumProblem.difficulty,
-    patterns: [...new Set([...problem.patterns, ...curriculumProblem.patterns])],
-    platform: curriculumProblem.platform,
-    url: curriculumProblem.url,
-    linkType: 'direct' as const,
-    important: problem.important || curriculumProblem.important,
-  };
-});
+    const resolution = resolutionByTitle.get(normalizeProblemTitle(problem.title));
+    if (!resolution) return problem;
+    if (curriculumByUrl.has(problemUrlKey(resolution.url))) usedCurriculumProblems.add(problemUrlKey(resolution.url));
+
+    return {
+      ...problem,
+      title: resolution.title,
+      difficulty: resolution.difficulty,
+      platform: 'LeetCode' as const,
+      url: resolution.url,
+      linkType: 'direct' as const,
+    };
+  });
 
 const usedIds = new Set(classifiedBaseProblems.map((problem) => problem.id));
 const curriculumAdditions: MasterProblem[] = CURRICULUM_PROBLEMS
