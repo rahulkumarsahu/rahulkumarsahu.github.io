@@ -9,6 +9,11 @@ series: series-slug
 difficulty: basics
 contentType: concept
 order: 1
+# Optional. Include only details that Rahul has supplied.
+# personalNote:
+#   why: "Why I wrote this article."
+#   context: "Where I encountered this idea."
+#   surprise: "What surprised me about it."
 ---
 
 Open with the reason this concept matters. Keep the introduction short and concrete.

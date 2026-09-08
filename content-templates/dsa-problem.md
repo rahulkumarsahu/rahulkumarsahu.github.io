@@ -9,6 +9,11 @@ series: section-slug
 difficulty: easy
 contentType: problem
 order: 10
+# Optional. Include only details that Rahul has supplied.
+# personalNote:
+#   why: "Why I wrote this article."
+#   context: "Where I encountered this problem or pattern."
+#   surprise: "What surprised me while solving it."
 ---
 
 ## Problem

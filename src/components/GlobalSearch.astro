@@ -10,11 +10,21 @@
     <label class="global-search-input">
       <span class="sr-only">Search the Atlas</span>
       <i aria-hidden="true">⌕</i>
-      <input type="search" data-global-search-input autocomplete="off" placeholder="Search Java, caching, two pointers, URL shortener…" />
+      <input
+        type="search"
+        data-global-search-input
+        autocomplete="off"
+        placeholder="Search Java, caching, two pointers, URL shortener…"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls="global-search-results"
+        aria-describedby="global-search-status"
+      />
       <kbd>⌘ K</kbd>
     </label>
-    <p class="global-search-status" data-global-search-status aria-live="polite">Start typing to search published content and planned structures.</p>
-    <div class="global-search-results" data-global-search-results role="listbox" aria-label="Search results"></div>
+    <p class="global-search-status" id="global-search-status" data-global-search-status aria-live="polite">Start typing to search published content and planned structures.</p>
+    <div class="global-search-results" id="global-search-results" data-global-search-results role="listbox" aria-label="Search results"></div>
     <footer><span>↑ ↓ move</span><span>Enter open</span><span>Esc close</span></footer>
   </div>
 </dialog>
@@ -47,16 +57,22 @@
   const normalise = (value: string) => value.toLocaleLowerCase().replace(/[^a-z0-9+#.]+/g, ' ').trim();
   const openSearch = async () => {
     if (!dialog?.open) dialog?.showModal();
+    input?.setAttribute('aria-expanded', 'true');
     await loadItems();
     requestAnimationFrame(() => input?.focus());
   };
-  const closeSearch = () => { if (dialog?.open) dialog.close(); };
+  const closeSearch = () => {
+    input?.setAttribute('aria-expanded', 'false');
+    input?.removeAttribute('aria-activedescendant');
+    if (dialog?.open) dialog.close();
+  };
   const setActive = (next: number) => {
     const links = [...(results?.querySelectorAll<HTMLAnchorElement>('a') ?? [])];
     links.forEach((link) => link.removeAttribute('aria-selected'));
-    if (!links.length) { activeIndex = -1; return; }
+    if (!links.length) { activeIndex = -1; input?.removeAttribute('aria-activedescendant'); return; }
     activeIndex = (next + links.length) % links.length;
     links[activeIndex].setAttribute('aria-selected', 'true');
+    input?.setAttribute('aria-activedescendant', links[activeIndex].id);
     links[activeIndex].scrollIntoView({ block: 'nearest' });
   };
   const render = () => {
@@ -70,8 +86,8 @@
     results.replaceChildren(); activeIndex = -1;
     if (!terms.length) { status.textContent = 'Start typing to search published content and planned structures.'; return; }
     status.textContent = matches.length ? `${matches.length} best ${matches.length === 1 ? 'result' : 'results'} shown.` : 'No matching result. Try a topic, pattern or shorter phrase.';
-    matches.forEach((item) => {
-      const link = document.createElement('a'); link.href = item.href; link.setAttribute('role', 'option');
+    matches.forEach((item, index) => {
+      const link = document.createElement('a'); link.href = item.href; link.id = `global-search-option-${index}`; link.setAttribute('role', 'option');
       if (item.external) { link.target = '_blank'; link.rel = 'noreferrer'; }
       const meta = document.createElement('span'); meta.textContent = `${item.type} · ${item.topic}`;
       const title = document.createElement('strong'); title.textContent = item.title;
@@ -84,7 +100,7 @@
   document.querySelectorAll('[data-global-search-open]').forEach((button) => button.addEventListener('click', openSearch));
   dialog?.querySelector('[data-global-search-close]')?.addEventListener('click', closeSearch);
   dialog?.addEventListener('click', (event) => { if (event.target === dialog) closeSearch(); });
-  dialog?.addEventListener('close', () => { if (input) input.value = ''; if (results) results.replaceChildren(); if (status) status.textContent = 'Start typing to search published content and planned structures.'; });
+  dialog?.addEventListener('close', () => { if (input) { input.value = ''; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); } if (results) results.replaceChildren(); if (status) status.textContent = 'Start typing to search published content and planned structures.'; });
   input?.addEventListener('input', render);
   input?.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowDown') { event.preventDefault(); setActive(activeIndex + 1); }
@@ -104,23 +120,23 @@
   .global-search::backdrop { background: rgb(5 10 20 / .72); backdrop-filter: blur(5px); }
   .global-search-shell { display: grid; max-height: min(48rem, calc(100vh - 2rem)); grid-template-rows: auto auto auto minmax(0, 1fr) auto; }
   .global-search header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line); }
-  .global-search header span { color: var(--amber); font: .55rem var(--font-mono); letter-spacing: .1em; }
-  .global-search h2 { margin: .2rem 0 0; font-size: 1rem; }
-  .global-search button { min-width: 2.8rem; min-height: 2.2rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); cursor: pointer; }
+  .global-search header span { color: var(--amber); font: .75rem var(--font-mono); letter-spacing: .06em; }
+  .global-search h2 { margin: .2rem 0 0; font-size: 1.15rem; }
+  .global-search button { min-width: 2.8rem; min-height: 2.75rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); cursor: pointer; }
   .global-search-input { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7rem; margin: 1rem 1rem .5rem; padding: .7rem .8rem; border: 1px solid var(--line-strong); border-radius: .7rem; background: var(--surface-strong); }
   .global-search-input:focus-within { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); }
-  .global-search-input input { min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: .86rem; }
-  .global-search-input kbd { color: var(--text-faint); font: .55rem var(--font-mono); }
-  .global-search-status { margin: 0; padding: .35rem 1.1rem .6rem; color: var(--text-faint); font-size: .62rem; }
+  .global-search-input input { min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 1rem; }
+  .global-search-input kbd { color: var(--text-faint); font: .75rem var(--font-mono); }
+  .global-search-status { margin: 0; padding: .35rem 1.1rem .6rem; color: var(--text-faint); font-size: .85rem; }
   .global-search-results { min-height: 10rem; overflow-y: auto; padding: 0 .7rem .7rem; }
   .global-search-results :global(a) { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: .75rem; border: 1px solid transparent; border-radius: .6rem; }
   .global-search-results :global(a[aria-selected='true']), .global-search-results :global(a:hover) { border-color: var(--line); background: var(--surface); }
-  .global-search-results :global(a span) { color: var(--indigo); font: .5rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  .global-search-results :global(a span) { color: var(--indigo); font: .75rem var(--font-mono); letter-spacing: .04em; }
   .global-search-results :global(a strong), .global-search-results :global(a small) { display: block; }
-  .global-search-results :global(a strong) { margin-top: .18rem; font-size: .76rem; }
-  .global-search-results :global(a small) { margin-top: .14rem; color: var(--text-soft); font-size: .6rem; line-height: 1.4; }
+  .global-search-results :global(a strong) { margin-top: .18rem; font-size: .95rem; }
+  .global-search-results :global(a small) { margin-top: .14rem; color: var(--text-soft); font-size: .82rem; line-height: 1.45; }
   .global-search-results :global(a i) { color: var(--text-faint); font-style: normal; }
-  .global-search footer { display: flex; gap: 1rem; padding: .7rem 1rem; border-top: 1px solid var(--line); color: var(--text-faint); font: .52rem var(--font-mono); }
+  .global-search footer { display: flex; flex-wrap: wrap; gap: .6rem 1rem; padding: .7rem 1rem; border-top: 1px solid var(--line); color: var(--text-faint); font: .75rem var(--font-mono); }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (max-width: 540px) { .global-search { width: 100%; max-height: 90vh; margin: auto 0 0; border-radius: 1rem 1rem 0 0; } .global-search-shell { max-height: 90vh; } .global-search-input kbd { display: none; } }
 </style>

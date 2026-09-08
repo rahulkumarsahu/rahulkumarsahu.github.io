@@ -27,7 +27,7 @@ const stageItems = stages.map((stage) => {
 <section class="learning-structure section-wrap" aria-labelledby={`learning-structure-${topic}`}>
   <div class="section-heading section-heading-notes">
     <div>
-      <p class="section-index">LEARNING STRUCTURE / 05 STAGES</p>
+      <p class="section-label">Five-stage learning structure</p>
       <h2 id={`learning-structure-${topic}`}>Know where each section fits.</h2>
     </div>
     <p>Published lessons are counted automatically. Empty stages remain visible as planned so the route stays clear while the library grows.</p>
@@ -46,7 +46,7 @@ const stageItems = stages.map((stage) => {
         </div>
         <h3>{stage.title}</h3>
         <p>{stage.description}</p>
-        <div class="learning-stage-outcome"><span>OUTCOME</span><strong>{stage.outcome}</strong></div>
+        <div class="learning-stage-outcome"><span>Outcome</span><strong>{stage.outcome}</strong></div>
         <div class="learning-stage-progress" aria-label={`Local progress for ${stage.title}`}>
           <span><i data-stage-complete>0</i> complete</span>
           <span><i data-stage-attempted>0</i> attempted</span>
@@ -88,17 +88,17 @@ const stageItems = stages.map((stage) => {
   .learning-stage-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
   .learning-stage-card { display: flex; min-width: 0; min-height: 25rem; flex-direction: column; padding: 1.2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 52%, transparent); }
   .learning-stage-card:not(.has-stage-content) { background: color-mix(in srgb, var(--bg-soft) 72%, transparent); }
-  .learning-stage-top { display: flex; justify-content: space-between; gap: .5rem; color: var(--text-faint); font: .55rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .learning-stage-top { display: flex; justify-content: space-between; gap: .5rem; color: var(--text-faint); font: .75rem var(--font-mono); }
   .has-stage-content .learning-stage-top small { color: var(--green); }
   .learning-stage-card h3 { margin: 2rem 0 .65rem; font-size: 1.25rem; }
-  .learning-stage-card > p { margin: 0; color: var(--text-soft); font-size: .75rem; line-height: 1.65; }
+  .learning-stage-card > p { margin: 0; color: var(--text-soft); font-size: .9rem; line-height: 1.65; }
   .learning-stage-outcome { display: grid; gap: .3rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-  .learning-stage-outcome span { color: var(--amber); font: .5rem var(--font-mono); letter-spacing: .08em; }
-  .learning-stage-outcome strong { color: var(--text-soft); font-size: .68rem; line-height: 1.5; }
-  .learning-stage-progress { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; padding-top: 1.2rem; color: var(--text-faint); font-size: .58rem; }
+  .learning-stage-outcome span { color: var(--amber); font: .75rem var(--font-mono); }
+  .learning-stage-outcome strong { color: var(--text-soft); font-size: .86rem; line-height: 1.5; }
+  .learning-stage-progress { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; padding-top: 1.2rem; color: var(--text-faint); font-size: .78rem; }
   .learning-stage-progress span { padding: .28rem .4rem; border: 1px solid var(--line); border-radius: 999px; }
   .learning-stage-progress i { color: var(--text); font-style: normal; font-weight: 700; }
-  .learning-stage-card > a, .learning-stage-planned { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .65rem; }
+  .learning-stage-card > a, .learning-stage-planned { margin-top: .75rem; min-height: 2.75rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .85rem; }
   .learning-stage-card > a { display: flex; justify-content: space-between; color: var(--indigo); }
   .learning-stage-planned { color: var(--text-faint); line-height: 1.45; }
   @media (max-width: 1050px) { .learning-stage-grid { grid-template-columns: repeat(3, 1fr); } }

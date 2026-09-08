@@ -10,10 +10,10 @@ const { compact = false } = Astro.props as { compact?: boolean };
 
 <style>
   .connected-project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, .8fr) auto; align-items: center; gap: 1.2rem; padding: 1.25rem; border: 1px solid var(--line-strong); border-radius: .9rem; background: linear-gradient(135deg, color-mix(in srgb, var(--indigo) 10%, transparent), transparent 54%), var(--surface); }
-  .connected-project-card span { color: var(--amber); font-family: var(--font-mono); font-size: .55rem; font-weight: 650; letter-spacing: .09em; }
+  .connected-project-card span { color: var(--amber); font-size: .78rem; font-weight: 650; }
   .connected-project-card h2 { margin: .32rem 0 0; font-size: 1.25rem; }
-  .connected-project-card p { margin: 0; color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
-  .connected-project-card > a { padding: .62rem .75rem; border: 1px solid var(--indigo); border-radius: .55rem; color: var(--indigo); font-size: .66rem; font-weight: 650; white-space: nowrap; }
+  .connected-project-card p { margin: 0; color: var(--text-soft); font-size: .9rem; line-height: 1.6; }
+  .connected-project-card > a { display: inline-flex; min-height: 2.75rem; align-items: center; padding: .62rem .8rem; border: 1px solid var(--indigo); border-radius: .55rem; color: var(--text); font-size: .88rem; font-weight: 650; white-space: nowrap; }
   .connected-project-card > a:hover { background: var(--indigo); color: white; }
   .connected-project-card > a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .connected-project-card.compact { grid-template-columns: 1fr auto; }

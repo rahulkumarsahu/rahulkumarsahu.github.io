@@ -13,18 +13,18 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nSe
 
 <section class="article-trust" id="article-trust" aria-labelledby="article-trust-title">
   <header>
-    <div><span>TECHNICAL TRUST RECORD</span><h2 id="article-trust-title">How this article is maintained</h2></div>
+    <div><span>Technical trust record</span><h2 id="article-trust-title">How this article is maintained</h2></div>
     <p>Dates, version scope and sources are recorded separately from the publication date.</p>
   </header>
 
   <div class="trust-status">
     <div>
-      <span>LAST REVIEWED</span>
+      <span>Last reviewed</span>
       <strong>{trust.lastReviewed ? formatDate(trust.lastReviewed) : 'Review date not recorded'}</strong>
       <small>{trust.lastReviewed ? 'Technical scope and references checked' : 'Treat version-sensitive details with care'}</small>
     </div>
     <div>
-      <span>TECHNOLOGY VERSION TESTED OR REVIEWED</span>
+      <span>Technology version tested or reviewed</span>
       <ul>{trust.technologyVersions.map((version) => <li>{version}</li>)}</ul>
     </div>
   </div>
@@ -63,36 +63,36 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nSe
 <style>
   .article-trust { margin-top: 1rem; overflow: hidden; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
   .article-trust > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--teal) 5%, var(--surface-strong)); }
-  .article-trust header span, .trust-status span { color: var(--teal); font-family: var(--font-mono); font-size: .5rem; font-weight: 700; letter-spacing: .09em; }
+  .article-trust header span, .trust-status span { color: var(--teal); font-family: var(--font-mono); font-size: .76rem; font-weight: 700; }
   .article-trust header h2 { margin: .25rem 0 0; font-size: 1rem; }
-  .article-trust header p { max-width: 20rem; margin: 0; color: var(--text-faint); font-size: .62rem; line-height: 1.45; text-align: right; }
+  .article-trust header p { max-width: 24rem; margin: 0; color: var(--text-faint); font-size: .82rem; line-height: 1.5; text-align: right; }
   .trust-status { display: grid; grid-template-columns: minmax(12rem, .7fr) minmax(0, 1.3fr); border-bottom: 1px solid var(--line); }
   .trust-status > div { display: grid; align-content: start; gap: .28rem; padding: .8rem 1rem; }
   .trust-status > div + div { border-left: 1px solid var(--line); }
-  .trust-status strong { font-size: .75rem; }
-  .trust-status small { color: var(--text-faint); font-size: .55rem; }
+  .trust-status strong { font-size: .92rem; }
+  .trust-status small { color: var(--text-faint); font-size: .78rem; }
   .trust-status ul { display: flex; flex-wrap: wrap; gap: .35rem; margin: .05rem 0 0; padding: 0; list-style: none; }
-  .trust-status li { padding: .24rem .4rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); color: var(--text-soft); font-family: var(--font-mono); font-size: .5rem; }
+  .trust-status li { padding: .3rem .48rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); color: var(--text-soft); font-family: var(--font-mono); font-size: .76rem; }
   .trust-grid { display: grid; grid-template-columns: 1fr 1fr; }
   .trust-grid > section { min-width: 0; padding: .9rem 1rem; }
   .trust-grid > section + section { border-left: 1px solid var(--line); }
-  .trust-grid h3 { margin: 0 0 .55rem; color: var(--text); font-size: .72rem; }
+  .trust-grid h3 { margin: 0 0 .55rem; color: var(--text); font-size: .92rem; }
   .trust-grid ul { display: grid; gap: .35rem; margin: 0; padding-left: 1rem; }
-  .trust-grid li, .trust-grid p { color: var(--text-soft); font-size: .59rem; line-height: 1.5; }
+  .trust-grid li, .trust-grid p { color: var(--text-soft); font-size: .82rem; line-height: 1.55; }
   .trust-links { padding: 0 !important; list-style: none; }
   .trust-links a, .source-links a { color: var(--indigo); text-decoration: none; }
   .trust-links a { display: flex; justify-content: space-between; gap: .5rem; padding: .35rem .45rem; border-radius: .35rem; background: var(--surface-strong); }
   .source-links { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .65rem; }
-  .source-links a { font-size: .56rem; text-decoration: underline; text-underline-offset: .18em; }
+  .source-links a { display: inline-flex; min-height: 2.75rem; align-items: center; font-size: .82rem; text-decoration: underline; text-underline-offset: .18em; }
   .trust-footer { display: flex; align-items: start; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border-top: 1px solid var(--line); background: var(--surface-strong); }
   .trust-footer details { flex: 1; }
-  .trust-footer summary { width: fit-content; color: var(--text-soft); font-size: .62rem; font-weight: 700; cursor: pointer; }
-  .trust-footer summary span { display: inline-grid; width: 1.2rem; height: 1.2rem; margin-left: .3rem; place-items: center; border-radius: 50%; background: var(--surface); color: var(--text-faint); font-family: var(--font-mono); font-size: .48rem; }
+  .trust-footer summary { display: inline-flex; min-height: 2.75rem; width: fit-content; align-items: center; color: var(--text-soft); font-size: .84rem; font-weight: 700; cursor: pointer; }
+  .trust-footer summary span { display: inline-grid; width: 1.5rem; height: 1.5rem; margin-left: .3rem; place-items: center; border-radius: 50%; background: var(--surface); color: var(--text-faint); font-family: var(--font-mono); font-size: .72rem; }
   .trust-footer ol { display: grid; gap: .5rem; margin: .65rem 0 0; padding: 0; list-style: none; }
   .trust-footer li { display: grid; grid-template-columns: 6rem 1fr; gap: .5rem; }
-  .trust-footer time { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; }
-  .trust-footer p { margin: .55rem 0 0; color: var(--text-soft); font-size: .58rem; line-height: 1.45; }
-  .report-link { flex: 0 0 auto; min-height: 2.25rem; display: inline-flex; align-items: center; padding: .45rem .65rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .59rem; text-decoration: none; }
+  .trust-footer time { color: var(--text-faint); font-family: var(--font-mono); font-size: .76rem; }
+  .trust-footer p { margin: .55rem 0 0; color: var(--text-soft); font-size: .82rem; line-height: 1.5; }
+  .report-link { flex: 0 0 auto; min-height: 2.75rem; display: inline-flex; align-items: center; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .82rem; text-decoration: none; }
   .article-trust :is(a, summary):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   @media (max-width: 640px) { .article-trust > header { align-items: start; flex-direction: column; } .article-trust header p { text-align: left; } .trust-status, .trust-grid { grid-template-columns: 1fr; } .trust-status > div + div, .trust-grid > section + section { border-top: 1px solid var(--line); border-left: 0; } .trust-footer { flex-direction: column; } .trust-footer li { grid-template-columns: 1fr; } }
 </style>

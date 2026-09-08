@@ -38,7 +38,7 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
     <button type="button" data-section-search-clear hidden>Clear</button>
   </div>
   {hasFilters && (
-    <div class="section-filter-row" aria-label="Filter this section">
+    <div class="section-filter-row" role="group" aria-label="Filter this section">
       {showDifficulty && (
         <label>Difficulty
           <select data-section-filter="difficulty">
@@ -199,21 +199,21 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
     gap: .28rem;
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .54rem;
+    font-size: .78rem;
     letter-spacing: .06em;
     text-transform: uppercase;
   }
 
   .section-filter-row select,
   .section-filter-reset {
-    min-height: 2.45rem;
+    min-height: 2.75rem;
     padding: .5rem .65rem;
     border: 1px solid var(--line-strong);
     border-radius: .55rem;
     background: var(--surface);
     color: var(--text);
     font: inherit;
-    font-size: .68rem;
+    font-size: .9rem;
     letter-spacing: 0;
     text-transform: none;
   }

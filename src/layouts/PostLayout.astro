@@ -6,6 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ArticleLearningControls from '../components/ArticleLearningControls.astro';
 import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
 import ArticleJourney from '../components/ArticleJourney.astro';
+import ArticlePersonalNote from '../components/ArticlePersonalNote.astro';
 import ArticleTrustPanel from '../components/ArticleTrustPanel.astro';
 import ArticleFeedback from '../components/ArticleFeedback.astro';
 import ApproachComparison from '../components/ApproachComparison.astro';
@@ -165,6 +166,7 @@ const jsonLd = {
           <button type="button" class="share-button" data-copy-link>Copy link</button>
         </div>
         <PostBanner {post} variant="hero" />
+        <ArticlePersonalNote note={post.data.personalNote} />
         <ArticleLearningControls {post} sectionLabel={parentLabel} />
         <ArticleTrustPanel {post} />
       </header>

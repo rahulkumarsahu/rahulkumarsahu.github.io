@@ -21,6 +21,11 @@ const posts = defineCollection({
       date: z.coerce.date(),
       note: z.string(),
     })).default([]),
+    personalNote: z.object({
+      why: z.string().optional(),
+      context: z.string().optional(),
+      surprise: z.string().optional(),
+    }).optional(),
     description: z.string().default(''),
     categories: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),

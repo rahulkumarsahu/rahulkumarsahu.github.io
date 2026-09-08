@@ -8,24 +8,35 @@ import { TOPICS } from '../../data/site';
 <BaseLayout title="Universal Revision Centre" description="A structured revision home for DSA, Java, Spring Boot, LLD, system design, Docker and Kubernetes.">
   <section class="page-hero section-wrap revision-hero">
     <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Revision centre' }]} />
-    <p class="section-index">REVISE / ALL LEARNING TRACKS</p>
-    <h1>Return to the idea before it fades.</h1>
-    <p>DSA revision cards are available now. The remaining collections show the exact structure that will be filled as their supporting articles are published.</p>
+    <p class="section-label">Revision centre</p>
+    <h1>Review what you have learned.</h1>
+    <p>DSA revision cards are ready now. The other tracks stay visible as a compact preview until their articles are published.</p>
   </section>
 
   <section class="revision-directory section-wrap">
-    <div class="revision-filters" aria-label="Revision collection filters">
+    <h2 class="sr-only" id="revision-filter-title">Filter revision collections</h2>
+    <div class="revision-filters" role="group" aria-labelledby="revision-filter-title">
       <button type="button" data-revision-filter="all" aria-pressed="true">All</button>
       {TOPICS.filter((topic) => ['dsa', 'java', 'lld', 'system-design', 'cloud-native'].includes(topic.slug)).map((topic) => <button type="button" data-revision-filter={topic.slug} aria-pressed="false">{topic.shortTitle}</button>)}
     </div>
     <div class="revision-collection-grid">
-      {REVISION_COLLECTIONS.map((collection, index) => (
-        <article data-revision-collection={collection.topic}>
-          <div class="revision-collection-top"><span>{String(index + 1).padStart(2, '0')}</span><small>{collection.topic === 'dsa' ? 'AVAILABLE' : 'PLANNED'}</small></div>
+      {REVISION_COLLECTIONS.map((collection) => (
+        <article class:list={{ 'revision-available': collection.topic === 'dsa', 'revision-planned-card': collection.topic !== 'dsa' }} data-revision-collection={collection.topic}>
+          <div class="revision-collection-top"><span>{collection.topic === 'dsa' ? 'Available now' : 'Planned collection'}</span></div>
           <h2>{collection.title}</h2>
           <p>{collection.description}</p>
-          <ul>{collection.items.map((item) => <li>{item}<span>{collection.topic === 'dsa' ? 'ready' : 'planned'}</span></li>)}</ul>
-          {collection.topic === 'dsa' ? <a href="/dsa/revision/">Open DSA revision cards <span aria-hidden="true">→</span></a> : <div class="revision-planned">Cards will unlock as reviewed articles become available.</div>}
+          {collection.topic === 'dsa' ? (
+            <>
+              <ul>{collection.items.map((item) => <li>{item}<span>Ready</span></li>)}</ul>
+              <a href="/dsa/revision/">Open DSA revision cards <span aria-hidden="true">→</span></a>
+            </>
+          ) : (
+            <details class="revision-planned">
+              <summary>See planned revision topics</summary>
+              <ul>{collection.items.map((item) => <li>{item}</li>)}</ul>
+              <p>Cards will be added after the supporting articles are reviewed.</p>
+            </details>
+          )}
         </article>
       ))}
     </div>
@@ -47,24 +58,26 @@ import { TOPICS } from '../../data/site';
 </BaseLayout>
 
 <style>
-  .revision-hero { padding-bottom: 3rem; }
-  .revision-hero > p:not(.section-index) { max-width: 48rem; }
-  .revision-directory { padding-bottom: 7rem; }
+  .revision-hero { padding-bottom: 2.5rem; }
+  .revision-hero > p:not(.section-label) { max-width: 48rem; font-size: 1rem; }
+  .revision-directory { padding-bottom: 6rem; }
   .revision-filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1rem; }
-  .revision-filters button { min-height: 2.35rem; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text-soft); cursor: pointer; }
-  .revision-filters button[aria-pressed='true'] { border-color: var(--indigo); color: var(--text); }
+  .revision-filters button { min-height: 2.75rem; padding: .55rem .85rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .9rem; cursor: pointer; }
+  .revision-filters button[aria-pressed='true'] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 12%, var(--surface)); }
   .revision-collection-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-  .revision-collection-grid article { display: flex; min-width: 0; flex-direction: column; padding: 1.25rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 55%, transparent); }
-  .revision-collection-top { display: flex; justify-content: space-between; color: var(--text-faint); font: .52rem var(--font-mono); letter-spacing: .08em; }
-  .revision-collection-top small { color: var(--amber); }
-  .revision-collection-grid h2 { margin: 1.2rem 0 .35rem; font-size: 1.2rem; }
-  .revision-collection-grid p { margin: 0; color: var(--text-soft); font-size: .72rem; }
+  .revision-collection-grid article { display: flex; min-width: 0; flex-direction: column; padding: 1.4rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 55%, transparent); }
+  .revision-collection-grid article.revision-available { grid-column: 1 / -1; background: color-mix(in srgb, var(--indigo) 7%, var(--surface)); }
+  .revision-collection-top { color: var(--text-soft); font-size: .86rem; font-weight: 650; }
+  .revision-available .revision-collection-top { color: var(--green); }
+  .revision-collection-grid h2 { margin: .55rem 0 .35rem; font-size: 1.3rem; }
+  .revision-collection-grid p { margin: 0; color: var(--text-soft); font-size: .9rem; line-height: 1.6; }
   .revision-collection-grid ul { display: grid; gap: .35rem; margin: 1rem 0; padding: 0; list-style: none; }
-  .revision-collection-grid li { display: flex; justify-content: space-between; gap: .5rem; padding: .4rem .5rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--text-soft); font-size: .64rem; }
-  .revision-collection-grid li span { color: var(--text-faint); font: .5rem var(--font-mono); text-transform: uppercase; }
-  .revision-collection-grid article > a, .revision-planned { margin-top: auto; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .65rem; }
-  .revision-collection-grid article > a { display: flex; justify-content: space-between; color: var(--indigo); }
-  .revision-planned { color: var(--text-faint); }
+  .revision-collection-grid li { display: flex; justify-content: space-between; gap: .5rem; padding: .55rem .65rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--text); font-size: .86rem; }
+  .revision-collection-grid li span { color: var(--green); font-size: .78rem; }
+  .revision-collection-grid article > a { display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; margin-top: auto; padding: .75rem; border: 1px solid var(--indigo); border-radius: .55rem; color: var(--text); font-size: .95rem; font-weight: 650; }
+  .revision-planned { margin-top: 1rem; border-top: 1px solid var(--line); color: var(--text-soft); }
+  .revision-planned summary { display: flex; min-height: 2.75rem; align-items: center; cursor: pointer; font-size: .9rem; font-weight: 650; }
+  .revision-planned p { font-size: .82rem; }
   .revision-empty { padding: 2rem; text-align: center; color: var(--text-soft); }
   @media (max-width: 680px) { .revision-collection-grid { grid-template-columns: 1fr; } }
   @media print { .site-header-wrap, .site-footer, .revision-filters { display: none !important; } .revision-collection-grid { grid-template-columns: repeat(2, 1fr); } }

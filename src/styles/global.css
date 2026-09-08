@@ -35,17 +35,17 @@
   --surface-raised: #f7f8f5;
   --text: #10182a;
   --text-soft: #4d5a6d;
-  --text-faint: #7a8492;
+  --text-faint: #626e82;
   --line: rgba(31, 47, 69, 0.12);
   --line-strong: rgba(31, 47, 69, 0.22);
   --indigo: #5c5ee8;
   --indigo-strong: #4749d0;
-  --amber: #c98117;
-  --cyan: #078d8d;
-  --violet: #8b54d9;
-  --green: #2d9259;
-  --rose: #c34876;
-  --orange: #c85c2f;
+  --amber: #9b5900;
+  --cyan: #006b6b;
+  --violet: #7440bd;
+  --green: #167043;
+  --rose: #a92d62;
+  --orange: #a84520;
   --shadow: 0 28px 70px rgba(37, 46, 61, 0.12);
 }
 
@@ -93,6 +93,15 @@ a {
 :focus-visible {
   outline: 3px solid color-mix(in srgb, var(--indigo) 75%, white);
   outline-offset: 4px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--indigo) 32%, transparent);
+  color: var(--text);
+}
+
+summary {
+  cursor: pointer;
 }
 
 .skip-link {
@@ -260,7 +269,7 @@ a {
 }
 
 .theme-toggle {
-  min-height: 40px;
+  min-height: 44px;
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface) 78%, transparent);
   cursor: pointer;
@@ -269,15 +278,15 @@ a {
 .theme-toggle {
   position: relative;
   display: grid;
-  width: 40px;
+  width: 44px;
   place-items: center;
   border-radius: 10px;
 }
 
 .menu-toggle {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   gap: 5px;
   padding: 11px 9px;
@@ -365,6 +374,13 @@ a {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
+}
+
+.section-label {
+  margin: 0 0 .55rem;
+  color: var(--amber);
+  font-size: .9rem;
+  font-weight: 650;
 }
 
 .hero h1 {
@@ -786,8 +802,8 @@ a {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   align-items: end;
-  gap: 80px;
-  margin-bottom: 46px;
+  gap: clamp(28px, 4vw, 60px);
+  margin-bottom: 36px;
 }
 
 .section-heading .section-index,
@@ -1362,7 +1378,7 @@ a {
   border-top: 1px solid var(--line);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: .75rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -1399,8 +1415,15 @@ a {
 .footer-links > span {
   margin-bottom: 4px;
   color: var(--amber);
-  font-size: 8px;
+  font-size: .72rem;
   letter-spacing: .1em;
+}
+
+.footer-links a {
+  display: flex;
+  min-height: 1.75rem;
+  align-items: center;
+  font-size: .78rem;
 }
 
 .footer-links a:hover {
@@ -1733,15 +1756,14 @@ a {
 }
 
 .section-search-field button {
-  min-height: 34px;
+  min-height: 44px;
   padding-inline: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--bg-soft);
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: 0.82rem;
   cursor: pointer;
 }
 
@@ -1749,9 +1771,7 @@ a {
   margin: 12px 2px 0;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.82rem;
 }
 
 .section-search-empty {
@@ -1774,7 +1794,7 @@ a {
 .section-search-empty span {
   margin-top: 5px;
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: 0.88rem;
 }
 
 .section-search-wrap + .difficulty-sections {
@@ -2214,7 +2234,7 @@ a {
   gap: 14px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -2232,7 +2252,7 @@ a {
   min-height: 60px;
   margin: 0 0 24px;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: 0.9rem;
   line-height: 1.68;
 }
 
@@ -3810,7 +3830,7 @@ a {
 
 .header-start {
   display: inline-flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   gap: 9px;
   padding: 0 14px;
@@ -3818,7 +3838,7 @@ a {
   border-radius: 10px;
   background: color-mix(in srgb, var(--indigo) 10%, transparent);
   color: var(--text);
-  font-size: 11px;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
@@ -3835,11 +3855,11 @@ a {
 
 .home-hero {
   display: grid;
-  min-height: 760px;
+  min-height: 660px;
   grid-template-columns: minmax(0, 0.96fr) minmax(500px, 1.04fr);
   align-items: center;
-  gap: 66px;
-  padding-block: 70px 82px;
+  gap: 54px;
+  padding-block: 56px 64px;
 }
 
 .home-hero-copy {
@@ -3860,10 +3880,18 @@ a {
   max-width: 690px;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(52px, 5vw, 76px);
+  font-size: clamp(48px, 4.6vw, 68px);
   font-weight: 600;
   letter-spacing: -0.058em;
   line-height: 0.99;
+}
+
+.home-hero-byline {
+  color: var(--text-soft);
+  font-family: var(--font-body);
+  font-size: .86rem;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .home-hero h1 span {

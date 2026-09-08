@@ -8,48 +8,29 @@ import AtlasUtilities from '../components/AtlasUtilities.astro';
 import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import { SITE, TOPICS } from '../data/site';
-import { DSA_STARTER_SLUGS } from '../data/learningGoals';
 import { getPostSlug, getPostsForTopic, getSortedPosts } from '../lib/posts';
 
 const posts = getSortedPosts(await getCollection('posts'));
 const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(posts, topic.slug).length]));
-
-const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
-  const post = posts.find((candidate) => getPostSlug(candidate) === slug);
-  return post ? [post] : [];
-});
 ---
 
 <BaseLayout title={SITE.name} description={SITE.description} image="/og.png">
   <section class="home-hero section-wrap">
     <div class="home-hero-copy">
-      <div class="eyebrow-pill">
+      <div class="eyebrow-pill home-hero-byline">
         <span class="status-dot"></span>
-        Engineering ideas, mapped from code to scale
+        A practical learning map by Rahul Kumar
       </div>
-      <p class="home-hero-kicker">FROM YOUR FIRST ARRAY TO PRODUCTION SYSTEMS</p>
-      <h1>Learn the code. See the <span>system</span> behind it.</h1>
+      <h1>From your first algorithm to the systems behind <span>real products.</span></h1>
       <p class="home-hero-intro">
-        I write practical guides on DSA, Java, system design, cloud native engineering and AI, along with deeper notes from real engineering work. We start with the basic idea, work through the implementation, and finish with the decisions that matter in a real system.
+        I’m a backend engineer with more than eight years of experience. I use this blog to explain how I think through DSA, Java, application design and distributed systems, with working code, visual dry runs and the tradeoffs that matter in production.
       </p>
       <div class="home-hero-actions">
         <a class="button button-primary" href="#choose-your-goal">
-          Choose your learning goal
+          Choose your path
           <span aria-hidden="true">↗</span>
         </a>
-        <a class="button button-secondary" href="#learning-paths">See all topics</a>
       </div>
-      <nav class="home-starting-points" aria-label="Popular starting points">
-        <span>Popular starting points</span>
-        <a href="/posts/array-fundamentals/">Array fundamentals</a>
-        <a href="/posts/java-backend-foundations/">Java foundations</a>
-        <a href="/posts/system-design-foundations/">System design basics</a>
-      </nav>
-      <dl class="home-hero-proof" aria-label="What the Atlas contains">
-        <div><dt>{String(posts.length).padStart(2, '0')}</dt><dd>practical notes</dd></div>
-        <div><dt>{String(TOPICS.length).padStart(2, '0')}</dt><dd>connected paths</dd></div>
-        <div><dt>Java</dt><dd>first examples</dd></div>
-      </dl>
     </div>
 
     <div class="atlas-hero-visual" aria-label="Rahul mapping the learning paths inside The System Design Atlas">
@@ -98,58 +79,16 @@ const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
   </section>
 
   <LearningDashboard compact />
-  <AtlasUtilities />
-
-  <section class="trust-strip" aria-label="Topics covered">
-    <div class="trust-track">
-      <div class="trust-group">
-        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>CLOUD NATIVE</span><i>◆</i><span>AI ENGINEERING</span><i>◆</i><span>ENGINEERING NOTES</span><i>◆</i>
-      </div>
-      <div class="trust-group" aria-hidden="true">
-        <span>DATA STRUCTURES</span><i>◆</i><span>JAVA</span><i>◆</i><span>LOW LEVEL DESIGN</span><i>◆</i><span>DISTRIBUTED SYSTEMS</span><i>◆</i><span>CLOUD NATIVE</span><i>◆</i><span>AI ENGINEERING</span><i>◆</i><span>ENGINEERING NOTES</span><i>◆</i>
-      </div>
-    </div>
-  </section>
 
   <LearningGoals {posts} />
 
-  <section class="learning-method section-wrap" data-reveal>
-    <div class="section-heading">
-      <div><p class="section-index">01 / WHAT YOU WILL GET</p><h2>A clear path from first principles to real systems.</h2></div>
-      <p>Learn at your own pace with connected paths, beginner friendly explanations, readable Java and visuals that make execution easier to follow.</p>
-    </div>
-    <div class="learning-method-grid">
-      <article data-reveal style="--reveal-delay: 0ms">
-        <span>01 / FOLLOW A PATH</span>
-        <strong>Know what to learn next</strong>
-        <p>Move through DSA, Java, LLD, system design, cloud native engineering and AI in clearly organised sections.</p>
-        <small>foundations · subsections · related articles</small>
-      </article>
-      <article data-reveal style="--reveal-delay: 90ms">
-        <span>02 / UNDERSTAND</span>
-        <strong>Learn the reason behind the code</strong>
-        <p>Start with the problem, build the intuition, compare approaches and understand the tradeoffs before memorising a solution.</p>
-        <small>examples · intuition · complexity · mistakes</small>
-      </article>
-      <article data-reveal style="--reveal-delay: 180ms">
-        <span>03 / SEE IT WORK</span>
-        <strong>Turn execution into something visible</strong>
-        <p>Use diagrams, dry runs and interactive traces to follow values, calls and decisions one step at a time.</p>
-        <small>diagrams · call stacks · state changes</small>
-      </article>
-      <article data-reveal style="--reveal-delay: 270ms">
-        <span>04 / APPLY IT</span>
-        <strong>Connect learning to engineering</strong>
-        <p>Carry the same ideas into backend services, distributed systems, containers and production decisions.</p>
-        <small>java · reliability · scale · production</small>
-      </article>
-    </div>
-  </section>
-
-  <section class="tracks section-wrap" id="learning-paths" data-reveal>
-    <div class="section-heading">
-      <div><p class="section-index">02 / PATHS &amp; COLLECTIONS</p><h2>Pick the route you need today.</h2></div>
-      <p>Follow a structured path or open a collection that matches the problem in front of you. You can always move between topics as your questions change.</p>
+  <section class="tracks section-wrap" id="learning-paths" data-reveal aria-labelledby="learning-paths-title">
+    <div class="section-heading section-heading-notes">
+      <div>
+        <p class="section-label">Explore by topic</p>
+        <h2 id="learning-paths-title">Choose the engineering map you need.</h2>
+      </div>
+      <p>Each topic has its own learning structure, published articles and visual guides.</p>
     </div>
     <div class="topic-cover-grid topic-cover-grid--major">
       {TOPICS.map((topic) => (
@@ -166,33 +105,12 @@ const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
     </div>
   </section>
 
-  <section class="roadmap section-wrap" id="roadmap" data-reveal>
-    <div class="roadmap-panel">
-      <div class="roadmap-copy">
-        <p class="section-index">03 / A GOOD FIRST ROUTE</p>
-        <div class="roadmap-chip">DSA · JAVA · STEP BY STEP</div>
-        <h2>Build the instincts that make system design easier.</h2>
-        <p>Start with arrays, practise finding and moving values, then trace recursion and generate subsets. Each lesson below is ready to read and try.</p>
-        <a class="text-link" href="/topics/dsa/">Explore the DSA learning path <span>→</span></a>
-      </div>
-      <ol class="roadmap-list">
-        {roadmap.map((post, index) => (
-          <li class={index === 0 ? 'is-active' : ''}>
-            <a href={`/posts/${getPostSlug(post)}/`}>
-              <span class="roadmap-number">{String(index + 1).padStart(2, '0')}</span>
-              <div><strong>{post.data.title}</strong><small>{index === 0 ? 'Start here' : 'Published and available'}</small></div>
-              <span class="roadmap-state">{index === 0 ? 'Begin' : '→'}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
+  <AtlasUtilities />
 
   <section class="notes section-wrap" id="notes" data-reveal>
     <div class="section-heading section-heading-notes">
-      <div><p class="section-index">04 / LATEST FIELD NOTES</p><h2>Fresh notes from the Atlas.</h2></div>
-      <a class="text-link" href="/topics/">Explore all topics <span>→</span></a>
+      <div><p class="section-label">Recently published</p><h2>What I have been writing.</h2></div>
+      <a class="text-link" href="/topics/">Browse every topic <span>→</span></a>
     </div>
     <div class="post-grid home-post-grid">
       {posts.slice(0, 3).map((post) => <PostCard {post} />)}
@@ -201,21 +119,5 @@ const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
 
   <section class="home-connected-project section-wrap" data-reveal>
     <ConnectedProjectCard />
-  </section>
-
-  <section class="about section-wrap" id="about" data-reveal>
-    <div class="about-card">
-      <a class="about-photo" href="/about/" aria-label="About Rahul Kumar">
-        <img src="/images/rahul-kumar.jpg" alt="Rahul Kumar" width="160" height="160" />
-        <i aria-hidden="true"></i>
-      </a>
-      <div class="about-copy">
-        <p class="section-index">05 / ABOUT ME</p>
-        <h2>Hi, I’m Rahul. I build backend systems and write about what I learn along the way.</h2>
-        <p>I’m a Senior Backend Engineer at JPMorgan Chase with more than eight years of experience. Most of my work has been around Java, Go, distributed systems, cloud platforms, and developer tooling. This blog is where I slow down and explain the ideas that have helped me in real projects.</p>
-        <div class="about-links"><a href="/about/">About me ↗</a><a href={SITE.github}>GitHub ↗</a><a href={SITE.linkedin}>LinkedIn ↗</a></div>
-      </div>
-      <blockquote>“Writing helps me test whether I really understand something. This blog keeps that learning honest.”</blockquote>
-    </div>
   </section>
 </BaseLayout>

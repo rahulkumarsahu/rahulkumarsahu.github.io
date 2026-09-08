@@ -1,0 +1,64 @@
+---
+interface Props {
+  note?: {
+    why?: string;
+    context?: string;
+    surprise?: string;
+  };
+}
+
+const { note } = Astro.props;
+const entries = [
+  { label: 'Why I wrote this', value: note?.why },
+  { label: 'Where I encountered it', value: note?.context },
+  { label: 'What surprised me', value: note?.surprise },
+].filter((entry): entry is { label: string; value: string } => Boolean(entry.value));
+---
+
+{entries.length > 0 && (
+  <aside class="article-personal-note" aria-labelledby="article-personal-note-title">
+    <div>
+      <span aria-hidden="true">RK</span>
+      <p id="article-personal-note-title">A note from Rahul</p>
+    </div>
+    <dl>
+      {entries.map((entry) => (
+        <div>
+          <dt>{entry.label}</dt>
+          <dd>{entry.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </aside>
+)}
+
+<style>
+  .article-personal-note {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1.25rem;
+    margin: 1.75rem 0;
+    padding: 1.25rem;
+    border-left: 3px solid var(--amber);
+    background: color-mix(in srgb, var(--amber) 7%, var(--surface));
+  }
+  .article-personal-note > div { display: flex; align-items: center; gap: .65rem; }
+  .article-personal-note > div span {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid var(--amber);
+    border-radius: 50%;
+    color: var(--amber);
+    font-weight: 700;
+  }
+  .article-personal-note > div p { margin: 0; color: var(--text); font-weight: 700; }
+  .article-personal-note dl { display: grid; gap: .85rem; margin: 0; }
+  .article-personal-note dl div { display: grid; gap: .2rem; }
+  .article-personal-note dt { color: var(--text); font-size: .9rem; font-weight: 700; }
+  .article-personal-note dd { margin: 0; color: var(--text-soft); font-size: .95rem; line-height: 1.65; }
+  @media (max-width: 620px) {
+    .article-personal-note { grid-template-columns: 1fr; padding: 1rem; }
+  }
+</style>

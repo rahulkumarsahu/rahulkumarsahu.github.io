@@ -63,7 +63,7 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
     <meta name="theme-color" content="#172033" />
@@ -117,7 +117,6 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="site-shell">
       <SiteHeader currentPath={Astro.url.pathname} />
-      <GlobalSearch />
       <GlobalSearch />
       <main id="main-content">
         <slot />

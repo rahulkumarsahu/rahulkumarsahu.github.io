@@ -10,7 +10,7 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
 <section class="progressive-hints" aria-labelledby={`hints-${problemSlug}`}>
   <div class="hint-heading">
     <div>
-      <span>NEED A NUDGE?</span>
+      <span>Need a nudge?</span>
       <h3 id={`hints-${problemSlug}`}>Reveal only the help you need</h3>
     </div>
     <small>Hints become more specific one step at a time.</small>
@@ -45,7 +45,7 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
   .hint-heading span {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: .78rem;
     font-weight: 600;
     letter-spacing: .12em;
   }
@@ -58,7 +58,7 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
   .hint-heading small {
     max-width: 16rem;
     color: var(--text-faint);
-    font-size: .68rem;
+    font-size: .85rem;
     line-height: 1.5;
     text-align: right;
   }
@@ -101,12 +101,12 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
     border-radius: 50%;
     color: var(--indigo);
     font-family: var(--font-mono);
-    font-size: .57rem;
+    font-size: .75rem;
   }
 
   .hint-card summary strong {
     color: var(--text);
-    font-size: .72rem;
+    font-size: .9rem;
     line-height: 1.4;
   }
 
@@ -114,7 +114,7 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
     margin: 0;
     padding: 0 .8rem .85rem;
     color: var(--text-soft);
-    font-size: .73rem;
+    font-size: .88rem;
     line-height: 1.6;
   }
 

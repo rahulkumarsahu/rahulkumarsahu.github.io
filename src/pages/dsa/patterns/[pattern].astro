@@ -23,7 +23,7 @@ const posts = (await getCollection('posts'))
     <div class="banner-page-intro"><p>{pattern.description}</p></div>
   </section>
 
-  <main class="pattern-detail section-wrap">
+  <div class="pattern-detail section-wrap">
     <section class="pattern-explainer">
       <article><span>01 / WHAT IT SOLVES</span><p>{pattern.solves}</p></article>
       <article><span>02 / HOW TO RECOGNIZE IT</span><ul>{pattern.signals.map((signal) => <li>{signal}</li>)}</ul></article>
@@ -49,7 +49,7 @@ const posts = (await getCollection('posts'))
       <div><p class="section-index">PLANNED PRACTICE</p><h2>What comes after the published lessons.</h2></div>
       <ol>{pattern.plannedPractice.map((title) => <li><span aria-hidden="true">○</span><strong>{title}</strong><small>Planned, not yet published</small></li>)}</ol>
     </section>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>

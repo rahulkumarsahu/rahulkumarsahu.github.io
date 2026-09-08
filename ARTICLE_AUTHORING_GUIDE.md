@@ -86,6 +86,10 @@ sourceCodeUrl: "https://verified.example/source"
 knownLimitations:
   - "The implementation assumes the input array is mutable."
 corrections: []
+personalNote:
+  why: "A genuine reason Rahul chose to write this article."
+  context: "Where Rahul encountered or used the idea, when applicable."
+  surprise: "A specific detail that changed Rahul's understanding, when applicable."
 image: "/images/articles/move-zeroes-to-end.svg"
 math: false
 mermaid: false
@@ -130,6 +134,7 @@ Add a new pattern to the content schema and pattern library before assigning it 
 8. Add a correction record when a published technical error is fixed.
 9. Keep new articles as `draft: true` until review is complete.
 10. Set `mermaid: true` only when the article actually includes Mermaid.
+11. Use `personalNote` only with details supplied by Rahul. Omit any empty fields, and omit the whole block rather than inventing a personal story.
 
 ## 6. Standard DSA problem article
 
