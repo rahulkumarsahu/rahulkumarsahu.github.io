@@ -5,6 +5,7 @@ import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ArticleLearningControls from '../components/ArticleLearningControls.astro';
 import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
+import ArticleJourney from '../components/ArticleJourney.astro';
 import ArticleTrustPanel from '../components/ArticleTrustPanel.astro';
 import ArticleFeedback from '../components/ArticleFeedback.astro';
 import ApproachComparison from '../components/ApproachComparison.astro';
@@ -220,6 +221,7 @@ const jsonLd = {
         </div>
       )}
 
+      <ArticleJourney {post} {previous} {next} {related} links={learningLinks} />
       <ArticleFeedback {post} />
 
       <footer class="article-end">

@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { formatDate, getPostSlug, getSortedPosts, getTopicForPost } from '../../lib/posts';
+
+const posts = getSortedPosts(await getCollection('posts'));
+const now = new Date();
+const reviewAge = (post: typeof posts[number]) => post.data.lastReviewed ? Math.floor((now.getTime() - post.data.lastReviewed.getTime()) / 86_400_000) : Infinity;
+const records = posts.map((post) => ({
+  post,
+  topic: getTopicForPost(post),
+  age: reviewAge(post),
+  status: !post.data.lastReviewed ? 'not-recorded' : reviewAge(post) > 180 ? 'review-due' : 'reviewed',
+})).sort((a, b) => (b.post.data.lastReviewed?.getTime() ?? 0) - (a.post.data.lastReviewed?.getTime() ?? 0));
+const reviewed = records.filter((record) => record.status === 'reviewed').length;
+const due = records.length - reviewed;
+---
+
+<BaseLayout title="Content Freshness" description="Review dates, tested technology versions and correction history for articles in The System Design Atlas.">
+  <section class="page-hero section-wrap freshness-hero">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'Content freshness' }]} />
+    <p class="section-index">TECHNICAL TRUST / MAINTENANCE</p>
+    <h1>See when the Atlas was checked.</h1>
+    <p>This page is generated from article metadata. It makes current reviews, tested versions, recorded corrections and missing review dates visible without changing article content.</p>
+    <dl><div><dt>{reviewed}</dt><dd>reviewed within 180 days</dd></div><div><dt>{due}</dt><dd>need a review or date</dd></div><div><dt>{records.reduce((count, record) => count + record.post.data.corrections.length, 0)}</dt><dd>recorded corrections</dd></div></dl>
+  </section>
+
+  <section class="freshness-directory section-wrap">
+    <div class="freshness-controls">
+      <label><span>Search records</span><input type="search" data-freshness-search placeholder="Search article, topic or version" /></label>
+      <label><span>Review state</span><select data-freshness-status><option value="all">All states</option><option value="reviewed">Recently reviewed</option><option value="review-due">Review due</option><option value="not-recorded">Date not recorded</option></select></label>
+      <button type="button" data-freshness-reset>Reset</button>
+    </div>
+    <div class="freshness-table-wrap">
+      <table>
+        <thead><tr><th>Article</th><th>Track</th><th>Last reviewed</th><th>Version scope</th><th>Corrections</th><th>Status</th></tr></thead>
+        <tbody>
+          {records.map(({ post, topic, status }) => (
+            <tr data-freshness-row data-status={status} data-search-text={`${post.data.title} ${topic.title} ${post.data.javaVersion ?? ''} ${post.data.technologyVersions.join(' ')}`}>
+              <td><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a></td>
+              <td>{topic.shortTitle}</td>
+              <td>{post.data.lastReviewed ? formatDate(post.data.lastReviewed) : 'Not recorded'}</td>
+              <td>{[post.data.javaVersion ? `Java ${post.data.javaVersion}` : '', ...post.data.technologyVersions].filter(Boolean).join(', ') || 'Version independent'}</td>
+              <td>{post.data.corrections.length}</td>
+              <td><span class={`freshness-status status-${status}`}>{status === 'reviewed' ? 'Recently reviewed' : status === 'review-due' ? 'Review due' : 'Date needed'}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p data-freshness-empty hidden>No maintenance record matches these filters.</p>
+  </section>
+
+  <script>
+    const search = document.querySelector<HTMLInputElement>('[data-freshness-search]');
+    const status = document.querySelector<HTMLSelectElement>('[data-freshness-status]');
+    const rows = [...document.querySelectorAll<HTMLTableRowElement>('[data-freshness-row]')];
+    const empty = document.querySelector<HTMLElement>('[data-freshness-empty]');
+    const filter = () => { const query = search?.value.trim().toLowerCase() || ''; const state = status?.value || 'all'; let shown = 0; rows.forEach((row) => { const visible = (!query || row.dataset.searchText?.toLowerCase().includes(query)) && (state === 'all' || row.dataset.status === state); row.hidden = !visible; if (visible) shown++; }); if (empty) empty.hidden = shown > 0; };
+    search?.addEventListener('input', filter); status?.addEventListener('change', filter);
+    document.querySelector('[data-freshness-reset]')?.addEventListener('click', () => { if (search) search.value = ''; if (status) status.value = 'all'; filter(); search?.focus(); });
+  </script>
+</BaseLayout>
+
+<style>
+  .freshness-hero { padding-bottom: 3rem; }
+  .freshness-hero > p:not(.section-index) { max-width: 50rem; }
+  .freshness-hero dl { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+  .freshness-hero dl div { min-width: 11rem; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); }
+  .freshness-hero dt { font-size: 1.2rem; font-weight: 700; }.freshness-hero dd { margin: .1rem 0 0; color: var(--text-faint); font-size: .62rem; }
+  .freshness-directory { padding-bottom: 7rem; }
+  .freshness-controls { display: grid; grid-template-columns: 1fr minmax(12rem, .35fr) auto; gap: .6rem; align-items: end; margin-bottom: 1rem; }
+  .freshness-controls label { display: grid; gap: .3rem; }.freshness-controls label span { color: var(--text-faint); font-size: .6rem; }
+  .freshness-controls input, .freshness-controls select, .freshness-controls button { min-height: 2.6rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text); }
+  .freshness-controls button { cursor: pointer; }
+  .freshness-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: .7rem; }
+  table { width: 100%; min-width: 55rem; border-collapse: collapse; background: var(--surface); }
+  th, td { padding: .75rem; border-bottom: 1px solid var(--line); text-align: left; font-size: .65rem; }
+  th { color: var(--text-faint); font: .52rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  td a { text-decoration: underline; text-underline-offset: .18em; }
+  .freshness-status { display: inline-flex; padding: .25rem .4rem; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+  .status-reviewed { color: var(--green); }.status-review-due, .status-not-recorded { color: var(--amber); }
+  [data-freshness-empty] { padding: 2rem; color: var(--text-soft); text-align: center; }
+  @media (max-width: 660px) { .freshness-controls { grid-template-columns: 1fr; } }
+</style>

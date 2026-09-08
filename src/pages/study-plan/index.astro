@@ -1,0 +1,132 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { DSA_STARTER_SLUGS } from '../../data/learningGoals';
+import { estimateReadTime, getPostSlug, getSortedPosts, getTopicForPost } from '../../lib/posts';
+
+const allPosts = getSortedPosts(await getCollection('posts'));
+const starterOrder = new Map(DSA_STARTER_SLUGS.map((slug, index) => [slug, index]));
+const lessons = allPosts.map((post) => ({
+  slug: getPostSlug(post),
+  title: post.data.title,
+  href: `/posts/${getPostSlug(post)}/`,
+  topic: getTopicForPost(post).slug,
+  section: post.data.learningSection ?? post.data.series ?? '',
+  minutes: estimateReadTime(post),
+  order: starterOrder.get(getPostSlug(post)) ?? 100 + (post.data.order ?? 99),
+})).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+---
+
+<BaseLayout title="Personal Study Planner" description="Create a private browser-based learning plan from your goal, experience and available study time.">
+  <section class="page-hero section-wrap planner-hero">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'My learning', href: '/learning/' }, { label: 'Study planner' }]} />
+    <p class="section-index">LOCAL LEARNING / PERSONAL PLAN</p>
+    <h1>Turn available time into a clear next step.</h1>
+    <p>The planner uses published lessons only. Your choices and generated schedule stay in this browser and the page still works for the current visit when storage is blocked.</p>
+  </section>
+
+  <section class="planner section-wrap" data-study-planner data-lessons={JSON.stringify(lessons)}>
+    <form class="planner-form" data-planner-form>
+      <div class="planner-form-heading"><span>BUILD YOUR PLAN</span><h2>What are you preparing for?</h2></div>
+      <label><span>Learning goal</span><select name="goal"><option value="dsa">Learn DSA from the beginning</option><option value="java">Become a Java backend engineer</option><option value="system-design">Prepare for system design interviews</option><option value="project">Build the production URL shortener</option></select></label>
+      <label><span>Current experience</span><select name="experience"><option value="beginner">Beginner</option><option value="some">I know some foundations</option><option value="experienced">Experienced, revising selectively</option></select></label>
+      <label><span>Minutes per study day</span><input name="minutes" type="number" min="15" max="180" step="15" value="45" /></label>
+      <label><span>Study days per week</span><input name="days" type="number" min="1" max="7" value="4" /></label>
+      <label><span>Plan duration in weeks</span><input name="weeks" type="number" min="1" max="12" value="4" /></label>
+      <button type="submit">Create my plan <span aria-hidden="true">→</span></button>
+      <p data-planner-message aria-live="polite">You can regenerate this plan at any time.</p>
+    </form>
+
+    <div class="planner-output" data-planner-output hidden>
+      <header><div><span>YOUR LOCAL PLAN</span><h2 data-plan-title>Study plan</h2></div><button type="button" data-clear-plan>Clear plan</button></header>
+      <div data-plan-weeks></div>
+      <aside><strong>Planned content is not used as a lesson.</strong><p>As more reviewed articles are published, regenerating the plan will include them automatically.</p></aside>
+    </div>
+  </section>
+
+  <script>
+    import { KEYS, readRecord, writeRecord, storageIsAvailable } from '../../lib/learningStorage';
+    type Lesson = { slug: string; title: string; href: string; topic: string; section: string; minutes: number; order: number };
+    type Plan = { goal: string; experience: string; minutes: number; days: number; weeks: number; createdAt: number; lessons: Lesson[] };
+    const planner = document.querySelector<HTMLElement>('[data-study-planner]');
+    const form = planner?.querySelector<HTMLFormElement>('[data-planner-form]');
+    const output = planner?.querySelector<HTMLElement>('[data-planner-output]');
+    const weeksContainer = planner?.querySelector<HTMLElement>('[data-plan-weeks]');
+    const message = planner?.querySelector<HTMLElement>('[data-planner-message]');
+    let lessons: Lesson[] = [];
+    try { lessons = JSON.parse(planner?.dataset.lessons || '[]'); } catch { lessons = []; }
+    const topicsForGoal: Record<string, string[]> = { dsa: ['dsa'], java: ['java', 'lld', 'cloud-native'], 'system-design': ['system-design'], project: ['lld', 'java', 'system-design', 'cloud-native'] };
+    const goalNames: Record<string, string> = { dsa: 'DSA beginner plan', java: 'Java backend engineering plan', 'system-design': 'System design interview plan', project: 'Production URL shortener plan' };
+
+    const renderPlan = (plan: Plan) => {
+      if (!output || !weeksContainer) return;
+      output.hidden = false; weeksContainer.replaceChildren();
+      const title = planner?.querySelector<HTMLElement>('[data-plan-title]'); if (title) title.textContent = goalNames[plan.goal] || 'Study plan';
+      for (let week = 0; week < plan.weeks; week++) {
+        const section = document.createElement('section');
+        const heading = document.createElement('h3'); heading.textContent = `Week ${week + 1}`; section.append(heading);
+        const list = document.createElement('ol');
+        const weekLessons = plan.lessons.slice(week * plan.days, (week + 1) * plan.days);
+        if (!weekLessons.length) {
+          const item = document.createElement('li'); item.className = 'planner-rest'; item.textContent = 'Review completed lessons or revisit your saved notes.'; list.append(item);
+        } else weekLessons.forEach((lesson, index) => {
+          const item = document.createElement('li');
+          const meta = document.createElement('span'); meta.textContent = `DAY ${index + 1} · ABOUT ${Math.max(lesson.minutes, plan.minutes)} MIN AVAILABLE`;
+          const link = document.createElement('a'); link.href = lesson.href; link.textContent = lesson.title;
+          const note = document.createElement('small'); note.textContent = `${lesson.topic.replaceAll('-', ' ')} · ${lesson.minutes} min reading estimate`;
+          item.append(meta, link, note); list.append(item);
+        });
+        section.append(list); weeksContainer.append(section);
+      }
+    };
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault(); const data = new FormData(form);
+      const goal = String(data.get('goal')); const experience = String(data.get('experience'));
+      const minutes = Math.min(180, Math.max(15, Number(data.get('minutes')) || 45));
+      const days = Math.min(7, Math.max(1, Number(data.get('days')) || 4));
+      const weeks = Math.min(12, Math.max(1, Number(data.get('weeks')) || 4));
+      const eligible = lessons.filter((lesson) => topicsForGoal[goal]?.includes(lesson.topic));
+      const skip = experience === 'some' ? Math.min(2, Math.floor(eligible.length / 4)) : experience === 'experienced' ? Math.min(5, Math.floor(eligible.length / 2)) : 0;
+      const plan: Plan = { goal, experience, minutes, days, weeks, createdAt: Date.now(), lessons: eligible.slice(skip, skip + days * weeks) };
+      const persisted = writeRecord(KEYS.studyPlan, { current: plan }); renderPlan(plan);
+      if (message) message.textContent = persisted ? 'Plan created and saved in this browser.' : 'Plan created for this visit. Browser storage is unavailable.';
+      output?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    });
+    planner?.querySelector('[data-clear-plan]')?.addEventListener('click', () => { writeRecord(KEYS.studyPlan, {}); if (output) output.hidden = true; if (message) message.textContent = 'Your local study plan was cleared.'; });
+    const saved = readRecord<Plan>(KEYS.studyPlan).current; if (saved && Array.isArray(saved.lessons)) renderPlan(saved);
+    if (message && !storageIsAvailable()) message.textContent = 'Browser storage is blocked. You can still create a plan for this visit.';
+  </script>
+</BaseLayout>
+
+<style>
+  .planner-hero { padding-bottom: 3rem; }
+  .planner-hero > p:not(.section-index) { max-width: 51rem; }
+  .planner { display: grid; grid-template-columns: minmax(17rem, .7fr) minmax(0, 1.3fr); gap: 1rem; align-items: start; padding-bottom: 7rem; }
+  .planner-form, .planner-output { border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); }
+  .planner-form { display: grid; gap: .8rem; padding: 1.1rem; }
+  .planner-form-heading span, .planner-output header span { color: var(--amber); font: .52rem var(--font-mono); letter-spacing: .1em; }
+  .planner-form h2, .planner-output h2 { margin: .25rem 0; font-size: 1.1rem; }
+  .planner-form label { display: grid; gap: .3rem; }
+  .planner-form label span { color: var(--text-soft); font-size: .65rem; }
+  .planner-form :is(select, input) { min-height: 2.6rem; width: 100%; padding: .5rem .6rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); }
+  .planner-form button { display: flex; min-height: 2.7rem; align-items: center; justify-content: space-between; padding: .55rem .7rem; border: 1px solid var(--indigo); border-radius: .55rem; background: color-mix(in srgb, var(--indigo) 13%, var(--surface)); color: var(--text); cursor: pointer; }
+  .planner-form > p { margin: 0; color: var(--text-faint); font-size: .6rem; }
+  .planner-output { overflow: hidden; }
+  .planner-output > header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--line); }
+  .planner-output header button { padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface-strong); color: var(--text); cursor: pointer; }
+  .planner-output > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .planner-output section { padding: 1rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .planner-output section h3 { margin: 0 0 .7rem; font-size: .85rem; }
+  .planner-output ol { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+  .planner-output li { display: grid; gap: .15rem; padding: .6rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-strong); }
+  .planner-output li span { color: var(--text-faint); font: .46rem var(--font-mono); }
+  .planner-output li a { font-size: .7rem; font-weight: 700; }
+  .planner-output li a:hover { color: var(--indigo); }
+  .planner-output li small { color: var(--text-soft); font-size: .55rem; text-transform: capitalize; }
+  .planner-output .planner-rest { color: var(--text-soft); font-size: .65rem; }
+  .planner-output aside { padding: 1rem; background: color-mix(in srgb, var(--amber) 6%, var(--surface)); }
+  .planner-output aside strong { font-size: .65rem; } .planner-output aside p { margin: .2rem 0 0; color: var(--text-soft); font-size: .6rem; }
+  @media (max-width: 820px) { .planner { grid-template-columns: 1fr; } }
+  @media (max-width: 540px) { .planner-output > div { grid-template-columns: 1fr; } }
+</style>

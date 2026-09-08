@@ -10,6 +10,7 @@ import ProgressSummary from '../../../components/ProgressSummary.astro';
 import SectionSearch from '../../../components/SectionSearch.astro';
 import TopicBanner from '../../../components/TopicBanner.astro';
 import { LEARNING_PATHS } from '../../../data/learningPaths';
+import { getStageForSection } from '../../../data/learningExperience';
 import { getPostSlug, getPostsForLearningSection } from '../../../lib/posts';
 
 export function getStaticPaths() {
@@ -33,6 +34,7 @@ const allSections = path.groups.flatMap((pathGroup) =>
 const currentIndex = allSections.findIndex((item) => item.section.slug === section.slug);
 const previous = currentIndex > 0 ? allSections[currentIndex - 1] : undefined;
 const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 1] : undefined;
+const learningStage = getStageForSection(path.slug, section.slug);
 ---
 
 <BaseLayout title={`${section.title} — ${path.title}`} description={section.description}>
@@ -58,6 +60,7 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
     />
     <div class="banner-page-intro"><p>{section.description}</p></div>
     <div class="curriculum-section-summary">
+      {learningStage && <span>{learningStage.number} / {learningStage.title}</span>}
       <span>{String(section.topics.length).padStart(2, '0')} planned {isNotes ? 'ideas' : 'concepts'}</span>
       <span>{String(posts.length).padStart(2, '0')} articles available</span>
       <a href={`/topics/${path.slug}/#${group.slug}`}>Back to {group.title} ↑</a>
@@ -73,6 +76,13 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
         <a href={`/topics/${path.slug}/${item.slug}/`} aria-current={item.slug === section.slug ? 'page' : undefined}>{item.title}</a>
       ))}
     </div>
+  </nav>
+
+  <nav class="section-context-links section-wrap" aria-label="Learning support">
+    <a href="/study-plan/">Add this track to a study plan</a>
+    <a href="/revision/">Open revision centre</a>
+    <a href="/updates/">Check content freshness</a>
+    {path.slug === 'system-design' && <a href="/system-design/decisions/">Browse decision library</a>}
   </nav>
 
   {path.slug === 'system-design' && section.slug === 'caching' && (
@@ -149,4 +159,7 @@ const next = currentIndex < allSections.length - 1 ? allSections[currentIndex + 
 
 <style>
   .system-simulator { padding-top: 1.5rem; }
+  .section-context-links { display: flex; flex-wrap: wrap; gap: .45rem; padding-block: 1rem; }
+  .section-context-links a { padding: .42rem .6rem; border: 1px solid var(--line); border-radius: .45rem; color: var(--text-soft); font-size: .65rem; }
+  .section-context-links a:hover { border-color: var(--indigo); color: var(--text); }
 </style>

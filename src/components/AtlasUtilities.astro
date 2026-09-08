@@ -1,0 +1,18 @@
+<nav class="atlas-utilities section-wrap" aria-label="Learning and maintenance tools">
+  <a href="/study-plan/"><span>01 / PLAN</span><strong>Personal study plan</strong><small>Build a private schedule from published lessons</small></a>
+  <a href="/revision/"><span>02 / REVISE</span><strong>Revision centre</strong><small>Review structures across every major track</small></a>
+  <a href="/system-design/decisions/"><span>03 / DECIDE</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>
+  <a href="/updates/"><span>04 / TRUST</span><strong>Content freshness</strong><small>See review dates, versions and corrections</small></a>
+</nav>
+
+<style>
+  .atlas-utilities { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-block: 1.25rem 2.5rem; }
+  .atlas-utilities a { display: grid; min-width: 0; gap: .25rem; padding: 1rem; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 54%, transparent); }
+  .atlas-utilities a + a { border-left: 0; }
+  .atlas-utilities span { color: var(--amber); font: .5rem var(--font-mono); letter-spacing: .08em; }
+  .atlas-utilities strong { font-size: .75rem; }
+  .atlas-utilities small { color: var(--text-faint); font-size: .6rem; line-height: 1.45; }
+  .atlas-utilities a:hover strong { color: var(--indigo); }
+  @media (max-width: 760px) { .atlas-utilities { grid-template-columns: repeat(2, 1fr); } .atlas-utilities a + a { border-left: 1px solid var(--line); } }
+  @media (max-width: 460px) { .atlas-utilities { grid-template-columns: 1fr; } }
+</style>

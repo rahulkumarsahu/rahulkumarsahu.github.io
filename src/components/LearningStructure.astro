@@ -1,0 +1,106 @@
+---
+import type { Post } from '../lib/posts';
+import { getPostSlug } from '../lib/posts';
+import { getLearningStages } from '../data/learningExperience';
+
+interface Props {
+  topic: string;
+  posts: Post[];
+}
+
+const { topic, posts } = Astro.props;
+const stages = getLearningStages(topic);
+const stageItems = stages.map((stage) => {
+  const available = posts.filter((post) => {
+    const section = topic === 'dsa' ? post.data.series : post.data.learningSection;
+    return section ? stage.sectionSlugs.includes(section) : false;
+  });
+  const contextualHref = stage.id === 'practice' && topic === 'dsa'
+    ? '/dsa/master-sheet/'
+    : stage.id === 'production' && ['dsa', 'java', 'lld', 'system-design', 'cloud-native'].includes(topic)
+      ? '/projects/production-url-shortener/'
+      : available[0] ? `/posts/${getPostSlug(available[0])}/` : undefined;
+  return { stage, available, contextualHref };
+});
+---
+
+<section class="learning-structure section-wrap" aria-labelledby={`learning-structure-${topic}`}>
+  <div class="section-heading section-heading-notes">
+    <div>
+      <p class="section-index">LEARNING STRUCTURE / 05 STAGES</p>
+      <h2 id={`learning-structure-${topic}`}>Know where each section fits.</h2>
+    </div>
+    <p>Published lessons are counted automatically. Empty stages remain visible as planned so the route stays clear while the library grows.</p>
+  </div>
+
+  <div class="learning-stage-grid">
+    {stageItems.map(({ stage, available, contextualHref }) => (
+      <article
+        class:list={['learning-stage-card', { 'has-stage-content': available.length > 0 || contextualHref }]}
+        data-learning-stage
+        data-stage-slugs={JSON.stringify(available.map(getPostSlug))}
+      >
+        <div class="learning-stage-top">
+          <span>{stage.number}</span>
+          <small>{available.length ? `${available.length} available` : 'Planned'}</small>
+        </div>
+        <h3>{stage.title}</h3>
+        <p>{stage.description}</p>
+        <div class="learning-stage-outcome"><span>OUTCOME</span><strong>{stage.outcome}</strong></div>
+        <div class="learning-stage-progress" aria-label={`Local progress for ${stage.title}`}>
+          <span><i data-stage-complete>0</i> complete</span>
+          <span><i data-stage-attempted>0</i> attempted</span>
+        </div>
+        {contextualHref ? (
+          <a href={contextualHref}>{available.length ? 'Continue this stage' : 'Open the learning tool'} <span aria-hidden="true">→</span></a>
+        ) : (
+          <div class="learning-stage-planned">Lessons will appear here as they are published.</div>
+        )}
+      </article>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { KEYS, readRecord } from '../lib/learningStorage';
+
+  const refreshLearningStages = () => {
+    const progress = readRecord<string>(KEYS.progress);
+    document.querySelectorAll<HTMLElement>('[data-learning-stage]').forEach((card) => {
+      let slugs: string[] = [];
+      try { slugs = JSON.parse(card.dataset.stageSlugs || '[]'); } catch { slugs = []; }
+      const set = (selector: string, value: number) => {
+        const target = card.querySelector<HTMLElement>(selector);
+        if (target) target.textContent = String(value);
+      };
+      set('[data-stage-complete]', slugs.filter((slug) => progress[slug] === 'solved').length);
+      set('[data-stage-attempted]', slugs.filter((slug) => progress[slug] === 'attempted' || progress[slug] === 'revisit').length);
+    });
+  };
+  refreshLearningStages();
+  window.addEventListener('pageshow', refreshLearningStages);
+  window.addEventListener('storage', refreshLearningStages);
+  window.addEventListener('atlas-learning-state-changed', refreshLearningStages);
+</script>
+
+<style>
+  .learning-structure { padding-block: 4rem 2rem; }
+  .learning-stage-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .learning-stage-card { display: flex; min-width: 0; min-height: 25rem; flex-direction: column; padding: 1.2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 52%, transparent); }
+  .learning-stage-card:not(.has-stage-content) { background: color-mix(in srgb, var(--bg-soft) 72%, transparent); }
+  .learning-stage-top { display: flex; justify-content: space-between; gap: .5rem; color: var(--text-faint); font: .55rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .has-stage-content .learning-stage-top small { color: var(--green); }
+  .learning-stage-card h3 { margin: 2rem 0 .65rem; font-size: 1.25rem; }
+  .learning-stage-card > p { margin: 0; color: var(--text-soft); font-size: .75rem; line-height: 1.65; }
+  .learning-stage-outcome { display: grid; gap: .3rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .learning-stage-outcome span { color: var(--amber); font: .5rem var(--font-mono); letter-spacing: .08em; }
+  .learning-stage-outcome strong { color: var(--text-soft); font-size: .68rem; line-height: 1.5; }
+  .learning-stage-progress { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; padding-top: 1.2rem; color: var(--text-faint); font-size: .58rem; }
+  .learning-stage-progress span { padding: .28rem .4rem; border: 1px solid var(--line); border-radius: 999px; }
+  .learning-stage-progress i { color: var(--text); font-style: normal; font-weight: 700; }
+  .learning-stage-card > a, .learning-stage-planned { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .65rem; }
+  .learning-stage-card > a { display: flex; justify-content: space-between; color: var(--indigo); }
+  .learning-stage-planned { color: var(--text-faint); line-height: 1.45; }
+  @media (max-width: 1050px) { .learning-stage-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .learning-stage-grid { grid-template-columns: 1fr; } .learning-stage-card { min-height: auto; } .learning-stage-progress { margin-top: 1rem; } }
+</style>

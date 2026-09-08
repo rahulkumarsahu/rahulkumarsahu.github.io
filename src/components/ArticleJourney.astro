@@ -1,0 +1,53 @@
+---
+import type { Post } from '../lib/posts';
+import { getPostSlug, getTopicForPost } from '../lib/posts';
+import type { ArticleLearningLinks } from '../data/articleLearningLinks';
+
+interface Props {
+  post: Post;
+  previous?: Post;
+  next?: Post;
+  related?: Post[];
+  links?: ArticleLearningLinks;
+}
+
+const { post, previous, next, related = [], links } = Astro.props;
+const topic = getTopicForPost(post);
+const firstRelated = related[0];
+const projectTopics = ['dsa', 'java', 'lld', 'system-design', 'cloud-native'];
+const prerequisite = links?.prerequisites[0] ?? {
+  title: `${topic.title} learning path`,
+  href: `/topics/${topic.slug}/`,
+  note: 'Review the track structure and choose the foundation you need.',
+};
+const practice = links?.practiceNext[0] ?? (firstRelated ? {
+  title: firstRelated.data.title,
+  href: `/posts/${getPostSlug(firstRelated)}/`,
+  note: 'Continue with another published article in this learning track.',
+} : undefined);
+---
+
+<nav class="article-journey" aria-labelledby="article-journey-title">
+  <header><span>CONNECTED LEARNING</span><h2 id="article-journey-title">What comes before and after this article</h2></header>
+  <div class="article-journey-grid">
+    <a href={prerequisite.href}><small>LEARN BEFORE</small><strong>{prerequisite.title}</strong><p>{prerequisite.note}</p></a>
+    {previous ? <a href={`/posts/${getPostSlug(previous)}/`}><small>PREVIOUS LESSON</small><strong>{previous.data.title}</strong><p>Return to the earlier published lesson in this sequence.</p></a> : <div><small>PREVIOUS LESSON</small><strong>Start of this published sequence</strong><p>No earlier article is required.</p></div>}
+    {next ? <a href={`/posts/${getPostSlug(next)}/`}><small>NEXT LESSON</small><strong>{next.data.title}</strong><p>Continue without returning to the topic directory.</p></a> : <div><small>NEXT LESSON</small><strong>More lessons are planned</strong><p>The next article will appear here after publication.</p></div>}
+    {practice ? <a href={practice.href}><small>RELATED PRACTICE</small><strong>{practice.title}</strong><p>{practice.note}</p></a> : <div><small>RELATED PRACTICE</small><strong>Practice is planned</strong><p>A relevant exercise will be linked after it is published.</p></div>}
+    {projectTopics.includes(topic.slug) ? <a href="/projects/production-url-shortener/"><small>USED IN A PROJECT</small><strong>Production URL shortener</strong><p>See how this topic connects to a system built across the stack.</p></a> : <a href={`/topics/${topic.slug}/`}><small>USED IN CONTEXT</small><strong>Explore the complete track</strong><p>See related foundations, production topics and deep dives.</p></a>}
+  </div>
+</nav>
+
+<style>
+  .article-journey { margin: 2rem 0; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .article-journey header span { color: var(--amber); font: .55rem var(--font-mono); letter-spacing: .1em; }
+  .article-journey header h2 { margin: .35rem 0 1rem; font-size: 1.08rem; }
+  .article-journey-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .article-journey-grid > * { min-width: 0; padding: .9rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 72%, transparent); }
+  .article-journey-grid > div { opacity: .72; }
+  .article-journey-grid small { color: var(--text-faint); font: .5rem var(--font-mono); letter-spacing: .08em; }
+  .article-journey-grid strong { display: block; margin-top: .35rem; font-size: .72rem; }
+  .article-journey-grid p { margin: .3rem 0 0; color: var(--text-soft); font-size: .6rem; line-height: 1.5; }
+  .article-journey-grid a:hover strong { color: var(--indigo); }
+  @media (max-width: 620px) { .article-journey-grid { grid-template-columns: 1fr; } }
+</style>

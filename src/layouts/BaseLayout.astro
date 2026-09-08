@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import GlobalSearch from '../components/GlobalSearch.astro';
 import { SITE } from '../data/site';
 import '../styles/global.css';
 
@@ -116,6 +117,8 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="site-shell">
       <SiteHeader currentPath={Astro.url.pathname} />
+      <GlobalSearch />
+      <GlobalSearch />
       <main id="main-content">
         <slot />
       </main>

@@ -10,6 +10,7 @@ export const KEYS = {
   urlShortenerLab: 'atlas-url-shortener-lab:v1',
   articleFeedback: 'atlas-article-feedback:v1',
   masterSheet: 'atlas-master-sheet:v1',
+  studyPlan: 'atlas-study-plan:v1',
 } as const;
 
 export type LearningStorageKey = typeof KEYS[keyof typeof KEYS];

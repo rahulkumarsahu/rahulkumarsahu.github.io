@@ -14,15 +14,18 @@ interface Props {
   keywords?: readonly string[];
   heading?: 'h2' | 'h3';
   levels?: { name: string; count: number }[];
+  postSlugs?: string[];
 }
 
-const { topic, title, description, href, label, count, section, group, keywords = [], heading = 'h3', levels } = Astro.props;
+const { topic, title, description, href, label, count, section, group, keywords = [], heading = 'h3', levels, postSlugs = [] } = Astro.props;
 ---
 
 <a
   class:list={['topic-cover-card', { 'has-articles': count > 0 }]}
   href={href}
   data-search-text={[title, description, label, ...keywords].join(' ')}
+  data-topic-progress={postSlugs.length ? '' : undefined}
+  data-post-slugs={postSlugs.length ? JSON.stringify(postSlugs) : undefined}
 >
   <TopicBanner {topic} {title} {label} {section} {group} {heading} />
   <div class="topic-cover-body">
@@ -37,5 +40,32 @@ const { topic, title, description, href, label, count, section, group, keywords 
       <span>{count ? `${count} ${count === 1 ? 'article' : 'articles'} available` : 'Articles planned'}</span>
       <strong>{section ? 'Open section' : 'Explore topic'} <i aria-hidden="true">↗</i></strong>
     </div>
+    {postSlugs.length > 0 && <div class="topic-card-progress"><span data-topic-solved>0/{postSlugs.length} complete</span><span data-topic-attempted>0 attempted</span></div>}
   </div>
 </a>
+
+<script>
+  import { KEYS, readRecord } from '../lib/learningStorage';
+  const refreshTopicCards = () => {
+    const progress = readRecord<string>(KEYS.progress);
+    document.querySelectorAll<HTMLElement>('[data-topic-progress]').forEach((card) => {
+      let slugs: string[] = [];
+      try { slugs = JSON.parse(card.dataset.postSlugs || '[]'); } catch { slugs = []; }
+      const solved = slugs.filter((slug) => progress[slug] === 'solved').length;
+      const attempted = slugs.filter((slug) => progress[slug] === 'attempted' || progress[slug] === 'revisit').length;
+      const solvedNode = card.querySelector<HTMLElement>('[data-topic-solved]');
+      const attemptedNode = card.querySelector<HTMLElement>('[data-topic-attempted]');
+      if (solvedNode) solvedNode.textContent = `${solved}/${slugs.length} complete`;
+      if (attemptedNode) attemptedNode.textContent = `${attempted} attempted`;
+    });
+  };
+  refreshTopicCards();
+  window.addEventListener('pageshow', refreshTopicCards);
+  window.addEventListener('storage', refreshTopicCards);
+  window.addEventListener('atlas-learning-state-changed', refreshTopicCards);
+</script>
+
+<style>
+  .topic-card-progress { display: flex; flex-wrap: wrap; gap: .45rem; padding-top: .65rem; border-top: 1px solid var(--line); color: var(--text-faint); font: .55rem var(--font-mono); }
+  .topic-card-progress span { padding: .25rem .4rem; border: 1px solid var(--line); border-radius: 999px; }
+</style>

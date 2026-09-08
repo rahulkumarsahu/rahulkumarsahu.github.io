@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ConnectedProjectCard from '../components/ConnectedProjectCard.astro';
 import LearningGoals from '../components/LearningGoals.astro';
 import LearningDashboard from '../components/LearningDashboard.astro';
+import AtlasUtilities from '../components/AtlasUtilities.astro';
 import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import { SITE, TOPICS } from '../data/site';
@@ -97,6 +98,7 @@ const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
   </section>
 
   <LearningDashboard compact />
+  <AtlasUtilities />
 
   <section class="trust-strip" aria-label="Topics covered">
     <div class="trust-track">
@@ -158,6 +160,7 @@ const roadmap = DSA_STARTER_SLUGS.flatMap((slug) => {
           href={`/topics/${topic.slug}/`}
           label={`${topic.number} / ${topic.meta}`}
           count={topicCounts.get(topic.slug) ?? 0}
+          postSlugs={getPostsForTopic(posts, topic.slug).map(getPostSlug)}
         />
       ))}
     </div>

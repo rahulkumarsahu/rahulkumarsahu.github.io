@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import { SYSTEM_DESIGN_DECISIONS } from '../../../data/systemDesignDecisions';
+---
+
+<BaseLayout title="System Design Decision Library" description="A planned library for comparing system design choices by context, constraints, benefits, costs and failure behaviour.">
+  <section class="page-hero section-wrap decision-hero">
+    <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'System Design', href: '/topics/system-design/' }, { label: 'Decision library' }]} />
+    <p class="section-index">SYSTEM DESIGN / DECISION LIBRARY</p>
+    <h1>Choose architecture from constraints, not habit.</h1>
+    <p>This is the structure for concise decision guides. The comparisons are planned and will become available as each guide is researched and reviewed.</p>
+    <div class="decision-format" aria-label="Format used by every decision guide">
+      {['Context', 'Constraints', 'Options', 'Benefits', 'Costs', 'Failure behaviour', 'Decision checklist'].map((item, index) => <span>{String(index + 1).padStart(2, '0')} {item}</span>)}
+    </div>
+  </section>
+
+  <section class="decision-directory section-wrap" aria-labelledby="decision-directory-title">
+    <div class="section-heading section-heading-notes">
+      <div><p class="section-index">PLANNED / {String(SYSTEM_DESIGN_DECISIONS.length).padStart(2, '0')} GUIDES</p><h2 id="decision-directory-title">Decisions the library will cover.</h2></div>
+      <p>Planned items are intentionally not links. They will become clickable only when a complete guide has been published.</p>
+    </div>
+    <div class="decision-grid">
+      {SYSTEM_DESIGN_DECISIONS.map((decision, index) => (
+        <article>
+          <div><span>{String(index + 1).padStart(2, '0')}</span><small>PLANNED</small></div>
+          <h3>{decision.title}</h3>
+          <p>{decision.question}</p>
+          <div class="decision-choices">{decision.choices.map((choice) => <span>{choice}</span>)}</div>
+          <div class="decision-factors"><strong>Decision factors</strong>{decision.factors.map((factor) => <span>{factor}</span>)}</div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .decision-hero { padding-bottom: 4rem; }
+  .decision-hero > p:not(.section-index) { max-width: 48rem; }
+  .decision-format { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.5rem; }
+  .decision-format span { padding: .4rem .55rem; border: 1px solid var(--line); border-radius: .45rem; color: var(--text-soft); font: .55rem var(--font-mono); text-transform: uppercase; }
+  .decision-directory { padding-bottom: 7rem; }
+  .decision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .decision-grid article { min-width: 0; padding: 1.3rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 52%, transparent); }
+  .decision-grid article > div:first-child { display: flex; justify-content: space-between; color: var(--text-faint); font: .53rem var(--font-mono); letter-spacing: .08em; }
+  .decision-grid article > div:first-child small { color: var(--amber); }
+  .decision-grid h3 { margin: 1.2rem 0 .4rem; font-size: 1.15rem; }
+  .decision-grid p { margin: 0; color: var(--text-soft); font-size: .75rem; }
+  .decision-choices, .decision-factors { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
+  .decision-choices span, .decision-factors span { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--text-faint); font-size: .58rem; }
+  .decision-factors { padding-top: .8rem; border-top: 1px solid var(--line); }
+  .decision-factors strong { flex-basis: 100%; color: var(--text-faint); font: .5rem var(--font-mono); text-transform: uppercase; }
+  @media (max-width: 700px) { .decision-grid { grid-template-columns: 1fr; } }
+</style>
