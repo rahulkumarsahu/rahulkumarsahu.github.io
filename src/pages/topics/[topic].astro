@@ -366,4 +366,44 @@ const dsaDirectoryGroups = [
     .dsa-directory-heading p { text-align: left; }
   }
   @media (prefers-reduced-motion: reduce) { .dsa-start-list a, .dsa-learning-tools a { transition: none; } .dsa-start-list a:hover, .dsa-learning-tools a:hover { transform: none; } }
+
+  /* Field Manual: contextual indexes with published work first. */
+  .dsa-start-here { padding-top: clamp(3rem, 6vw, 6rem); }
+  .dsa-start-list { display: block; margin-top: 1rem; border-top: 1px solid var(--line-strong); }
+  .dsa-start-list a {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    min-height: 4.5rem;
+    padding: .9rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+  }
+  .dsa-start-list a:hover { padding-inline: .75rem; border-color: var(--line); background: var(--surface-strong); transform: none; }
+  .dsa-start-list a > span { width: auto; height: auto; place-items: start; border-radius: 0; background: transparent; color: var(--orange); }
+  .dsa-start-list strong { font-family: var(--font-display); font-size: 1.15rem; }
+  .dsa-start-list small, .dsa-start-list i { font-size: .68rem; }
+  .dsa-learning-tools, .topic-learning-tools { gap: 1px; padding-top: 1.5rem; border: 1px solid var(--line); background: var(--line); }
+  .dsa-learning-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .dsa-learning-tools a, .topic-learning-tools a { min-height: 7.5rem; padding: 1rem; border: 0; border-radius: 0; background: var(--surface); }
+  .dsa-learning-tools a:hover, .topic-learning-tools a:hover { background: var(--surface-strong); transform: none; }
+  .dsa-learning-tools span, .topic-learning-tools span { color: var(--orange); font-size: .66rem; letter-spacing: .03em; text-transform: none; }
+  .dsa-learning-tools strong, .topic-learning-tools strong { font-family: var(--font-display); font-size: 1rem; }
+  .dsa-learning-tools small, .topic-learning-tools small { font-size: .7rem; }
+  .dsa-directory-groups, .curriculum-groups { gap: clamp(3rem, 6vw, 6rem); }
+  .dsa-directory-heading span, .curriculum-band-heading h3 { font-size: .7rem; letter-spacing: .03em; text-transform: none; }
+  .dsa-directory-heading h3 { font-family: var(--font-display); font-size: 1.65rem; }
+  .curriculum-future-band { opacity: .68; }
+  .curriculum-group-heading i { text-transform: none; }
+  @media (max-width: 900px) {
+    .dsa-learning-tools, .topic-learning-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .dsa-learning-tools, .topic-learning-tools { grid-template-columns: 1fr; }
+    .dsa-learning-tools a, .topic-learning-tools a { min-height: 0; }
+    .dsa-start-list a { grid-template-columns: 2rem minmax(0, 1fr); }
+    .dsa-start-list i { grid-column: 2; }
+    .dsa-directory-heading { align-items: start; flex-direction: column; }
+    .dsa-directory-heading p { max-width: none; text-align: left; }
+  }
 </style>

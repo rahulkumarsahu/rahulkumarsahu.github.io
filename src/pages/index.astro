@@ -4,9 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ConnectedProjectCard from '../components/ConnectedProjectCard.astro';
 import LearningGoals from '../components/LearningGoals.astro';
 import LearningDashboard from '../components/LearningDashboard.astro';
-import AtlasUtilities from '../components/AtlasUtilities.astro';
-import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
+import WorkshopHero from '../components/WorkshopHero.astro';
+import HorizontalRailControls from '../components/HorizontalRailControls.astro';
 import { SITE, TOPICS } from '../data/site';
 import { getPostSlug, getPostsForTopic, getSortedPosts } from '../lib/posts';
 
@@ -14,69 +14,8 @@ const posts = getSortedPosts(await getCollection('posts'));
 const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(posts, topic.slug).length]));
 ---
 
-<BaseLayout title={SITE.name} description={SITE.description} image="/og.png">
-  <section class="home-hero section-wrap">
-    <div class="home-hero-copy">
-      <div class="eyebrow-pill home-hero-byline">
-        <span class="status-dot"></span>
-        A practical learning map by Rahul Kumar
-      </div>
-      <h1>From your first algorithm to the systems behind <span>real products.</span></h1>
-      <p class="home-hero-intro">
-        I’m a backend engineer with more than eight years of experience. I use this blog to explain how I think through DSA, Java, application design and distributed systems, with working code, visual dry runs and the tradeoffs that matter in production.
-      </p>
-      <div class="home-hero-actions">
-        <a class="button button-primary" href="#choose-your-goal">
-          Choose your path
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="atlas-hero-visual" aria-label="Rahul mapping the learning paths inside The System Design Atlas">
-      <div class="atlas-board">
-        <div class="atlas-board-bar">
-          <span><i class="live-dot"></i> SYSTEM CARTOGRAPHER</span>
-          <span>MAP 001</span>
-        </div>
-        <div class="atlas-board-stage">
-          <div class="atlas-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="atlas-portrait-wrap">
-            <img
-              src="/images/rahul-system-cartographer.png"
-              alt="An illustrated Rahul Kumar mapping a backend system on a blueprint"
-              width="1047"
-              height="1100"
-              fetchpriority="high"
-            />
-            <div class="atlas-portrait-caption">
-              <span>YOUR GUIDE</span>
-              <strong>Rahul Kumar</strong>
-              <small>Backend engineer · 8+ years</small>
-            </div>
-          </div>
-          <nav class="atlas-route-list" aria-label="Topics and learning paths">
-            {TOPICS.map((topic, index) => (
-              <a href={`/topics/${topic.slug}/`} class={`atlas-route atlas-route-${topic.accent}`} style={`--route-delay: ${index * 100}ms`}>
-                <span>{topic.number}</span>
-                <strong>{topic.shortTitle}</strong>
-                <i aria-hidden="true">↗</i>
-              </a>
-            ))}
-          </nav>
-          <div class="atlas-method-note">
-            <span>THE ROUTE</span>
-            <strong>idea → code → tradeoffs</strong>
-          </div>
-        </div>
-        <div class="atlas-board-footer">
-          <span>JAVA FIRST</span>
-          <span>FROM FIRST PRINCIPLES</span>
-          <span>BUILT FOR PRACTICE</span>
-        </div>
-      </div>
-    </div>
-  </section>
+<BaseLayout title={SITE.name} description={SITE.description} image="/og.png" bodyClass="home-page">
+  <WorkshopHero {posts} />
 
   <LearningDashboard compact />
 
@@ -88,9 +27,12 @@ const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(
         <p class="section-label">Explore by topic</p>
         <h2 id="learning-paths-title">Choose the engineering map you need.</h2>
       </div>
-      <p>Each topic has its own learning structure, published articles and visual guides.</p>
+      <div class="section-heading-actions">
+        <p>Each topic has its own learning structure, published articles and visual guides.</p>
+        <HorizontalRailControls targetId="home-topic-rail" label="Engineering topics" />
+      </div>
     </div>
-    <div class="topic-cover-grid topic-cover-grid--major">
+    <div class="topic-cover-grid topic-cover-grid--major home-topic-rail" id="home-topic-rail" tabindex="0" aria-label="Engineering topics. Scroll horizontally for more.">
       {TOPICS.map((topic) => (
         <TopicCard
           topic={topic.slug}
@@ -102,18 +44,6 @@ const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(
           postSlugs={getPostsForTopic(posts, topic.slug).map(getPostSlug)}
         />
       ))}
-    </div>
-  </section>
-
-  <AtlasUtilities />
-
-  <section class="notes section-wrap" id="notes" data-reveal>
-    <div class="section-heading section-heading-notes">
-      <div><p class="section-label">Recently published</p><h2>What I have been writing.</h2></div>
-      <a class="text-link" href="/topics/">Browse every topic <span>→</span></a>
-    </div>
-    <div class="post-grid home-post-grid">
-      {posts.slice(0, 3).map((post) => <PostCard {post} />)}
     </div>
   </section>
 

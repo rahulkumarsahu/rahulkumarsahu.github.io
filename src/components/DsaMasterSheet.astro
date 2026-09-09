@@ -18,7 +18,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
 <section class="master-sheet" data-master-sheet data-total={MASTER_PROBLEMS.length}>
   <header class="master-heading">
     <div>
-      <p class="section-index">PRACTICE DIRECTORY / PHASE 1</p>
+      <p class="section-index">Practice directory / Phase 1</p>
       <h1>DSA Master Sheet</h1>
       <p>Build consistency with an original topic-wise problem list. Open the source problem, mark your progress, and return to revision questions when you need them.</p>
     </div>
@@ -32,13 +32,13 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
   <div class="master-stats" aria-label="Master sheet summary">
     <article class="master-progress-card">
       <div class="progress-ring" data-progress-ring style="--progress: 0"><strong data-progress-percent>0%</strong></div>
-      <div><span>OVERALL PROGRESS</span><strong><i data-solved-total>0</i> / {MASTER_PROBLEMS.length}</strong><small data-progress-copy>Start with one problem today.</small></div>
+      <div><span>Overall progress</span><strong><i data-solved-total>0</i> / {MASTER_PROBLEMS.length}</strong><small data-progress-copy>Start with one problem today.</small></div>
     </article>
-    <article><span>TOPICS</span><strong>{MASTER_TOPICS.length}</strong><small>Structured learning sections</small></article>
-    <article><span>EASY</span><strong>{counts.easy}</strong><small>Foundation problems</small></article>
-    <article><span>MEDIUM</span><strong>{counts.medium}</strong><small>Pattern-building practice</small></article>
-    <article><span>HARD</span><strong>{counts.hard}</strong><small>Advanced problem solving</small></article>
-    <article><span>IMPORTANT</span><strong>{counts.important}</strong><small>Recommended interview core</small></article>
+    <article><span>Topics</span><strong>{MASTER_TOPICS.length}</strong><small>Structured learning sections</small></article>
+    <article><span>Easy</span><strong>{counts.easy}</strong><small>Foundation problems</small></article>
+    <article><span>Medium</span><strong>{counts.medium}</strong><small>Pattern-building practice</small></article>
+    <article><span>Hard</span><strong>{counts.hard}</strong><small>Advanced problem solving</small></article>
+    <article><span>Important</span><strong>{counts.important}</strong><small>Recommended interview core</small></article>
   </div>
 
   <p class="master-import-note"><strong>Question data reviewed:</strong> Difficulties and direct practice links were checked against LeetCode’s public catalogue on September 8, 2026.</p>
@@ -119,7 +119,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
 
   <dialog class="clear-dialog" data-clear-dialog aria-labelledby="clear-dialog-title">
     <form method="dialog">
-      <span>LOCAL PROGRESS</span>
+      <span>Local progress</span>
       <h2 id="clear-dialog-title">Clear your master sheet progress?</h2>
       <p>This removes solved and revision marks stored by this browser. It does not change your article progress or saved code.</p>
       <div><button value="cancel" class="button button-secondary">Keep progress</button><button value="confirm" class="button button-danger" data-confirm-clear>Clear progress</button></div>
@@ -270,7 +270,7 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
 <style>
   .master-sheet { padding: clamp(1.5rem, 3vw, 3rem) 0 5rem; }
   .master-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
-  .master-heading h1 { margin: .35rem 0 .5rem; font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: -.055em; }
+  .master-heading h1 { margin: .35rem 0 .5rem; font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: -.04em; }
   .master-heading p:last-child { max-width: 54rem; margin: 0; color: var(--text-soft); line-height: 1.65; }
   .master-heading-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; gap: .6rem; }
   .button-danger { border-color: color-mix(in srgb, #ef6a6a 45%, var(--line)); color: #d94d57; }
@@ -385,6 +385,41 @@ const platforms = [...new Set(MASTER_PROBLEMS.map((problem) => problem.platform)
     .master-search { grid-column: auto; }
     .master-topic > summary { grid-template-columns: auto minmax(0, 1fr); }
     .topic-summary-progress { grid-column: 2; justify-items: start; }
+    .master-heading-actions { display: grid; grid-template-columns: 1fr; gap: 1px; }
+    .master-heading-actions .button { width: 100%; min-width: 0; }
+    .master-stats article { overflow: hidden; padding: .8rem; }
+    .master-stats article > small { overflow-wrap: anywhere; }
+  }
+  /* Field Manual: dense reference-tool grammar. */
+  .master-sheet { padding-top: 1rem; }
+  .master-heading { align-items: start; margin-bottom: 1.15rem; padding-bottom: 1.15rem; border-bottom: 1px solid var(--line-strong); }
+  .master-heading h1 { font-family: var(--font-display); font-weight: 700; }
+  .master-heading p:last-child { max-width: 46rem; }
+  .master-stats { gap: 1px; border: 1px solid var(--line); background: var(--line); }
+  .master-stats article { min-height: 6.75rem; border: 0; border-radius: 0; box-shadow: none; }
+  .master-stats article > span, .master-progress-card span { font-size: .66rem; letter-spacing: .03em; }
+  .master-stats article > small, .master-progress-card small { font-size: .68rem; }
+  .master-import-note { padding: .65rem 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+  .master-filters { position: sticky; z-index: 8; top: 3.7rem; gap: 1px; padding: 1px; border-radius: 0; background: var(--line); box-shadow: 0 10px 20px color-mix(in srgb, var(--bg) 70%, transparent); }
+  .master-filters input, .master-filters select, .master-filters button { min-height: 3rem; border: 0; border-radius: 0; font-size: .78rem; }
+  .master-result-bar { font-size: .68rem; }
+  .master-topics { gap: 1px; border: 1px solid var(--line); background: var(--line); }
+  .master-topic { border: 0; border-radius: 0; box-shadow: none; }
+  .master-topic > summary { min-height: 4.5rem; }
+  .master-topic summary strong { font-family: var(--font-display); font-size: 1.25rem; }
+  .master-topic summary small { font-size: .68rem; }
+  .master-difficulties { gap: 0; padding: 0 .9rem .9rem; }
+  .master-difficulty > summary { border-radius: 0; text-transform: none; }
+  .master-difficulty > summary strong { font-size: .75rem; letter-spacing: .02em; text-transform: capitalize; }
+  .master-difficulty > summary i { border-radius: 2px; }
+  .problem-list { border-radius: 0; }
+  .master-problem { min-height: 3.75rem; }
+  .problem-copy h3 { font-size: .8rem; }
+  .difficulty-chip, .important-chip { border-radius: 2px; }
+  .revision-control, .open-problem, .clear-dialog { border-radius: 2px; }
+  @media (max-width: 760px) {
+    .master-filters { position: static; }
+    .master-stats article { min-height: 5.75rem; }
   }
   @media (prefers-reduced-motion: reduce) { .topic-chevron, .difficulty-chevron { transition: none; } }
 </style>

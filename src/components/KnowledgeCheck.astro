@@ -6,7 +6,7 @@ const { articleSlug, questions } = Astro.props as { articleSlug: string; questio
 
 <section class="knowledge-check" aria-labelledby={`knowledge-${articleSlug}`} data-knowledge-check data-article-slug={articleSlug}>
   <header>
-    <div><span>QUICK KNOWLEDGE CHECK</span><h2 id={`knowledge-${articleSlug}`}>Can you explain the key decisions?</h2></div>
+    <div><h2 id={`knowledge-${articleSlug}`}>Can you explain the key decisions?</h2></div>
     <p><strong data-check-progress>0 of {questions.length}</strong> understood</p>
   </header>
   <div class="knowledge-questions">
@@ -120,4 +120,12 @@ const { articleSlug, questions } = Astro.props as { articleSlug: string; questio
   .knowledge-feedback[data-result='incorrect'] { border-left-color: var(--amber); }
   .knowledge-check :is(input, button):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   @media (max-width: 620px) { .knowledge-check > header { align-items: flex-start; flex-direction: column; } }
+
+  /* Field Manual: an assessment sheet with explicit, calm states. */
+  .knowledge-check { border-radius: 2px; background: var(--surface); }
+  .knowledge-check > header { background: var(--surface-strong); }
+  .knowledge-check header span { color: var(--orange); }
+  .knowledge-questions legend span, .knowledge-options label, .knowledge-actions button { border-radius: 2px; }
+  .knowledge-options label:has(input:checked) { border-color: var(--orange); background: color-mix(in srgb, var(--orange) 7%, transparent); }
+  .knowledge-actions button:first-child { border-color: var(--orange); background: var(--orange); }
 </style>

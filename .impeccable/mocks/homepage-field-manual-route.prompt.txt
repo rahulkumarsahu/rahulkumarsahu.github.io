@@ -1,0 +1,21 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop website homepage direction comp, 16:10 landscape
+Primary request: Design the first viewport and beginning of the next section for “The System Design Atlas”, an engineering learning website by Rahul Kumar. This is composition option 2, “Annotated route map”.
+Input image: Rahul system-cartographer illustration is a protected reference asset. Use this exact recognizable illustration. Do not alter Rahul’s face, clothing, pose, blueprint, or system objects.
+Structure: a slim text masthead. The main viewport is organized around one horizontal learning route that physically connects four large editorial waypoints: Intuition, Code, Tradeoffs, Production. Place the headline above the route on the left. Integrate Rahul’s illustration on the right as if he is working directly over the route, with the blueprint aligning to the route line. A compact “Choose your path” action sits at the route origin. Below the fold begins a clean syllabus index with four learning goals as ruled rows. Use asymmetry and editorial whitespace, not cards.
+Text, verbatim where shown:
+“The System Design Atlas”
+“Understand the idea. Trace the code. Design the system.”
+“DSA, Java and system design explained from first principles.”
+“Choose your path”
+“Intuition”
+“Code”
+“Tradeoffs”
+“Production”
+“Learn DSA”
+“Java backend”
+“System design”
+“URL shortener project”
+Visual world: precise engineering field manual, surveyor’s field book and independent technical journal. Warm drafting paper, graphite ink, burnt orange route marks, oxidized green verification marks, restrained ochre. Editorial serif for the statement, practical sans-serif for navigation, monospace only for route coordinates and short metadata. Hairline rules, measured ticks, useful annotations and a single strong route line.
+Composition: visibly an implementable website, not a poster. One focal route, one dominant illustration, calm supporting content, obvious CTA.
+Avoid: dominant blue or purple, gradients, glass panels, glow, tiled digital grids, floating rounded cards, dashboards, excessive badges, fake handwriting, generic AI symbols, robots, stock laptop scenes, decorative charts, tiny copy, watermarks.

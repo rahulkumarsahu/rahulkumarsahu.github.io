@@ -1,0 +1,553 @@
+{
+  "tool": "build-phase",
+  "version": 2,
+  "startedAt": "2026-09-08T18:55:15.622Z",
+  "comp": ".impeccable/mocks/homepage-field-manual-index.png",
+  "direction": "787a015b",
+  "breakpoint": "1586x992",
+  "artifact": null,
+  "phase": "review",
+  "phases": {
+    "comps": {
+      "status": "closed",
+      "openedAt": "2026-09-08T18:55:15.622Z",
+      "closedAt": "2026-09-08T19:07:30.545Z",
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "3 comps, 1 approved",
+        "approved": ".impeccable/mocks/homepage-field-manual-index.png",
+        "at": "2026-09-08T19:07:30.544Z"
+      },
+      "forced": null
+    },
+    "spec": {
+      "status": "closed",
+      "openedAt": "2026-09-08T19:07:30.564Z",
+      "closedAt": "2026-09-08T19:12:19.490Z",
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "30 regions, 3 plates, 15 text regions measured",
+        "at": "2026-09-08T19:12:19.489Z"
+      },
+      "forced": null
+    },
+    "plates": {
+      "status": "closed",
+      "openedAt": "2026-09-08T19:12:19.490Z",
+      "closedAt": "2026-09-08T19:21:14.949Z",
+      "attempts": 2,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "3/3 plates",
+        "at": "2026-09-08T19:21:14.949Z"
+      },
+      "forced": null
+    },
+    "hero": {
+      "status": "closed",
+      "openedAt": "2026-09-08T19:21:14.949Z",
+      "closedAt": "2026-09-09T03:41:19.375Z",
+      "attempts": 20,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "hero 78% (drift)",
+        "score": 0.7809,
+        "verdict": "drift",
+        "report": ".impeccable/review/diff/hero/report.json",
+        "sideBySide": "/Users/rahulkumar/Documents/Project/blog/rahulkumarsahu.github.io/.impeccable/review/diff/hero/side-by-side.png",
+        "worst": [
+          "recent-feature-image drift 44%",
+          "hero-kicker drift 45%",
+          "hero-subheadline drift 45%"
+        ],
+        "worstIds": [
+          "recent-feature-image",
+          "hero-kicker",
+          "hero-subheadline"
+        ],
+        "worstCrops": [
+          {
+            "id": "recent-feature-image",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.4426,
+              "structure": 0.5337,
+              "color": 0.4913,
+              "colorIntersection": 0.1211,
+              "paletteMatch": 0.6906,
+              "detail": 0.4219,
+              "detailRaw": 0.5001,
+              "detailAdded": 0.1563,
+              "bands": 0
+            },
+            "file": ".impeccable/review/diff/hero/regions/recent-feature-image.png"
+          },
+          {
+            "id": "hero-kicker",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.4458,
+              "structure": 0.4841,
+              "color": 0.5749,
+              "colorIntersection": 0.1991,
+              "paletteMatch": 0.7772,
+              "detail": 0.4004,
+              "detailRaw": 0.5619,
+              "detailAdded": 0.3229,
+              "bands": 0
+            },
+            "file": ".impeccable/review/diff/hero/regions/hero-kicker.png"
+          },
+          {
+            "id": "hero-subheadline",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.4467,
+              "structure": 0.4549,
+              "color": 0.5427,
+              "colorIntersection": 0.1981,
+              "paletteMatch": 0.7282,
+              "detail": 0.4407,
+              "detailRaw": 0.5241,
+              "detailAdded": 0.1667,
+              "bands": 0.175
+            },
+            "file": ".impeccable/review/diff/hero/regions/hero-subheadline.png"
+          }
+        ],
+        "advisories": [
+          "(advisory, unchanged for 3+ attempts) text hero-subheadline: cap height 46.3px in the build, 17.4px in the comp (+166%); set font-size so the cap height renders at 17.4px",
+          "(advisory, unchanged for 3+ attempts) text hero-intro: letter-spacing is wider than the comp's (gap 0.145 vs 0.050 of the cap height); set letter-spacing to close it by about 2px",
+          "(advisory, unchanged for 3+ attempts) text recent-heading: cap height 11.2px in the build, 24.5px in the comp (-54%); set font-size so the cap height renders at 24.5px",
+          "(advisory, unchanged for 3+ attempts) text recent-article-one: 1 line in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape",
+          "(advisory, unchanged for 3+ attempts) text recent-article-two: 1 line in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape",
+          "(advisory, unchanged for 3+ attempts) text recent-article-three: 1 line in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape",
+          "(advisory, unchanged for 3+ attempts) text chapter-caption: it starts 31px further right than in the comp"
+        ],
+        "regionVerdicts": {
+          "paper-grain": "drift",
+          "masthead-rule": "drift",
+          "brand-name": "drift",
+          "brand-author": "drift",
+          "primary-navigation": "drift",
+          "search-control": "drift",
+          "chapter-rail": "drift",
+          "chapter-dsa": "drift",
+          "chapter-java": "drift",
+          "chapter-system-design": "drift",
+          "chapter-project": "drift",
+          "chapter-caption": "drift",
+          "hero-kicker": "drift",
+          "hero-headline": "drift",
+          "hero-subheadline": "drift",
+          "hero-intro": "drift",
+          "hero-action": "drift",
+          "hero-motto": "drift",
+          "hero-credit": "drift",
+          "rahul-system-portrait": "drift",
+          "architecture-sketch": "drift",
+          "right-margin-note": "drift",
+          "compass-marker": "drift",
+          "recent-band-rule": "drift",
+          "recent-heading": "drift",
+          "recent-caption": "drift",
+          "recent-feature-image": "drift",
+          "recent-article-one": "drift",
+          "recent-article-two": "drift",
+          "recent-article-three": "drift"
+        },
+        "at": "2026-09-09T03:41:19.375Z"
+      },
+      "forced": null,
+      "readingsSeen": {
+        "text chapter-caption: cap height 34.8px in the build, 17.9px in the comp (+94%); set font-size so the cap height renders at 17.9px": 1,
+        "chrome masthead-rule: its rule sits 57px into the box in the comp and 23px in the build (-34px), so the strip is shorter than the comp's; match the height, not only the position": 1,
+        "text brand-name: letter-spacing is wider than the comp's (gap 0.092 vs 0.051 of the cap height); set letter-spacing to close it by about 1px": 2,
+        "text chapter-caption: cap height 11px in the build, 17.9px in the comp (-39%); set font-size so the cap height renders at 17.9px": 2,
+        "text hero-headline: letter-spacing is wider than the comp's (gap 0.058 vs 0.022 of the cap height); set letter-spacing to close it by about 3px": 1,
+        "text hero-subheadline: cap height 12.2px in the build, 17.4px in the comp (-30%); set font-size so the cap height renders at 17.4px": 1,
+        "text recent-heading: letter-spacing is wider than the comp's (gap 0.118 vs 0.041 of the cap height); set letter-spacing to close it by about 2px": 1,
+        "text recent-article-one: cap height 9.7px in the build, 13.6px in the comp (-29%); set font-size so the cap height renders at 13.6px": 1,
+        "text recent-article-three: cap height 9.8px in the build, 13.4px in the comp (-27%); set font-size so the cap height renders at 13.4px": 3,
+        "text recent-article-two: 1 line in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 19,
+        "text recent-article-three: 2 lines in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 3,
+        "text chapter-caption: ink is #aaa59a in the build, #5a5959 in the comp; use the comp's colour": 1,
+        "text hero-subheadline: ink is #aaa89a in the build, #eec2a1 in the comp; use the comp's colour": 1,
+        "control hero-action: its rule sits 5px into the box in the comp and 54px in the build (+49px), so the strip is taller than the comp's; match the height, not only the position": 1,
+        "text hero-subheadline: cap height 46.7px in the build, 17.4px in the comp (+168%); set font-size so the cap height renders at 17.4px": 1,
+        "text hero-intro: letter-spacing is wider than the comp's (gap 0.145 vs 0.050 of the cap height); set letter-spacing to close it by about 2px": 15,
+        "text recent-heading: cap height 11.2px in the build, 24.5px in the comp (-54%); set font-size so the cap height renders at 24.5px": 19,
+        "text recent-article-one: cap height 9.2px in the build, 13.6px in the comp (-32%); set font-size so the cap height renders at 13.6px": 1,
+        "text recent-article-two: cap height 8.9px in the build, 13.4px in the comp (-34%); set font-size so the cap height renders at 13.4px": 1,
+        "text recent-article-one: 1 line in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 19,
+        "text hero-motto: ink is #c85828 in the build, #959791 in the comp; use the comp's colour": 1,
+        "text hero-credit: ink is #706060 in the build, #afada8 in the comp; use the comp's colour": 1,
+        "text recent-caption: ink is #281a1a in the build, #707c71 in the comp; use the comp's colour": 1,
+        "text chapter-caption: it starts 31px further right than in the comp": 10,
+        "control hero-action: its rule sits 5px into the box in the comp and 39px in the build (+34px), so the strip is taller than the comp's; match the height, not only the position": 1,
+        "text hero-subheadline: cap height 46.3px in the build, 17.4px in the comp (+166%); set font-size so the cap height renders at 17.4px": 15,
+        "text hero-intro: letter-spacing is wider than the comp's (gap 0.130 vs 0.050 of the cap height); set letter-spacing to close it by about 2px": 2,
+        "text recent-article-one: letter-spacing is tighter than the comp's (gap 0.055 vs 0.152 of the cap height); set letter-spacing to open it by about 1px": 1,
+        "text recent-article-three: cap height 10.3px in the build, 13.4px in the comp (-23%); set font-size so the cap height renders at 13.4px": 1,
+        "text recent-article-one: the face renders 49% heavier than the comp's (ink density 0.90 vs 0.61); drop a weight step or use the ranked face": 1,
+        "text recent-caption: ink is #281818 in the build, #707c71 in the comp; use the comp's colour": 1,
+        "text recent-article-one: cap height 27.6px in the build, 13.6px in the comp (+103%); set font-size so the cap height renders at 13.6px": 1,
+        "text recent-article-two: cap height 9.8px in the build, 13.4px in the comp (-27%); set font-size so the cap height renders at 13.4px": 1,
+        "text recent-article-three: 1 line in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 17,
+        "text chapter-caption: letter-spacing is wider than the comp's (gap 0.135 vs 0.084 of the cap height); set letter-spacing to close it by about 1px": 2,
+        "text chapter-caption: letter-spacing is wider than the comp's (gap 0.133 vs 0.084 of the cap height); set letter-spacing to close it by about 1px": 1,
+        "text chapter-caption: letter-spacing is wider than the comp's (gap 0.131 vs 0.084 of the cap height); set letter-spacing to close it by about 1px": 1,
+        "text chapter-caption: cap height 8.2px in the build, 17.9px in the comp (-54%); set font-size so the cap height renders at 17.9px": 1,
+        "text right-margin-note: ink is #da7c4c in the build, #f3caa5 in the comp; use the comp's colour": 1,
+        "text hero-subheadline: cap height 32.5px in the build, 17.4px in the comp (+87%); set font-size so the cap height renders at 17.4px": 1,
+        "text chapter-caption: ink is #999688 in the build, #5a5959 in the comp; use the comp's colour": 1,
+        "text chapter-caption: cap height 13.9px in the build, 17.9px in the comp (-22%); set font-size so the cap height renders at 17.9px": 1
+      },
+      "records": 1,
+      "history": [
+        {
+          "at": "2026-09-09T03:25:02.435Z",
+          "score": 0.7694,
+          "worstIds": [
+            "chapter-system-design",
+            "chapter-java",
+            "recent-feature-image"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "drift",
+            "chapter-dsa": "drift",
+            "chapter-java": "contradicted",
+            "chapter-system-design": "missing",
+            "chapter-project": "drift",
+            "chapter-caption": "drift",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        },
+        {
+          "at": "2026-09-09T03:29:39.297Z",
+          "score": 0.7552,
+          "worstIds": [
+            "chapter-java",
+            "chapter-caption",
+            "recent-feature-image"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "drift",
+            "chapter-dsa": "drift",
+            "chapter-java": "drift",
+            "chapter-system-design": "drift",
+            "chapter-project": "drift",
+            "chapter-caption": "missing",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        },
+        {
+          "at": "2026-09-09T03:32:26.099Z",
+          "score": 0.7573,
+          "worstIds": [
+            "chapter-caption",
+            "chapter-java",
+            "recent-feature-image"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "drift",
+            "chapter-dsa": "drift",
+            "chapter-java": "drift",
+            "chapter-system-design": "drift",
+            "chapter-project": "drift",
+            "chapter-caption": "contradicted",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        },
+        {
+          "at": "2026-09-09T03:35:28.029Z",
+          "score": 0.7726,
+          "worstIds": [
+            "recent-feature-image",
+            "hero-kicker",
+            "hero-subheadline"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "drift",
+            "chapter-dsa": "drift",
+            "chapter-java": "drift",
+            "chapter-system-design": "drift",
+            "chapter-project": "drift",
+            "chapter-caption": "drift",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        },
+        {
+          "at": "2026-09-09T03:38:51.730Z",
+          "score": 0.779,
+          "worstIds": [
+            "right-margin-note",
+            "hero-subheadline",
+            "recent-feature-image"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "match",
+            "chapter-dsa": "match",
+            "chapter-java": "match",
+            "chapter-system-design": "match",
+            "chapter-project": "match",
+            "chapter-caption": "match",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        },
+        {
+          "at": "2026-09-09T03:41:19.375Z",
+          "score": 0.7809,
+          "worstIds": [
+            "recent-feature-image",
+            "hero-kicker",
+            "hero-subheadline"
+          ],
+          "regionVerdicts": {
+            "paper-grain": "drift",
+            "masthead-rule": "drift",
+            "brand-name": "drift",
+            "brand-author": "drift",
+            "primary-navigation": "drift",
+            "search-control": "drift",
+            "chapter-rail": "drift",
+            "chapter-dsa": "drift",
+            "chapter-java": "drift",
+            "chapter-system-design": "drift",
+            "chapter-project": "drift",
+            "chapter-caption": "drift",
+            "hero-kicker": "drift",
+            "hero-headline": "drift",
+            "hero-subheadline": "drift",
+            "hero-intro": "drift",
+            "hero-action": "drift",
+            "hero-motto": "drift",
+            "hero-credit": "drift",
+            "rahul-system-portrait": "drift",
+            "architecture-sketch": "drift",
+            "right-margin-note": "drift",
+            "compass-marker": "drift",
+            "recent-band-rule": "drift",
+            "recent-heading": "drift",
+            "recent-caption": "drift",
+            "recent-feature-image": "drift",
+            "recent-article-one": "drift",
+            "recent-article-two": "drift",
+            "recent-article-three": "drift"
+          },
+          "artifactHash": null
+        }
+      ]
+    },
+    "sections": {
+      "status": "closed",
+      "openedAt": "2026-09-09T03:41:19.375Z",
+      "closedAt": "2026-09-09T03:54:20.099Z",
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "no mechanical gate",
+        "at": "2026-09-09T03:54:20.099Z"
+      },
+      "forced": null
+    },
+    "motion": {
+      "status": "closed",
+      "openedAt": "2026-09-09T03:54:20.099Z",
+      "closedAt": "2026-09-09T03:54:58.676Z",
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "no mechanical gate",
+        "at": "2026-09-09T03:54:58.676Z"
+      },
+      "forced": null
+    },
+    "responsive": {
+      "status": "closed",
+      "openedAt": "2026-09-09T03:54:58.676Z",
+      "closedAt": "2026-09-09T08:19:56.886Z",
+      "attempts": 4,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "desktop 77% (drift)",
+        "score": 0.7712,
+        "sideBySide": "/Users/rahulkumar/Documents/Project/blog/rahulkumarsahu.github.io/.impeccable/review/diff/desktop/side-by-side.png",
+        "at": "2026-09-09T08:19:56.885Z"
+      },
+      "forced": null
+    },
+    "review": {
+      "status": "closed",
+      "openedAt": "2026-09-09T08:19:56.886Z",
+      "closedAt": "2026-09-09T08:24:27.738Z",
+      "attempts": 0,
+      "notes": [
+        {
+          "at": "2026-09-09T08:24:15.542Z",
+          "text": "Inline final review: approved composition and protected banners preserved; responsive gate 77%; warm light and charcoal dark themes verified; source detector warnings addressed for new side-tab accents; legacy design-token advisories remain outside this redesign scope."
+        }
+      ],
+      "gate": null,
+      "forced": null
+    }
+  },
+  "finish": {
+    "disposition": "ship",
+    "at": "2026-09-09T08:24:27.737Z",
+    "phaseAtFinish": "review"
+  },
+  "plates": {
+    "paper-grain": {
+      "status": "ok",
+      "score": 0.4351,
+      "size": "1254x1254"
+    },
+    "rahul-system-portrait": {
+      "status": "ok",
+      "score": 0.6369,
+      "size": "1570x1650"
+    },
+    "recent-feature-image": {
+      "status": "ok",
+      "score": 0.612,
+      "size": "2243x701"
+    }
+  }
+}

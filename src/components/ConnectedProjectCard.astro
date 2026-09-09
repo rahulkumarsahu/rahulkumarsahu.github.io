@@ -3,18 +3,18 @@ const { compact = false } = Astro.props as { compact?: boolean };
 ---
 
 <article class:list={['connected-project-card', { compact }]}>
-  <div><span>BUILD ACROSS THE STACK</span><h2>Take one URL shortener from objects to Kubernetes.</h2></div>
+  <div><h2>Take one URL shortener from objects to Kubernetes.</h2></div>
   <p>Follow a connected project through LLD, Java, Spring Boot, caching, system design, Docker, Kubernetes and observability.</p>
   <a href="/projects/production-url-shortener/">Open the connected project <span aria-hidden="true">→</span></a>
 </article>
 
 <style>
-  .connected-project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, .8fr) auto; align-items: center; gap: 1.2rem; padding: 1.25rem; border: 1px solid var(--line-strong); border-radius: .9rem; background: linear-gradient(135deg, color-mix(in srgb, var(--indigo) 10%, transparent), transparent 54%), var(--surface); }
-  .connected-project-card span { color: var(--amber); font-size: .78rem; font-weight: 650; }
-  .connected-project-card h2 { margin: .32rem 0 0; font-size: 1.25rem; }
+  .connected-project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, .8fr) auto; align-items: center; gap: clamp(1.2rem, 4vw, 4rem); padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface); }
+  .connected-project-card span { color: var(--orange); font-family: var(--font-mono); font-size: .7rem; font-weight: 650; }
+  .connected-project-card h2 { margin: .42rem 0 0; font-family: var(--font-display); font-size: clamp(1.55rem, 2.5vw, 2.35rem); line-height: 1.08; }
   .connected-project-card p { margin: 0; color: var(--text-soft); font-size: .9rem; line-height: 1.6; }
-  .connected-project-card > a { display: inline-flex; min-height: 2.75rem; align-items: center; padding: .62rem .8rem; border: 1px solid var(--indigo); border-radius: .55rem; color: var(--text); font-size: .88rem; font-weight: 650; white-space: nowrap; }
-  .connected-project-card > a:hover { background: var(--indigo); color: white; }
+  .connected-project-card > a { display: inline-flex; min-height: 2.75rem; align-items: center; padding: .62rem .8rem; border: 1px solid var(--orange); border-radius: 2px; color: var(--text); font-size: .88rem; font-weight: 650; white-space: nowrap; }
+  .connected-project-card > a:hover { background: var(--orange); color: white; }
   .connected-project-card > a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .connected-project-card.compact { grid-template-columns: 1fr auto; }
   .connected-project-card.compact p { grid-column: 1; }

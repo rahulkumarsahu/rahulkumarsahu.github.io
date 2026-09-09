@@ -13,7 +13,7 @@ const estimate = getLearningEstimate(posts);
 
 <aside class="learning-estimate" aria-label={label}>
   <div class="learning-estimate-heading">
-    <span>PLAN YOUR STUDY TIME</span>
+      <span>Plan your study time</span>
     <strong>{label}</strong>
   </div>
   {estimate.lessonCount ? (
@@ -51,15 +51,15 @@ const estimate = getLearningEstimate(posts);
     margin-top: 1.25rem;
     padding: 1rem 1.15rem;
     border: 1px solid var(--line);
-    border-radius: .8rem;
+    border-radius: 2px;
     background: var(--surface);
     color: var(--text);
   }
   .learning-estimate-heading { display: grid; gap: .3rem; }
-  .learning-estimate-heading > span { color: var(--text-soft); font: .62rem var(--font-mono); letter-spacing: .08em; }
+  .learning-estimate-heading > span { color: var(--orange); font: .7rem var(--font-mono); letter-spacing: .03em; }
   .learning-estimate-heading > strong { font-size: .9rem; }
-  .learning-estimate-facts { display: flex; flex-wrap: wrap; gap: .85rem 1.6rem; margin: .9rem 0; }
-  .learning-estimate-facts > div { min-width: 0; }
+  .learning-estimate-facts { display: grid; grid-template-columns: minmax(12rem, 1.6fr) repeat(3, minmax(6rem, .65fr)); gap: 1px; margin: .9rem 0; border-block: 1px solid var(--line); background: var(--line); }
+  .learning-estimate-facts > div { min-width: 0; padding: .8rem; background: var(--surface); }
   .learning-estimate-facts dt { color: var(--text-soft); font-size: .75rem; }
   .learning-estimate-facts dd { margin: .3rem 0 0; font-size: .94rem; font-weight: 700; }
   .learning-estimate-duration dd { color: var(--indigo); }
@@ -74,7 +74,7 @@ const estimate = getLearningEstimate(posts);
   .learning-estimate-method p { margin-top: .35rem; }
   @media (max-width: 480px) {
     .learning-estimate { padding: .9rem; }
-    .learning-estimate-duration { flex-basis: 100%; }
-    .learning-estimate-facts { gap: .75rem 1.2rem; }
+    .learning-estimate-facts { grid-template-columns: 1fr 1fr; }
+    .learning-estimate-duration { grid-column: 1 / -1; }
   }
 </style>

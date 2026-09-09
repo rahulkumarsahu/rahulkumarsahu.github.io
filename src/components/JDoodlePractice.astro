@@ -17,15 +17,12 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   data-problem-slug={problem.slug}
 >
   <header class="jdoodle-heading">
-    <div>
-      <span>PRACTICE WORKSPACE</span>
-      <h2 id={`practice-${problem.slug}`}>Read the problem, then build your solution</h2>
-    </div>
+    <div><h2 id={`practice-${problem.slug}`}>Read the problem, then build your solution</h2></div>
     <p>Your saved draft stays in this browser. The completed solution remains closed until you reveal it.</p>
   </header>
 
   <section class="jdoodle-problem" aria-labelledby={`problem-${problem.slug}`}>
-    <div class="jdoodle-side-label"><span>01</span> PROBLEM STATEMENT</div>
+    <div class="jdoodle-side-label"><span>01</span> Problem statement</div>
     <h3 id={`problem-${problem.slug}`}>{problem.title}</h3>
     <p>{problem.instruction}</p>
 
@@ -36,7 +33,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     </div>
 
     <div class="jdoodle-example" aria-label="Practice example">
-      <span>EXAMPLE</span>
+      <span>Example</span>
       <pre class="jdoodle-example-code">{`Input:    ${problem.input}\nExpected: ${problem.expected}`}</pre>
     </div>
 
@@ -65,7 +62,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   <section class="jdoodle-build" aria-labelledby={`build-${problem.slug}`}>
     <div class="jdoodle-build-heading">
       <div>
-        <div class="jdoodle-side-label"><span>02</span> BUILD YOUR OWN</div>
+        <div class="jdoodle-side-label"><span>02</span> Build your own</div>
         <h3 id={`build-${problem.slug}`}>Complete the Java method</h3>
       </div>
       <span class="draft-state" data-draft-state aria-live="polite">Starter code</span>
@@ -84,7 +81,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
       >
         <div class="jdoodle-editor-bar">
           <label for={`starter-code-${problem.slug}`}>Main.java</label>
-          <span>JAVA</span>
+          <span>Java</span>
         </div>
         <textarea
           id={`starter-code-${problem.slug}`}
@@ -506,4 +503,15 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
       flex-basis: 100%;
     }
   }
+
+  /* Field Manual: a practical workbench, not a floating dashboard card. */
+  .jdoodle-practice { border-radius: 2px; background: var(--surface); box-shadow: none; }
+  .jdoodle-heading { background: var(--surface-strong); }
+  .jdoodle-heading span, .jdoodle-problem span, .jdoodle-editor-bar span { color: var(--orange); letter-spacing: .04em; }
+  .jdoodle-rules > div, .jdoodle-example, .practice-tests, .jdoodle-editor, .jdoodle-embed { border-radius: 2px; box-shadow: none; }
+  .jdoodle-build { background: var(--surface); }
+  .draft-state { border-radius: 2px; }
+  .editor-button { min-height: 2.75rem; border-radius: 2px; }
+  .editor-button-primary { border-color: var(--orange); background: var(--orange); }
+  .editor-button-secondary { background: #242820; }
 </style>

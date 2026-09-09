@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { SITE } from '../data/site';
-import aboutPortrait from '../assets/about/rahul-about-portrait.png';
+import aboutPortrait from '../assets/about/rahul-about-cutout.png';
 
 const aboutJsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ const aboutJsonLd = {
     <Breadcrumbs items={[{ label: 'Atlas', href: '/' }, { label: 'About' }]} />
     <div class="about-page-grid">
       <div>
-        <p class="section-index">ABOUT ME</p>
+        <p class="section-index">About me</p>
         <h1>I build backend systems and share what I learn while doing it.</h1>
         <p>
           I’m Rahul Kumar, a Senior Backend Engineer at JPMorgan Chase with more than eight
@@ -58,7 +58,7 @@ const aboutJsonLd = {
   <section class="about-story section-wrap">
     <div class="about-story-label">
       <span>01</span>
-      <p>A LITTLE ABOUT MY WORK</p>
+      <p>A little about my work</p>
     </div>
     <div class="about-story-copy">
       <h2>I enjoy the kind of engineering work where reliability and developer experience meet.</h2>
@@ -80,7 +80,7 @@ const aboutJsonLd = {
   <section class="career-highlights section-wrap">
     <div class="section-heading section-heading-notes">
       <div>
-        <p class="section-index">SOME WORK I AM PROUD OF</p>
+        <p class="section-index">Some work I am proud of</p>
         <h2>A few problems I have had the chance to solve.</h2>
       </div>
     </div>
@@ -104,7 +104,7 @@ const aboutJsonLd = {
   </section>
 
   <section class="principles section-wrap">
-    <p class="section-index">HOW I LIKE TO LEARN AND WRITE</p>
+    <p class="section-index">How I like to learn and write</p>
     <div class="principle-grid">
       <article>
         <span>01</span>
@@ -126,7 +126,7 @@ const aboutJsonLd = {
 
   <section class="toolbox section-wrap">
     <div>
-      <p class="section-index">ENGINEERING TOOLBOX</p>
+      <p class="section-index">Engineering toolbox</p>
       <h2>Technologies I work with.</h2>
     </div>
     <div class="toolbox-list">
@@ -139,26 +139,26 @@ const aboutJsonLd = {
   <section class="about-writing section-wrap">
     <div class="section-heading section-heading-notes">
       <div>
-        <p class="section-index">WHERE ELSE I WRITE</p>
+        <p class="section-index">Where else I write</p>
         <h2>Different places for different kinds of notes.</h2>
       </div>
       <p>The Atlas is my structured learning library. These are the other places where I share engineering work and ideas.</p>
     </div>
     <div class="about-writing-grid">
       <article>
-        <span>LONGER ESSAYS</span>
+        <span>Longer essays</span>
         <h3>The Scalable Stack</h3>
         <p>Deep dives into Java, Low Level Design, System Design, AI, and the lessons behind scalable software.</p>
         <a href={SITE.scalableStack}>Read on Substack <span aria-hidden="true">↗</span></a>
       </article>
       <article>
-        <span>SELECTED ARTICLES</span>
+        <span>Selected articles</span>
         <h3>Medium</h3>
         <p>A separate collection of practical backend engineering articles and ideas I have published over time.</p>
         <a href={SITE.medium}>Visit my Medium profile <span aria-hidden="true">↗</span></a>
       </article>
       <article>
-        <span>WORK AND EXPERIENCE</span>
+        <span>Work and experience</span>
         <h3>Personal portfolio</h3>
         <p>A concise view of my experience, engineering focus, projects, and the systems I enjoy working on.</p>
         <a href={SITE.portfolio}>Explore my portfolio <span aria-hidden="true">↗</span></a>
@@ -168,7 +168,7 @@ const aboutJsonLd = {
 
   <section class="about-connect section-wrap">
     <div class="about-connect-card">
-      <p class="section-index">LET’S CONNECT</p>
+      <p class="section-index">Let’s connect</p>
       <h2>If you are working on an interesting backend or platform problem, I would be happy to hear about it.</h2>
       <p>I enjoy conversations about distributed systems, Java, cloud platforms, developer productivity, practical AI tooling, and engineering careers.</p>
       <div class="about-page-actions">
@@ -191,4 +191,11 @@ const aboutJsonLd = {
   .about-writing-grid a { margin-top: auto; color: var(--indigo); font-size: .66rem; font-weight: 650; }
   .about-writing-grid a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
   @media (max-width: 760px) { .about-writing-grid { grid-template-columns: 1fr; } }
+  .about-writing { padding-block: clamp(4rem, 7vw, 7rem); }
+  .about-writing-grid { gap: 1px; border: 1px solid var(--line); background: var(--line); }
+  .about-writing-grid article { padding: 1.5rem; border: 0; border-radius: 0; background: var(--surface); }
+  .about-writing-grid article > span { color: var(--orange); font-size: .68rem; letter-spacing: .03em; }
+  .about-writing-grid h3 { font-family: var(--font-display); font-size: 1.5rem; }
+  .about-writing-grid p { font-size: .9rem; }
+  .about-writing-grid a { color: var(--manual-link); font-size: .8rem; }
 </style>

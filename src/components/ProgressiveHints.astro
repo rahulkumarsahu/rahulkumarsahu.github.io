@@ -137,4 +137,11 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
       min-height: 3.4rem;
     }
   }
+
+  /* Field Manual: progressive disclosures read as indexed notes. */
+  .progressive-hints { background: var(--surface-strong); }
+  .hint-heading span { color: var(--amber); letter-spacing: .03em; }
+  .hint-list { gap: 1px; border: 1px solid var(--line); background: var(--line); }
+  .hint-card { border: 0; border-radius: 0; background: var(--surface); }
+  .hint-card summary span { border-radius: 2px; color: var(--orange); }
 </style>

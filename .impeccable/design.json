@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-09T04:20:00.000Z",
+  "title": "Design System: The System Design Atlas",
+  "extensions": {
+    "colorMeta": {
+      "action-orange": { "role": "primary", "displayName": "Action Orange", "canonical": "#C8542F", "tonalRamp": ["#2C1811", "#5B2718", "#8A371F", "#C8542F", "#DC7658", "#E9A18A", "#F4CBBE", "#FFF4EF"] },
+      "progress-green": { "role": "secondary", "displayName": "Progress Green", "canonical": "#416C5A", "tonalRamp": ["#11211B", "#203A30", "#315443", "#416C5A", "#67917F", "#92B4A5", "#C3D7CE", "#EFF7F3"] },
+      "note-ochre": { "role": "tertiary", "displayName": "Note Ochre", "canonical": "#9B7428", "tonalRamp": ["#281E0B", "#4B3711", "#74561C", "#9B7428", "#BA964F", "#D2B87B", "#E7D8AD", "#FAF4E5"] },
+      "paper": { "role": "neutral", "displayName": "Workshop Paper", "canonical": "#F3EFE4", "tonalRamp": ["#24211B", "#474137", "#6A6255", "#918878", "#B7AE9E", "#D4CCBD", "#EAE4D8", "#FFFDF7"] },
+      "charcoal": { "role": "neutral", "displayName": "Warm Charcoal", "canonical": "#191814", "tonalRamp": ["#191814", "#24211B", "#332F27", "#474137", "#655D4F", "#9B907C", "#C8BEAB", "#F2ECDE"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Editorial display", "purpose": "Homepage, page, and article titles." },
+      "body": { "displayName": "Reading body", "purpose": "Long-form explanations and interface copy." },
+      "technical": { "displayName": "Technical data", "purpose": "Code metadata, state values, and measurements only." }
+    },
+    "shadows": [
+      { "name": "overlay-ambient", "value": "0 22px 65px rgba(0, 0, 0, .24)", "purpose": "Search and protected overlays only." }
+    ],
+    "motion": [
+      { "name": "route-draw", "value": "700ms cubic-bezier(.22, 1, .36, 1)", "purpose": "One-time homepage route mark drawing." },
+      { "name": "state-change", "value": "160ms ease", "purpose": "Hover, focus-adjacent, and simulator state changes." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-title", "value": "520px" },
+      { "name": "tool-stack", "value": "760px" },
+      { "name": "editorial-stack", "value": "850px" },
+      { "name": "wide-tools", "value": "1180px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single next action in an editorial section.",
+      "html": "<button class=\"ds-primary\">Start with a goal</button>",
+      "css": ".ds-primary{min-height:44px;padding:10px 24px;border:1px solid #C8542F;border-radius:2px;background:#C8542F;color:#FFFDF7;font:700 16px Georgia,serif;cursor:pointer;transition:background-color 160ms ease,color 160ms ease}.ds-primary:hover{background:transparent;color:#C8542F}.ds-primary:focus-visible{outline:3px solid #416C5A;outline-offset:3px}"
+    },
+    {
+      "name": "Reference Input",
+      "kind": "input",
+      "description": "A readable filter or custom-input field for dense tools.",
+      "html": "<label class=\"ds-field\"><span>Search problems</span><input placeholder=\"Array, recursion, two pointers\"></label>",
+      "css": ".ds-field{display:grid;gap:6px;color:#625D52;font:14px system-ui,sans-serif}.ds-field input{min-height:44px;padding:10px 12px;border:1px solid #C9C0AE;border-radius:2px;background:#FFFDF7;color:#211F1A;font:16px system-ui,sans-serif}.ds-field input:focus-visible{outline:3px solid #C8542F;outline-offset:2px}"
+    },
+    {
+      "name": "Editorial Index Row",
+      "kind": "custom",
+      "description": "The default structure for paths, stages, and published lessons.",
+      "html": "<a class=\"ds-index\" href=\"#\"><span>01</span><div><strong>Array fundamentals</strong><small>Published · 8 min read</small></div><i>→</i></a>",
+      "css": ".ds-index{display:grid;grid-template-columns:36px 1fr auto;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid #C9C0AE;color:#211F1A;text-decoration:none}.ds-index>span,.ds-index small{color:#625D52;font:12px ui-monospace,monospace}.ds-index strong{display:block;font:700 20px Georgia,serif}.ds-index i{font-style:normal}.ds-index:hover strong{text-decoration:underline;text-underline-offset:4px}.ds-index:focus-visible{outline:3px solid #C8542F;outline-offset:3px}"
+    },
+    {
+      "name": "Tool Panel",
+      "kind": "custom",
+      "refersTo": "tool-panel",
+      "description": "A square, high-contrast instrument surface for practice and simulation.",
+      "html": "<section class=\"ds-tool\"><h3>Current state</h3><p>Read is at index 2. Write is at index 1.</p><button>Next step</button></section>",
+      "css": ".ds-tool{padding:16px;border:1px solid #474137;border-radius:2px;background:#24211B;color:#F2ECDE;font:16px/1.6 system-ui,sans-serif}.ds-tool h3{margin:0 0 8px;font:700 24px Georgia,serif}.ds-tool p{color:#C8BEAB}.ds-tool button{min-height:44px;padding:8px 16px;border:1px solid #EF7650;border-radius:2px;background:#EF7650;color:#191814}.ds-tool button:focus-visible{outline:3px solid #79A88E;outline-offset:3px}"
+    },
+    {
+      "name": "Artwork Plate",
+      "kind": "card",
+      "description": "A protected topic or article-specific image with a precise rule frame.",
+      "html": "<figure class=\"ds-plate\"><img alt=\"Article-specific algorithm diagram\" src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='240'%3E%3Crect width='640' height='240' fill='%2324211B'/%3E%3C/svg%3E\"><figcaption>Diagram from the article</figcaption></figure>",
+      "css": ".ds-plate{margin:0;border:1px solid #474137;border-radius:2px;overflow:hidden;background:#24211B}.ds-plate img{display:block;width:100%;aspect-ratio:8/3;object-fit:cover}.ds-plate figcaption{padding:8px 12px;color:#C8BEAB;font:12px ui-monospace,monospace}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Engineering Field Manual",
+    "overview": "The Atlas looks like an authored technical reference that has been used at a desk, not a generic software dashboard. Warm paper, charcoal, fine rules, real diagrams, protected subject-specific artwork, and editorial typography give the work a human and practical character. Reading pages are deliberately quiet. Indexes are denser and more structured. Simulators and practice areas feel like instruments.",
+    "keyCharacteristics": ["Editorial serif hierarchy", "Warm paper and charcoal", "Rare semantic accents", "Protected subject artwork", "Flat surfaces separated by rules"],
+    "rules": [
+      { "name": "Rare Accent", "body": "Orange identifies the next meaningful action. If many orange elements compete, reduce them.", "section": "colors" },
+      { "name": "Editorial First", "body": "Serif establishes hierarchy, sans explains, and monospace reports data.", "section": "typography" },
+      { "name": "Rule Before Shadow", "body": "Use a rule or tonal shift before adding elevation.", "section": "elevation" }
+    ],
+    "dos": ["Do make published content and the next useful action obvious.", "Do preserve subject-specific banners and diagrams.", "Do use sentence case for normal interface copy."],
+    "donts": ["Don't return to navy fields, indigo glows, glass panels, or decorative grids.", "Don't build pages from nested cards or walls of pills.", "Don't use generic coding or AI artwork."]
+  }
+}

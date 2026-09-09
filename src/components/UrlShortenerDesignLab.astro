@@ -472,7 +472,7 @@ import { URL_SHORTENER_LAB_SCENARIOS, URL_SHORTENER_LAB_STAGES } from '../data/u
   .estimate-results dt { color: var(--text-faint); font-size: .47rem; }
   .estimate-results dd { margin: .25rem 0 0; color: var(--text); font-family: var(--font-mono); font-size: .62rem; font-weight: 700; }
   .estimator-error { margin: .6rem 0 0; color: #b14a3b; font-size: .6rem; }
-  .stage-checkpoint { margin-top: 1rem; padding: .7rem .8rem; border-left: 3px solid var(--amber); background: color-mix(in srgb, var(--amber) 7%, var(--surface)); }
+  .stage-checkpoint { margin-top: 1rem; padding: .7rem .8rem; border: 1px solid color-mix(in srgb, var(--amber) 46%, var(--line)); background: color-mix(in srgb, var(--amber) 7%, var(--surface)); }
   .stage-checkpoint p { margin: .35rem 0 0; color: var(--text-soft); font-size: .65rem; line-height: 1.5; }
   .stage-actions { display: flex; align-items: center; gap: .6rem; padding: .85rem 1.2rem; border-top: 1px solid var(--line); background: var(--surface-strong); }
   .stage-actions button { min-height: 2.4rem; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .62rem; font-weight: 700; cursor: pointer; }
@@ -527,4 +527,16 @@ import { URL_SHORTENER_LAB_SCENARIOS, URL_SHORTENER_LAB_STAGES } from '../data/u
   @media (max-width: 760px) { .lab-header, .failure-heading { grid-template-columns: 1fr; } .lab-layout { grid-template-columns: 1fr; overflow: visible; } .stage-rail { overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); } .stage-rail ol { display: flex; width: max-content; } .stage-rail li { width: 10.5rem; } .decision-impact, .scenario-impact, .scenario-decisions { grid-template-columns: 1fr; } .decision-impact > div + div, .scenario-impact > div + div { border-top: 1px solid var(--line); border-left: 0; } .architecture-map { grid-template-columns: 1fr; } .architecture-map > i { transform: none; } .architecture-branch { grid-column: auto; grid-template-columns: 1fr; } .architecture-branch > span { transform: rotate(90deg); text-align: center; } .architecture-decisions ol { grid-template-columns: 1fr 1fr; } .scenario-context { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { .lab-stage { padding: 1rem .8rem; } .estimator-heading { align-items: start; flex-direction: column; } .estimator-heading p { text-align: left; } .estimator-inputs, .estimate-results { grid-template-columns: 1fr 1fr; } .stage-actions { display: grid; grid-template-columns: 1fr 1fr; padding-inline: .8rem; } .stage-actions > span { grid-column: 1 / -1; grid-row: 1; text-align: center; } .stage-actions button.primary { margin-left: 0; } .architecture-decisions ol { grid-template-columns: 1fr; } .lab-footer { align-items: flex-start; flex-direction: column; } .lab-footer details { text-align: left; } }
   @media (prefers-reduced-motion: reduce) { .design-lab *, .lab-progress i { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+
+  /* Field Manual: workshop index, decision ledger, and architecture plate. */
+  .design-lab, .lab-layout, .scenario-panel, .lab-footer { border-radius: 2px; box-shadow: none; }
+  .stage-rail button, .decision-card, .decision-impact, .capacity-estimator,
+  .estimate-results div, .stage-actions button, .architecture-node,
+  .architecture-decisions li, .scenario-tabs button, .scenario-context > div,
+  .scenario-decisions label, .lab-footer button { border-radius: 2px; }
+  .stage-rail button[aria-current='step'], .scenario-tabs button[aria-selected='true'] { border-color: var(--orange); background: color-mix(in srgb, var(--orange) 7%, var(--surface)); }
+  .stage-rail button > span, .decision-card:has(input:checked) { color: var(--orange); }
+  .decision-card:has(input:checked), .scenario-decisions label:has(input:checked) { border-color: var(--orange); box-shadow: inset 3px 0 var(--orange); }
+  .decision-card input:checked + .decision-control { border-color: var(--orange); }
+  .stage-actions button.primary { border-color: var(--orange); background: var(--orange); }
 </style>

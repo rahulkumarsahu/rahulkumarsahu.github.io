@@ -8,7 +8,7 @@ const { title, text } = Astro.props;
 ---
 
 <aside class="engineering-connection" aria-labelledby={`engineering-${title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`}>
-  <span>WHERE THIS APPEARS IN REAL SYSTEMS</span>
+  <span>Where this appears in real systems</span>
   <h2 id={`engineering-${title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`}>{title}</h2>
   <p>{text}</p>
 </aside>
@@ -18,9 +18,8 @@ const { title, text } = Astro.props;
     margin: 2rem 0;
     padding: 1rem 1.1rem;
     border: 1px solid color-mix(in srgb, var(--cyan) 34%, var(--line));
-    border-left: 4px solid var(--cyan);
-    border-radius: .75rem;
-    background: linear-gradient(120deg, color-mix(in srgb, var(--cyan) 8%, transparent), transparent 62%);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--cyan) 6%, var(--surface));
   }
   .engineering-connection span { color: var(--cyan); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .1em; }
   .engineering-connection h2 { margin: .38rem 0 0; padding: 0; border: 0; font-size: 1rem; }

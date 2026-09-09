@@ -1,0 +1,8 @@
+Use case: ui-mockup
+Asset type: seamless website background texture plate
+Primary request: Recreate only the clean warm off-white paper material visible in the reference crop as a seamless, evenly lit, tileable texture.
+Reference role: material and color reference only. Remove the blue illustrated object and all dark outline fragments completely.
+Color palette: warm drafting paper centered around #f7f3e7 with extremely subtle natural fiber variation.
+Materials/textures: fine archival paper grain, restrained and nearly invisible at normal reading scale.
+Composition: uniform edge-to-edge square texture, no focal point, no vignette.
+Constraints: no objects, no text, no symbols, no UI, no margins, no borders, no shadows, no stains, no creases, no blue marks, no black lines, no watermark.

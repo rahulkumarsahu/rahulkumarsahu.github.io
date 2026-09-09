@@ -16,7 +16,7 @@ const reviewedOn = post.data.lastReviewed;
 <section class="article-learning-controls" data-learning-controls data-post-slug={slug} aria-labelledby="article-details-title">
   <div class="article-learning-heading">
     <div>
-      <span>LEARNING DETAILS</span>
+      <span>Learning details</span>
       <h2 id="article-details-title">Plan your reading</h2>
     </div>
     <p data-learning-message aria-live="polite">Progress is saved only in this browser.</p>
@@ -246,4 +246,12 @@ const reviewedOn = post.data.lastReviewed;
       margin-left: 0;
     }
   }
+
+  /* Field Manual: compact article utility strip. */
+  .article-learning-controls { border-radius: 2px; background: var(--surface); }
+  .article-learning-heading { background: var(--surface-strong); }
+  .article-learning-heading > div > span { color: var(--orange); letter-spacing: .03em; }
+  .article-learning-actions select,
+  .article-learning-actions button,
+  .article-learning-actions a { min-height: 2.75rem; border-radius: 2px; }
 </style>

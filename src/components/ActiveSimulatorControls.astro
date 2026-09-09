@@ -50,13 +50,13 @@ const { id } = Astro.props as { id: string };
   .active-simulator-controls { border-top: 1px solid var(--line); background: var(--surface-strong); }
   .simulator-timeline-row { display: grid; gap: .55rem; padding: .8rem 1.2rem .65rem; }
   .simulator-timeline-row > div:first-child { display: flex; justify-content: space-between; gap: 1rem; color: var(--text-faint); font-family: var(--font-mono); font-size: .78rem; }
-  .simulator-timeline-row label { color: var(--text-soft); font-weight: 650; letter-spacing: .06em; text-transform: uppercase; }
+  .simulator-timeline-row label { color: var(--text-soft); font-weight: 650; letter-spacing: .02em; text-transform: none; }
   .simulator-scrubber { display: grid; grid-template-columns: auto minmax(5rem, 1fr) auto; align-items: center; gap: .65rem; }
   .simulator-scrubber input { width: 100%; accent-color: var(--indigo); cursor: pointer; }
   .simulator-playback { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; padding: .65rem 1.2rem .75rem; border-top: 1px solid var(--line); }
   .simulator-playback button,
   .simulator-scrubber button,
-  .simulator-playback select { min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font: inherit; font-size: .86rem; font-weight: 650; cursor: pointer; }
+  .simulator-playback select { min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface); color: var(--text); font: inherit; font-size: .86rem; font-weight: 650; cursor: pointer; }
   .simulator-playback button:disabled,
   .simulator-scrubber button:disabled { opacity: .45; cursor: not-allowed; }
   .simulator-playback label { display: flex; align-items: center; gap: .5rem; margin-left: auto; color: var(--text-faint); font-family: var(--font-mono); font-size: .78rem; }

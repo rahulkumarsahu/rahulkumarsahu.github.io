@@ -95,4 +95,10 @@ const reportBody = encodeURIComponent(`Article: ${SITE.url}/posts/${slug}/\n\nSe
   .report-link { flex: 0 0 auto; min-height: 2.75rem; display: inline-flex; align-items: center; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--text); font-size: .82rem; text-decoration: none; }
   .article-trust :is(a, summary):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   @media (max-width: 640px) { .article-trust > header { align-items: start; flex-direction: column; } .article-trust header p { text-align: left; } .trust-status, .trust-grid { grid-template-columns: 1fr; } .trust-status > div + div, .trust-grid > section + section { border-top: 1px solid var(--line); border-left: 0; } .trust-footer { flex-direction: column; } .trust-footer li { grid-template-columns: 1fr; } }
+
+  /* Field Manual: maintenance record rather than a promotional card. */
+  .article-trust { border-radius: 2px; background: var(--surface); }
+  .article-trust > header, .trust-footer { background: var(--surface-strong); }
+  .article-trust header span, .trust-status span { color: var(--green); }
+  .trust-status li, .trust-links a, .report-link { border-radius: 2px; }
 </style>

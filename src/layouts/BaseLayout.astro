@@ -4,6 +4,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import GlobalSearch from '../components/GlobalSearch.astro';
 import { SITE } from '../data/site';
 import '../styles/global.css';
+import '../styles/field-manual.css';
 
 interface Props {
   title?: string;
@@ -66,7 +67,7 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
-    <meta name="theme-color" content="#172033" />
+    <meta name="theme-color" content="#191814" />
     <meta
       name="robots"
       content={noindex
@@ -108,7 +109,7 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
       const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       const selectedTheme = storedTheme || preferredTheme;
       document.documentElement.dataset.theme = selectedTheme;
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', selectedTheme === 'light' ? '#f5f6f2' : '#172033');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', selectedTheme === 'light' ? '#f3efe4' : '#191814');
       document.documentElement.classList.add('js');
     </script>
     <slot name="head" />
@@ -144,7 +145,7 @@ const structuredData = [websiteJsonLd, personJsonLd, ...suppliedJsonLd];
         } catch {
           // The theme still changes for this page even when storage is blocked.
         }
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'light' ? '#f5f6f2' : '#172033');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'light' ? '#f3efe4' : '#191814');
       });
 
       menuToggle?.addEventListener('click', () => {

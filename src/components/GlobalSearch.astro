@@ -4,7 +4,7 @@
 <dialog class="global-search" data-global-search aria-labelledby="global-search-title">
   <div class="global-search-shell">
     <header>
-      <div><span>SEARCH THE ATLAS</span><h2 id="global-search-title">Find a lesson, question or project</h2></div>
+      <div><h2 id="global-search-title">Find a lesson, question or project</h2></div>
       <button type="button" data-global-search-close aria-label="Close search">Esc</button>
     </header>
     <label class="global-search-input">
@@ -116,20 +116,20 @@
 </script>
 
 <style>
-  .global-search { width: min(48rem, calc(100% - 2rem)); max-height: min(48rem, calc(100vh - 2rem)); padding: 0; border: 1px solid var(--line-strong); border-radius: 1rem; background: var(--bg); color: var(--text); box-shadow: var(--shadow); }
-  .global-search::backdrop { background: rgb(5 10 20 / .72); backdrop-filter: blur(5px); }
+  .global-search { width: min(48rem, calc(100% - 2rem)); max-height: min(48rem, calc(100vh - 2rem)); padding: 0; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--bg); color: var(--text); box-shadow: 0 24px 70px rgb(0 0 0 / .28); }
+  .global-search::backdrop { background: rgb(25 24 20 / .72); }
   .global-search-shell { display: grid; max-height: min(48rem, calc(100vh - 2rem)); grid-template-rows: auto auto auto minmax(0, 1fr) auto; }
   .global-search header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line); }
-  .global-search header span { color: var(--amber); font: .75rem var(--font-mono); letter-spacing: .06em; }
-  .global-search h2 { margin: .2rem 0 0; font-size: 1.15rem; }
-  .global-search button { min-width: 2.8rem; min-height: 2.75rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); cursor: pointer; }
-  .global-search-input { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7rem; margin: 1rem 1rem .5rem; padding: .7rem .8rem; border: 1px solid var(--line-strong); border-radius: .7rem; background: var(--surface-strong); }
+  .global-search header span { color: var(--orange); font: .72rem var(--font-mono); letter-spacing: .03em; text-transform: none; }
+  .global-search h2 { margin: .25rem 0 0; font-family: var(--font-display); font-size: 1.45rem; }
+  .global-search button { min-width: 2.8rem; min-height: 2.75rem; border: 1px solid var(--line); border-radius: 2px; background: var(--surface); cursor: pointer; }
+  .global-search-input { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7rem; margin: 1rem 1rem .5rem; padding: .7rem .8rem; border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface-strong); }
   .global-search-input:focus-within { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); }
   .global-search-input input { min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 1rem; }
   .global-search-input kbd { color: var(--text-faint); font: .75rem var(--font-mono); }
   .global-search-status { margin: 0; padding: .35rem 1.1rem .6rem; color: var(--text-faint); font-size: .85rem; }
   .global-search-results { min-height: 10rem; overflow-y: auto; padding: 0 .7rem .7rem; }
-  .global-search-results :global(a) { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: .75rem; border: 1px solid transparent; border-radius: .6rem; }
+  .global-search-results :global(a) { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: .75rem; border: 1px solid transparent; border-radius: 0; }
   .global-search-results :global(a[aria-selected='true']), .global-search-results :global(a:hover) { border-color: var(--line); background: var(--surface); }
   .global-search-results :global(a span) { color: var(--indigo); font: .75rem var(--font-mono); letter-spacing: .04em; }
   .global-search-results :global(a strong), .global-search-results :global(a small) { display: block; }

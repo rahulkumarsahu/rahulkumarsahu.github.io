@@ -1,0 +1,18 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop website homepage direction comp, 16:10 landscape
+Primary request: Design the first viewport and the beginning of the next section for “The System Design Atlas”, an engineering learning website by Rahul Kumar. This is composition option 1, “Editorial split folio”.
+Input image: Rahul system-cartographer illustration is a protected reference asset. Place this exact recognizable illustration as the principal visual plate. Do not redesign Rahul, change his face, clothing, pose, blueprint, or system objects.
+Structure: a slim editorial masthead at top with “The System Design Atlas”; below it a large asymmetric two-column opening. Left column contains the main headline, a concise paragraph and one primary action. Right column gives Rahul’s illustration generous scale, partly crossing a strong vertical editorial rule, with a small factual caption. The lower edge reveals the start of a four-path learning index as clean numbered rows, not cards.
+Text, verbatim where shown:
+“The System Design Atlas”
+“From your first algorithm to the systems behind real products.”
+“I explain DSA, Java and system design with working code, visual dry runs and production tradeoffs.”
+“Choose your path”
+“Rahul Kumar · Backend engineer”
+“01 Learn DSA”
+“02 Become a Java backend engineer”
+“03 Prepare for system design”
+“04 Build the URL shortener”
+Visual world: a precise engineering field manual and independent technical journal. Warm drafting-paper ground, near-black graphite ink, oxidized green, burnt orange and ochre accents. Editorial serif headline, practical sans-serif interface text, restrained monospace for technical metadata. Hairline rules, registration marks and small marginal notes that carry information. Mostly square or gently softened corners.
+Composition: strong hierarchy, lots of calm paper, one dominant portrait plate, visibly a real website rather than a poster. Navigation and CTA must look implementable and accessible.
+Avoid: blue or purple as the dominant theme, gradients, glassmorphism, glowing effects, tiled digital grids, floating rounded cards, excessive pills, dashboard statistics, decorative AI motifs, robots, generic laptop imagery, fake handwriting, distressed illegibility, tiny body text, text embedded into the Rahul illustration, watermarks.

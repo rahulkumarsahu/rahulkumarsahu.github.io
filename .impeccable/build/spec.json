@@ -1,0 +1,1949 @@
+{
+  "tool": "comp-spec",
+  "version": 1,
+  "createdAt": "2026-09-08T19:11:21.548Z",
+  "comp": ".impeccable/mocks/homepage-field-manual-index.png",
+  "warnings": [
+    "region architecture-sketch: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region compass-marker: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+  ],
+  "uncoveredInkCells": [],
+  "compSize": {
+    "width": 1586,
+    "height": 992
+  },
+  "aspect": 1.5988,
+  "orientation": "landscape",
+  "palette": [
+    {
+      "hex": "#f7f3e7",
+      "coverage": 0.8907
+    },
+    {
+      "hex": "#151414",
+      "coverage": 0.0413
+    },
+    {
+      "hex": "#cac6c2",
+      "coverage": 0.0342
+    },
+    {
+      "hex": "#f4c6a0",
+      "coverage": 0.0178
+    },
+    {
+      "hex": "#6f6e6b",
+      "coverage": 0.016
+    }
+  ],
+  "bands": [
+    {
+      "y": 0.0375,
+      "strength": 0.4167
+    },
+    {
+      "y": 0.1875,
+      "strength": 0.5002
+    },
+    {
+      "y": 0.25,
+      "strength": 0.3199
+    },
+    {
+      "y": 0.2875,
+      "strength": 0.2862
+    },
+    {
+      "y": 0.35,
+      "strength": 0.3056
+    },
+    {
+      "y": 0.4,
+      "strength": 0.3616
+    },
+    {
+      "y": 0.425,
+      "strength": 0.317
+    },
+    {
+      "y": 0.45,
+      "strength": 0.2581
+    },
+    {
+      "y": 0.525,
+      "strength": 0.3992
+    },
+    {
+      "y": 0.5875,
+      "strength": 0.2485
+    },
+    {
+      "y": 0.825,
+      "strength": 0.2926
+    },
+    {
+      "y": 0.9,
+      "strength": 0.5769
+    }
+  ],
+  "regions": [
+    {
+      "id": "paper-grain",
+      "kind": "texture",
+      "note": "subtle warm off-white paper grain without interface ink",
+      "grid": "E6:E6",
+      "box": {
+        "x": 0.4,
+        "y": 0.6,
+        "w": 0.1,
+        "h": 0.1
+      },
+      "px": {
+        "x": 634,
+        "y": 595,
+        "w": 159,
+        "h": 99
+      },
+      "aspect": 1.6061,
+      "palette": [
+        {
+          "hex": "#f7f5e7",
+          "coverage": 0.9251
+        },
+        {
+          "hex": "#0a3aa6",
+          "coverage": 0.0282
+        },
+        {
+          "hex": "#bec6d3",
+          "coverage": 0.0174
+        },
+        {
+          "hex": "#265abc",
+          "coverage": 0.0156
+        },
+        {
+          "hex": "#09091b",
+          "coverage": 0.0138
+        }
+      ],
+      "detail": {
+        "energy": 11.7096
+      },
+      "medium": "raster",
+      "plate": "assets/plates/paper-grain.png",
+      "text": null
+    },
+    {
+      "id": "masthead-rule",
+      "kind": "chrome",
+      "note": "slim paper masthead with one graphite bottom rule",
+      "grid": "A0:J0",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1586,
+        "h": 99
+      },
+      "aspect": 16.0202,
+      "palette": [
+        {
+          "hex": "#f7f6e8",
+          "coverage": 0.9512
+        },
+        {
+          "hex": "#1d1618",
+          "coverage": 0.0192
+        },
+        {
+          "hex": "#b3b2ac",
+          "coverage": 0.0164
+        },
+        {
+          "hex": "#797974",
+          "coverage": 0.0088
+        },
+        {
+          "hex": "#484848",
+          "coverage": 0.0044
+        }
+      ],
+      "detail": {
+        "energy": 19.7526
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "brand-name",
+      "kind": "text",
+      "note": "The System Design Atlas in dark editorial serif",
+      "grid": "A0:B0",
+      "coverBox": {
+        "x": 0,
+        "y": 0,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0,
+        "y": 0.006,
+        "w": 0.1999,
+        "h": 0.0605
+      },
+      "px": {
+        "x": 0,
+        "y": 6,
+        "w": 317,
+        "h": 60
+      },
+      "aspect": 5.2833,
+      "palette": [
+        {
+          "hex": "#f4f1e6",
+          "coverage": 0.8692
+        },
+        {
+          "hex": "#131415",
+          "coverage": 0.059
+        },
+        {
+          "hex": "#bbbab4",
+          "coverage": 0.0281
+        },
+        {
+          "hex": "#84847f",
+          "coverage": 0.0262
+        },
+        {
+          "hex": "#494846",
+          "coverage": 0.0176
+        }
+      ],
+      "detail": {
+        "energy": 50.5276
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 16,
+          "capHeightPx": 19.8,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6054,
+          "advTall": 0.6811,
+          "advX": 0.5802,
+          "gap": 0.0505,
+          "xRatio": 0.6719,
+          "stemW": 0.1929,
+          "contrast": 1.892,
+          "serif": 1.4192,
+          "densTall": 0.5389,
+          "densX": 0.5805,
+          "weight": 0.5389
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "brand-author",
+      "kind": "text",
+      "note": "by Rahul Kumar in compact muted serif",
+      "grid": "C0:D0",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.1999,
+        "y": 0.0181,
+        "w": 0.1702,
+        "h": 0.0484
+      },
+      "px": {
+        "x": 317,
+        "y": 18,
+        "w": 270,
+        "h": 48
+      },
+      "aspect": 5.625,
+      "palette": [
+        {
+          "hex": "#f7f6e8",
+          "coverage": 0.9667
+        },
+        {
+          "hex": "#6d6d6c",
+          "coverage": 0.0181
+        },
+        {
+          "hex": "#bbb8b8",
+          "coverage": 0.0083
+        },
+        {
+          "hex": "#9a988c",
+          "coverage": 0.0056
+        },
+        {
+          "hex": "#484840",
+          "coverage": 0.0014
+        }
+      ],
+      "detail": {
+        "energy": 19.9609
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 12.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6233,
+          "advTall": 0.6911,
+          "advX": 0.6233,
+          "gap": 0.0407,
+          "xRatio": 0.6893,
+          "stemW": 0.1888,
+          "contrast": 1.377,
+          "serif": null,
+          "densTall": 0.5815,
+          "densX": 0.6239,
+          "weight": 0.5815
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "primary-navigation",
+      "kind": "control",
+      "note": "four simple text navigation links",
+      "grid": "E0:G0",
+      "coverBox": {
+        "x": 0.4,
+        "y": 0,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.5927,
+        "y": 0.0484,
+        "w": 0.1072,
+        "h": 0.0514
+      },
+      "px": {
+        "x": 940,
+        "y": 48,
+        "w": 170,
+        "h": 51
+      },
+      "aspect": 3.3333,
+      "palette": [
+        {
+          "hex": "#f6f5e7",
+          "coverage": 0.6602
+        },
+        {
+          "hex": "#25171b",
+          "coverage": 0.2409
+        },
+        {
+          "hex": "#3d2012",
+          "coverage": 0.0557
+        },
+        {
+          "hex": "#76360a",
+          "coverage": 0.0216
+        },
+        {
+          "hex": "#3c3544",
+          "coverage": 0.0216
+        }
+      ],
+      "detail": {
+        "energy": 17.4088
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "search-control",
+      "kind": "control",
+      "note": "quiet search control aligned to masthead",
+      "grid": "H0:I0",
+      "coverBox": {
+        "x": 0.7,
+        "y": 0,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.7377,
+        "y": 0.0121,
+        "w": 0.0946,
+        "h": 0.0544
+      },
+      "px": {
+        "x": 1170,
+        "y": 12,
+        "w": 150,
+        "h": 54
+      },
+      "aspect": 2.7778,
+      "palette": [
+        {
+          "hex": "#f8f7e8",
+          "coverage": 0.9456
+        },
+        {
+          "hex": "#989993",
+          "coverage": 0.0244
+        },
+        {
+          "hex": "#cecdc3",
+          "coverage": 0.0111
+        },
+        {
+          "hex": "#6a6f6c",
+          "coverage": 0.01
+        },
+        {
+          "hex": "#3a3a3a",
+          "coverage": 0.0089
+        }
+      ],
+      "detail": {
+        "energy": 10.6736
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-rail",
+      "kind": "chrome",
+      "note": "left handbook index rail separated by graphite rules",
+      "grid": "A1:B7",
+      "box": {
+        "x": 0,
+        "y": 0.1,
+        "w": 0.2,
+        "h": 0.7
+      },
+      "px": {
+        "x": 0,
+        "y": 99,
+        "w": 317,
+        "h": 694
+      },
+      "aspect": 0.4568,
+      "palette": [
+        {
+          "hex": "#f7f5e8",
+          "coverage": 0.9295
+        },
+        {
+          "hex": "#c6c4bf",
+          "coverage": 0.0342
+        },
+        {
+          "hex": "#5d5b5a",
+          "coverage": 0.019
+        },
+        {
+          "hex": "#8a8986",
+          "coverage": 0.01
+        },
+        {
+          "hex": "#c74813",
+          "coverage": 0.0072
+        }
+      ],
+      "detail": {
+        "energy": 16.9597
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-dsa",
+      "kind": "control",
+      "note": "active chapter 01 DSA from the beginning in burnt orange",
+      "grid": "A1:B2",
+      "coverBox": {
+        "x": 0,
+        "y": 0.1,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "box": {
+        "x": 0.0113,
+        "y": 0.0998,
+        "w": 0.1173,
+        "h": 0.127
+      },
+      "px": {
+        "x": 18,
+        "y": 99,
+        "w": 186,
+        "h": 126
+      },
+      "aspect": 1.4762,
+      "palette": [
+        {
+          "hex": "#f8f7e9",
+          "coverage": 0.8818
+        },
+        {
+          "hex": "#c74712",
+          "coverage": 0.0657
+        },
+        {
+          "hex": "#e2b292",
+          "coverage": 0.0215
+        },
+        {
+          "hex": "#c96634",
+          "coverage": 0.0156
+        },
+        {
+          "hex": "#f3d9c1",
+          "coverage": 0.0153
+        }
+      ],
+      "detail": {
+        "energy": 19.1156
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-java",
+      "kind": "control",
+      "note": "chapter 02 Java backend engineering",
+      "grid": "A2:B3",
+      "coverBox": {
+        "x": 0,
+        "y": 0.2,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "box": {
+        "x": 0.0265,
+        "y": 0.248,
+        "w": 0.0984,
+        "h": 0.1089
+      },
+      "px": {
+        "x": 42,
+        "y": 246,
+        "w": 156,
+        "h": 108
+      },
+      "aspect": 1.4444,
+      "palette": [
+        {
+          "hex": "#f7f6e9",
+          "coverage": 0.8316
+        },
+        {
+          "hex": "#5b5958",
+          "coverage": 0.0732
+        },
+        {
+          "hex": "#bdbbb6",
+          "coverage": 0.0502
+        },
+        {
+          "hex": "#898884",
+          "coverage": 0.0433
+        },
+        {
+          "hex": "#4d4858",
+          "coverage": 0.0016
+        }
+      ],
+      "detail": {
+        "energy": 22.2003
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-system-design",
+      "kind": "control",
+      "note": "chapter 03 System design interviews",
+      "grid": "A4:B4",
+      "coverBox": {
+        "x": 0,
+        "y": 0.4,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.0265,
+        "y": 0.4002,
+        "w": 0.1021,
+        "h": 0.0968
+      },
+      "px": {
+        "x": 42,
+        "y": 397,
+        "w": 162,
+        "h": 96
+      },
+      "aspect": 1.6875,
+      "palette": [
+        {
+          "hex": "#f7f5e9",
+          "coverage": 0.8304
+        },
+        {
+          "hex": "#626160",
+          "coverage": 0.0955
+        },
+        {
+          "hex": "#9f9e9a",
+          "coverage": 0.044
+        },
+        {
+          "hex": "#d1ccc4",
+          "coverage": 0.0301
+        }
+      ],
+      "detail": {
+        "energy": 23.0621
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-project",
+      "kind": "control",
+      "note": "chapter 04 Production URL shortener",
+      "grid": "A5:B6",
+      "coverBox": {
+        "x": 0,
+        "y": 0.5,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "box": {
+        "x": 0.0265,
+        "y": 0.5302,
+        "w": 0.1059,
+        "h": 0.1089
+      },
+      "px": {
+        "x": 42,
+        "y": 526,
+        "w": 168,
+        "h": 108
+      },
+      "aspect": 1.5556,
+      "palette": [
+        {
+          "hex": "#f7f5e9",
+          "coverage": 0.8586
+        },
+        {
+          "hex": "#60605f",
+          "coverage": 0.0796
+        },
+        {
+          "hex": "#b9b7b3",
+          "coverage": 0.0358
+        },
+        {
+          "hex": "#8f8c87",
+          "coverage": 0.0249
+        },
+        {
+          "hex": "#483838",
+          "coverage": 0.001
+        }
+      ],
+      "detail": {
+        "energy": 20.4654
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "chapter-caption",
+      "kind": "text",
+      "note": "Four paths. A deeper you. compact supporting label",
+      "grid": "A6:B7",
+      "coverBox": {
+        "x": 0,
+        "y": 0.6,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "box": {
+        "x": 0.0303,
+        "y": 0.5998,
+        "w": 0.1021,
+        "h": 0.0363
+      },
+      "px": {
+        "x": 48,
+        "y": 595,
+        "w": 162,
+        "h": 36
+      },
+      "aspect": 4.5,
+      "palette": [
+        {
+          "hex": "#f6f4e9",
+          "coverage": 0.8194
+        },
+        {
+          "hex": "#5a5959",
+          "coverage": 0.0694
+        },
+        {
+          "hex": "#b7b5b0",
+          "coverage": 0.0679
+        },
+        {
+          "hex": "#8a8987",
+          "coverage": 0.0401
+        },
+        {
+          "hex": "#504040",
+          "coverage": 0.0031
+        }
+      ],
+      "detail": {
+        "energy": 28.4735
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 12,
+          "capHeightPx": 17.9,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5863,
+          "advTall": 0.684,
+          "advX": 0.5584,
+          "gap": 0.0838,
+          "xRatio": 0.6827,
+          "stemW": 0.1831,
+          "contrast": 1.7029,
+          "serif": null,
+          "densTall": 0.5103,
+          "densX": 0.5502,
+          "weight": 0.5103
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "hero-kicker",
+      "kind": "text",
+      "note": "An engineering learning workshop in compact letterspaced type",
+      "grid": "C1:F1",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0.1,
+        "w": 0.4,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.3285,
+        "y": 0.1482,
+        "w": 0.227,
+        "h": 0.0514
+      },
+      "px": {
+        "x": 521,
+        "y": 147,
+        "w": 360,
+        "h": 51
+      },
+      "aspect": 7.0588,
+      "palette": [
+        {
+          "hex": "#f8f7e9",
+          "coverage": 0.7857
+        },
+        {
+          "hex": "#191919",
+          "coverage": 0.195
+        },
+        {
+          "hex": "#454543",
+          "coverage": 0.0099
+        },
+        {
+          "hex": "#999997",
+          "coverage": 0.0069
+        },
+        {
+          "hex": "#6e6e6e",
+          "coverage": 0.0025
+        }
+      ],
+      "detail": {
+        "energy": 35.979
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 7,
+          "capHeightPx": 41.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.9418,
+          "advTall": 1.1591,
+          "advX": 0.9176,
+          "gap": 0.0966,
+          "xRatio": 0.3246,
+          "stemW": 0.3221,
+          "contrast": 1.6859,
+          "serif": null,
+          "densTall": 0.557,
+          "densX": 0.6184,
+          "weight": 0.557
+        },
+        "widthClass": "wide",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "hero-headline",
+      "kind": "text",
+      "note": "The System Design Atlas as the dominant two-line editorial serif headline",
+      "grid": "C1:F3",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0.1,
+        "w": 0.4,
+        "h": 0.3
+      },
+      "box": {
+        "x": 0.1999,
+        "y": 0.1431,
+        "w": 0.3997,
+        "h": 0.2571
+      },
+      "px": {
+        "x": 317,
+        "y": 142,
+        "w": 634,
+        "h": 255
+      },
+      "aspect": 2.4863,
+      "palette": [
+        {
+          "hex": "#f8f7ea",
+          "coverage": 0.7129
+        },
+        {
+          "hex": "#151515",
+          "coverage": 0.2463
+        },
+        {
+          "hex": "#51514e",
+          "coverage": 0.0173
+        },
+        {
+          "hex": "#c3c3bc",
+          "coverage": 0.0124
+        },
+        {
+          "hex": "#888783",
+          "coverage": 0.0111
+        }
+      ],
+      "detail": {
+        "energy": 60.6435
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 13,
+          "capHeightPx": 88.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.7399,
+          "advTall": 0.8902,
+          "advX": 0.6012,
+          "gap": 0.0222,
+          "xRatio": 0.6759,
+          "stemW": 0.1871,
+          "contrast": 2.4795,
+          "serif": 1.7021,
+          "densTall": 0.4783,
+          "densX": 0.5985,
+          "weight": 0.4783
+        },
+        "widthClass": "normal",
+        "weightClass": "regular",
+        "chosen": {
+          "family": "Old Standard TT",
+          "weight": 700,
+          "fontSizePx": 126,
+          "source": "catalog",
+          "estimatedSize": true,
+          "stamp": "36a33114a453"
+        }
+      }
+    },
+    {
+      "id": "hero-subheadline",
+      "kind": "text",
+      "note": "Learn the code. Understand the system. in medium editorial serif",
+      "grid": "C4:F4",
+      "box": {
+        "x": 0.2,
+        "y": 0.4,
+        "w": 0.4,
+        "h": 0.1
+      },
+      "px": {
+        "x": 317,
+        "y": 397,
+        "w": 634,
+        "h": 99
+      },
+      "aspect": 6.404,
+      "palette": [
+        {
+          "hex": "#f7f7ea",
+          "coverage": 0.779
+        },
+        {
+          "hex": "#eec2a1",
+          "coverage": 0.0764
+        },
+        {
+          "hex": "#c1c0bc",
+          "coverage": 0.0504
+        },
+        {
+          "hex": "#0d0d0d",
+          "coverage": 0.0488
+        },
+        {
+          "hex": "#bc846a",
+          "coverage": 0.0454
+        }
+      ],
+      "detail": {
+        "energy": 61.3806
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 50,
+          "capHeightPx": 17.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6988,
+          "advTall": 0.8236,
+          "advX": 0.6988,
+          "gap": 0.1023,
+          "xRatio": 0.7512,
+          "stemW": 0.1988,
+          "contrast": 1.683,
+          "serif": 1.7933,
+          "densTall": 0.4812,
+          "densX": 0.5013,
+          "weight": 0.4812
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "hero-intro",
+      "kind": "text",
+      "note": "short practical description in readable sans-serif",
+      "grid": "C4:F5",
+      "box": {
+        "x": 0.2,
+        "y": 0.4,
+        "w": 0.4,
+        "h": 0.2
+      },
+      "px": {
+        "x": 317,
+        "y": 397,
+        "w": 634,
+        "h": 198
+      },
+      "aspect": 3.202,
+      "palette": [
+        {
+          "hex": "#f8f7e9",
+          "coverage": 0.7375
+        },
+        {
+          "hex": "#c84816",
+          "coverage": 0.1295
+        },
+        {
+          "hex": "#ea8551",
+          "coverage": 0.0587
+        },
+        {
+          "hex": "#eec4a4",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#0e0d0c",
+          "coverage": 0.0315
+        }
+      ],
+      "detail": {
+        "energy": 44.1469
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 24,
+          "capHeightPx": 20,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.836,
+          "advTall": 1.0481,
+          "advX": 0.7237,
+          "gap": 0.0499,
+          "xRatio": 0.8299,
+          "stemW": 0.2088,
+          "contrast": 1.6714,
+          "serif": 1.8392,
+          "densTall": 0.4841,
+          "densX": 0.5268,
+          "weight": 0.4841
+        },
+        "widthClass": "wide",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "hero-action",
+      "kind": "control",
+      "note": "single solid burnt-orange Start with a goal button",
+      "grid": "C5:D5",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0.5,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.1999,
+        "y": 0.5181,
+        "w": 0.174,
+        "h": 0.0726
+      },
+      "px": {
+        "x": 317,
+        "y": 514,
+        "w": 276,
+        "h": 72
+      },
+      "aspect": 3.8333,
+      "palette": [
+        {
+          "hex": "#c84816",
+          "coverage": 0.7001
+        },
+        {
+          "hex": "#f8f5e8",
+          "coverage": 0.2081
+        },
+        {
+          "hex": "#e29970",
+          "coverage": 0.0552
+        },
+        {
+          "hex": "#efc8ad",
+          "coverage": 0.0256
+        },
+        {
+          "hex": "#d16f41",
+          "coverage": 0.011
+        }
+      ],
+      "detail": {
+        "energy": 28.0654
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "hero-motto",
+      "kind": "text",
+      "note": "Same curiosity. Bigger systems. compact margin note",
+      "grid": "C6:D6",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0.6,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.2037,
+        "y": 0.5998,
+        "w": 0.1021,
+        "h": 0.0423
+      },
+      "px": {
+        "x": 323,
+        "y": 595,
+        "w": 162,
+        "h": 42
+      },
+      "aspect": 3.8571,
+      "palette": [
+        {
+          "hex": "#f7f6ea",
+          "coverage": 0.8479
+        },
+        {
+          "hex": "#959791",
+          "coverage": 0.0714
+        },
+        {
+          "hex": "#c8c8c3",
+          "coverage": 0.0569
+        },
+        {
+          "hex": "#6a6e6a",
+          "coverage": 0.0238
+        }
+      ],
+      "detail": {
+        "energy": 24.3015
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 26,
+          "capHeightPx": 8.9,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.7705,
+          "advTall": 0.7705,
+          "advX": null,
+          "gap": 0.3714,
+          "xRatio": null,
+          "stemW": 0.233,
+          "contrast": 1.2425,
+          "serif": 0.5583,
+          "densTall": 0.5829,
+          "densX": null,
+          "weight": 0.5829
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "hero-credit",
+      "kind": "text",
+      "note": "Rahul Kumar, engineer, writer, lifelong learner credit line",
+      "grid": "C7:F7",
+      "coverBox": {
+        "x": 0.2,
+        "y": 0.7,
+        "w": 0.4,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.1999,
+        "y": 0.6996,
+        "w": 0.2686,
+        "h": 0.0363
+      },
+      "px": {
+        "x": 317,
+        "y": 694,
+        "w": 426,
+        "h": 36
+      },
+      "aspect": 11.8333,
+      "palette": [
+        {
+          "hex": "#f7f4ea",
+          "coverage": 0.9184
+        },
+        {
+          "hex": "#afada8",
+          "coverage": 0.0528
+        },
+        {
+          "hex": "#848280",
+          "coverage": 0.0211
+        },
+        {
+          "hex": "#62615e",
+          "coverage": 0.0076
+        }
+      ],
+      "detail": {
+        "energy": 25.1572
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 41,
+          "capHeightPx": 8.3,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.6918,
+          "advTall": 0.6918,
+          "advX": null,
+          "gap": 0.1805,
+          "xRatio": null,
+          "stemW": 0.2478,
+          "contrast": 1.2939,
+          "serif": 0.8581,
+          "densTall": 0.6788,
+          "densX": null,
+          "weight": 0.6788
+        },
+        "widthClass": "normal",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "rahul-system-portrait",
+      "kind": "plate",
+      "note": "protected Rahul system-cartographer cutout with blueprint and system objects",
+      "grid": "E0:I7",
+      "box": {
+        "x": 0.4,
+        "y": 0,
+        "w": 0.5,
+        "h": 0.8
+      },
+      "px": {
+        "x": 634,
+        "y": 0,
+        "w": 793,
+        "h": 794
+      },
+      "aspect": 0.9987,
+      "palette": [
+        {
+          "hex": "#f7f4e6",
+          "coverage": 0.8003
+        },
+        {
+          "hex": "#151214",
+          "coverage": 0.0594
+        },
+        {
+          "hex": "#d19476",
+          "coverage": 0.0573
+        },
+        {
+          "hex": "#f4c6a0",
+          "coverage": 0.0519
+        },
+        {
+          "hex": "#c7c7c6",
+          "coverage": 0.0312
+        }
+      ],
+      "detail": {
+        "energy": 42.7528
+      },
+      "medium": "raster",
+      "plate": "assets/plates/rahul-system-portrait.png",
+      "text": null
+    },
+    {
+      "id": "architecture-sketch",
+      "kind": "chrome",
+      "note": "small semantic load balancer architecture sketch with users, app servers and database",
+      "grid": "I1:J3",
+      "codeDrawn": true,
+      "box": {
+        "x": 0.8,
+        "y": 0.1,
+        "w": 0.2,
+        "h": 0.3
+      },
+      "px": {
+        "x": 1269,
+        "y": 99,
+        "w": 317,
+        "h": 298
+      },
+      "aspect": 1.0638,
+      "palette": [
+        {
+          "hex": "#f6f2e7",
+          "coverage": 0.9461
+        },
+        {
+          "hex": "#c6c3bd",
+          "coverage": 0.0226
+        },
+        {
+          "hex": "#84837f",
+          "coverage": 0.0173
+        },
+        {
+          "hex": "#edbe98",
+          "coverage": 0.0085
+        },
+        {
+          "hex": "#cc8c6d",
+          "coverage": 0.0056
+        }
+      ],
+      "detail": {
+        "energy": 18.3487
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "right-margin-note",
+      "kind": "text",
+      "note": "short factual Rahul note in an informal annotation treatment",
+      "grid": "I4:J4",
+      "coverBox": {
+        "x": 0.8,
+        "y": 0.4,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.8001,
+        "y": 0.4002,
+        "w": 0.0719,
+        "h": 0.0998
+      },
+      "px": {
+        "x": 1269,
+        "y": 397,
+        "w": 114,
+        "h": 99
+      },
+      "aspect": 1.1515,
+      "palette": [
+        {
+          "hex": "#f8f3e5",
+          "coverage": 0.2846
+        },
+        {
+          "hex": "#f3caa5",
+          "coverage": 0.2302
+        },
+        {
+          "hex": "#cc9173",
+          "coverage": 0.1939
+        },
+        {
+          "hex": "#f7aa37",
+          "coverage": 0.1633
+        },
+        {
+          "hex": "#dd784b",
+          "coverage": 0.1281
+        }
+      ],
+      "detail": {
+        "energy": 23.7222
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 4,
+          "capHeightPx": 46.4,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 1.1771,
+          "advTall": 1.4207,
+          "advX": null,
+          "gap": 0.2948,
+          "xRatio": null,
+          "stemW": 0.0332,
+          "contrast": 0.9364,
+          "serif": null,
+          "densTall": 0.4145,
+          "densX": null,
+          "weight": 0.4145
+        },
+        "widthClass": "wide",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "compass-marker",
+      "kind": "chrome",
+      "note": "small semantic compass and Explore Learn Build Repeat legend",
+      "grid": "I5:J6",
+      "codeDrawn": true,
+      "box": {
+        "x": 0.8,
+        "y": 0.5,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "px": {
+        "x": 1269,
+        "y": 496,
+        "w": 317,
+        "h": 198
+      },
+      "aspect": 1.601,
+      "palette": [
+        {
+          "hex": "#f6efe4",
+          "coverage": 0.8776
+        },
+        {
+          "hex": "#cf6f49",
+          "coverage": 0.0589
+        },
+        {
+          "hex": "#c8cbd5",
+          "coverage": 0.0243
+        },
+        {
+          "hex": "#7a7674",
+          "coverage": 0.0212
+        },
+        {
+          "hex": "#b2afaa",
+          "coverage": 0.018
+        }
+      ],
+      "detail": {
+        "energy": 26.7668
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "recent-band-rule",
+      "kind": "chrome",
+      "note": "recent writing section separated by strong horizontal rule and three editorial columns",
+      "grid": "A8:J9",
+      "box": {
+        "x": 0,
+        "y": 0.8,
+        "w": 1,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 794,
+        "w": 1586,
+        "h": 198
+      },
+      "aspect": 8.0101,
+      "palette": [
+        {
+          "hex": "#f6f0e7",
+          "coverage": 0.9145
+        },
+        {
+          "hex": "#b5b1ab",
+          "coverage": 0.0384
+        },
+        {
+          "hex": "#716f6a",
+          "coverage": 0.0267
+        },
+        {
+          "hex": "#0d0d0d",
+          "coverage": 0.0174
+        },
+        {
+          "hex": "#3e3e3b",
+          "coverage": 0.003
+        }
+      ],
+      "detail": {
+        "energy": 24.8153
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "recent-heading",
+      "kind": "text",
+      "note": "Recently published section heading",
+      "grid": "A8:C8",
+      "coverBox": {
+        "x": 0,
+        "y": 0.8,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.0189,
+        "y": 0.8004,
+        "w": 0.2812,
+        "h": 0.0484
+      },
+      "px": {
+        "x": 30,
+        "y": 794,
+        "w": 446,
+        "h": 48
+      },
+      "aspect": 9.2917,
+      "palette": [
+        {
+          "hex": "#f7f5e9",
+          "coverage": 0.847
+        },
+        {
+          "hex": "#0c0c0c",
+          "coverage": 0.0845
+        },
+        {
+          "hex": "#adaea8",
+          "coverage": 0.0359
+        },
+        {
+          "hex": "#686765",
+          "coverage": 0.0224
+        },
+        {
+          "hex": "#3f3d3d",
+          "coverage": 0.0101
+        }
+      ],
+      "detail": {
+        "energy": 60.3641
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 13,
+          "capHeightPx": 24.5,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6327,
+          "advTall": 0.9388,
+          "advX": 0.5102,
+          "gap": 0.0408,
+          "xRatio": 0.6939,
+          "stemW": 0.1915,
+          "contrast": 2.3338,
+          "serif": 0.6584,
+          "densTall": 0.5064,
+          "densX": 0.5134,
+          "weight": 0.5064
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "recent-caption",
+      "kind": "text",
+      "note": "Fresh writing for practical engineers supporting label",
+      "grid": "H8:J8",
+      "coverBox": {
+        "x": 0.7,
+        "y": 0.8,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.7301,
+        "y": 0.8609,
+        "w": 0.14,
+        "h": 0.0393
+      },
+      "px": {
+        "x": 1158,
+        "y": 854,
+        "w": 222,
+        "h": 39
+      },
+      "aspect": 5.6923,
+      "palette": [
+        {
+          "hex": "#f7f2e9",
+          "coverage": 0.8742
+        },
+        {
+          "hex": "#707c71",
+          "coverage": 0.0577
+        },
+        {
+          "hex": "#515552",
+          "coverage": 0.0294
+        },
+        {
+          "hex": "#a8a9a3",
+          "coverage": 0.0241
+        },
+        {
+          "hex": "#cad0c6",
+          "coverage": 0.0147
+        }
+      ],
+      "detail": {
+        "energy": 28.3023
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 22,
+          "capHeightPx": 8.4,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.7568,
+          "advTall": 0.7568,
+          "advX": null,
+          "gap": 0.1992,
+          "xRatio": null,
+          "stemW": 0.2287,
+          "contrast": 1.2296,
+          "serif": 0.2514,
+          "densTall": 0.6064,
+          "densX": null,
+          "weight": 0.6064
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "recent-feature-image",
+      "kind": "image",
+      "note": "article-specific Move Zeroes educational banner crop",
+      "grid": "A9:B9",
+      "box": {
+        "x": 0,
+        "y": 0.9,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 893,
+        "w": 317,
+        "h": 99
+      },
+      "aspect": 3.202,
+      "palette": [
+        {
+          "hex": "#f1e9df",
+          "coverage": 0.8011
+        },
+        {
+          "hex": "#716d65",
+          "coverage": 0.0956
+        },
+        {
+          "hex": "#b3ada0",
+          "coverage": 0.0793
+        },
+        {
+          "hex": "#111111",
+          "coverage": 0.0126
+        },
+        {
+          "hex": "#3f3b34",
+          "coverage": 0.0114
+        }
+      ],
+      "detail": {
+        "energy": 29.0153
+      },
+      "medium": "raster",
+      "plate": "assets/plates/recent-feature-image.png",
+      "text": null
+    },
+    {
+      "id": "recent-article-one",
+      "kind": "text",
+      "note": "Move Zeroes article metadata, title and summary",
+      "grid": "B9:D9",
+      "coverBox": {
+        "x": 0.1,
+        "y": 0.9,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.1381,
+        "y": 0.9002,
+        "w": 0.227,
+        "h": 0.0786
+      },
+      "px": {
+        "x": 219,
+        "y": 893,
+        "w": 360,
+        "h": 78
+      },
+      "aspect": 4.6154,
+      "palette": [
+        {
+          "hex": "#f7f1e8",
+          "coverage": 0.8427
+        },
+        {
+          "hex": "#767471",
+          "coverage": 0.0592
+        },
+        {
+          "hex": "#b3b2ae",
+          "coverage": 0.055
+        },
+        {
+          "hex": "#0f0f0f",
+          "coverage": 0.0364
+        },
+        {
+          "hex": "#3b3b38",
+          "coverage": 0.0068
+        }
+      ],
+      "detail": {
+        "energy": 47.4234
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 60,
+          "capHeightPx": 13.6,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5336,
+          "advTall": 0.5538,
+          "advX": null,
+          "gap": 0.1524,
+          "xRatio": null,
+          "stemW": 0.1243,
+          "contrast": 1.2565,
+          "serif": 1.1913,
+          "densTall": 0.6063,
+          "densX": null,
+          "weight": 0.6063
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "recent-article-two",
+      "kind": "text",
+      "note": "Recursion in Java article metadata, title and summary",
+      "grid": "E9:G9",
+      "coverBox": {
+        "x": 0.4,
+        "y": 0.9,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.4376,
+        "y": 0.9002,
+        "w": 0.1929,
+        "h": 0.0786
+      },
+      "px": {
+        "x": 694,
+        "y": 893,
+        "w": 306,
+        "h": 78
+      },
+      "aspect": 3.9231,
+      "palette": [
+        {
+          "hex": "#f7f2e9",
+          "coverage": 0.85
+        },
+        {
+          "hex": "#6f6e6c",
+          "coverage": 0.0484
+        },
+        {
+          "hex": "#cac7c2",
+          "coverage": 0.0415
+        },
+        {
+          "hex": "#0d0d0c",
+          "coverage": 0.0335
+        },
+        {
+          "hex": "#a09d97",
+          "coverage": 0.0267
+        }
+      ],
+      "detail": {
+        "energy": 47.5764
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 3,
+          "glyphs": 61,
+          "capHeightPx": 13.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5316,
+          "advTall": 0.5314,
+          "advX": 0.5319,
+          "gap": 0.1518,
+          "xRatio": 0.7194,
+          "stemW": 0.1168,
+          "contrast": 1.2232,
+          "serif": 1.1182,
+          "densTall": 0.5744,
+          "densX": 0.4284,
+          "weight": 0.5744
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "recent-article-three",
+      "kind": "text",
+      "note": "URL Shortener System Design article metadata, title and summary",
+      "grid": "H9:J9",
+      "coverBox": {
+        "x": 0.7,
+        "y": 0.9,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.7301,
+        "y": 0.9002,
+        "w": 0.2119,
+        "h": 0.0726
+      },
+      "px": {
+        "x": 1158,
+        "y": 893,
+        "w": 336,
+        "h": 72
+      },
+      "aspect": 4.6667,
+      "palette": [
+        {
+          "hex": "#f6efe9",
+          "coverage": 0.7881
+        },
+        {
+          "hex": "#b4b3ae",
+          "coverage": 0.0734
+        },
+        {
+          "hex": "#71706d",
+          "coverage": 0.0681
+        },
+        {
+          "hex": "#0d0d0c",
+          "coverage": 0.0607
+        },
+        {
+          "hex": "#413e3c",
+          "coverage": 0.0097
+        }
+      ],
+      "detail": {
+        "energy": 69.2637
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 3,
+          "glyphs": 87,
+          "capHeightPx": 13.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5351,
+          "advTall": 0.5535,
+          "advX": 0.5351,
+          "gap": 0.1529,
+          "xRatio": 0.7009,
+          "stemW": 0.1124,
+          "contrast": 1.1834,
+          "serif": 1.0153,
+          "densTall": 0.5698,
+          "densX": 0.4065,
+          "weight": 0.5698
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    }
+  ]
+}

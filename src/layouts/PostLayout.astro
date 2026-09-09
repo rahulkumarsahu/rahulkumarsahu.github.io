@@ -172,7 +172,7 @@ const jsonLd = {
       </header>
 
       <div class="article-divider">
-        <span>FIELD NOTE / {postSlug.toUpperCase().replaceAll('-', '_')}</span>
+        <span>Reading note / {postSlug.replaceAll('-', ' ')}</span>
         <i></i>
       </div>
 
@@ -184,7 +184,7 @@ const jsonLd = {
             <>
               <details class="practice-solution" data-practice-solution>
                 <summary>
-                  <span>WHEN YOU ARE READY</span>
+                  <span>When you are ready</span>
                   <strong>Show the explanation and complete solution</strong>
                   <small>Your original article, Java solution, complexity analysis and dry run are preserved here.</small>
                 </summary>
@@ -216,7 +216,7 @@ const jsonLd = {
         </div>
       ) : (
         <div class="article-empty-state">
-          <span>MAP IN PROGRESS</span>
+          <span>Article in progress</span>
           <h2>This field note is being charted.</h2>
           <p>The original placeholder has been preserved. The full lesson will be developed during the content phase.</p>
           <a class="button button-secondary" href={`/topics/${topic.slug}/`}>Explore {topic.shortTitle}</a>
@@ -228,7 +228,7 @@ const jsonLd = {
 
       <footer class="article-end">
         <div>
-          <span>END OF FIELD NOTE</span>
+          <span>End of article</span>
           <p>Found something unclear? Connect with Rahul and help make the map better.</p>
         </div>
         <a href={SITE.linkedin}>Discuss on LinkedIn ↗</a>
@@ -255,7 +255,7 @@ const jsonLd = {
     <aside class="article-aside">
       <div class="toc-card">
         <div class="toc-heading">
-          <span>ON THIS MAP</span>
+          <span>On this page</span>
           <span>{String(tocHeadings.length).padStart(2, '0')}</span>
         </div>
         {tocHeadings.length > 0 ? (
@@ -269,7 +269,7 @@ const jsonLd = {
         )}
       </div>
       <div class="aside-note">
-        <span>ATLAS PRINCIPLE</span>
+        <span>Atlas principle</span>
         <p>Understand the invariant before memorizing the implementation.</p>
       </div>
     </aside>
@@ -279,7 +279,7 @@ const jsonLd = {
     <section class="related-section section-wrap">
       <div class="section-heading section-heading-notes">
         <div>
-          <p class="section-index">CONTINUE EXPLORING</p>
+          <p class="section-index">Continue exploring</p>
           <h2>Related field notes.</h2>
         </div>
       </div>

@@ -24,22 +24,22 @@ const isLearningPath = currentPath === '/topics/' || (currentPath.startsWith('/t
 
     <nav class="desktop-nav" aria-label="Primary navigation">
       <details class:list={['desktop-learn-menu', { 'is-current': isLearningPath }] }>
-        <summary>Explore <span aria-hidden="true">⌄</span></summary>
-        <div class="learn-menu-panel">
-          <div class="learn-menu-heading">
-            <div><span>THE ATLAS</span><strong>Choose a path or collection</strong></div>
-            <a href="/topics/">View all topics <i aria-hidden="true">↗</i></a>
+          <summary>Explore <span aria-hidden="true">⌄</span></summary>
+          <div class="learn-menu-panel">
+            <div class="learn-menu-heading">
+              <div><span>The Atlas</span><strong>Choose a path or collection</strong></div>
+              <a href="/topics/">View all topics <i aria-hidden="true">↗</i></a>
+            </div>
+            <div class="learn-menu-grid">
+              {TOPICS.map((topic) => (
+                <a class={`learn-menu-card track-${topic.accent}`} href={`/topics/${topic.slug}/`}>
+                  <span>{topic.number}</span>
+                  <div><strong>{topic.title}</strong><small>{topic.meta}</small></div>
+                  <i aria-hidden="true">→</i>
+                </a>
+              ))}
+            </div>
           </div>
-          <div class="learn-menu-grid">
-            {TOPICS.map((topic) => (
-              <a class={`learn-menu-card track-${topic.accent}`} href={`/topics/${topic.slug}/`}>
-                <span>{topic.number}</span>
-                <div><strong>{topic.title}</strong><small>{topic.meta}</small></div>
-                <i aria-hidden="true">→</i>
-              </a>
-            ))}
-          </div>
-        </div>
       </details>
       {directLinks.map(([label, href]) => (
         <a href={href} aria-current={(href === '/topics/dsa/' ? currentPath.startsWith('/topics/dsa/') || currentPath.startsWith('/dsa/') : currentPath.startsWith(href)) ? 'page' : undefined}>{label}</a>
@@ -48,7 +48,7 @@ const isLearningPath = currentPath === '/topics/' || (currentPath.startsWith('/t
 
     <div class="header-actions">
       <button class="header-search" type="button" data-global-search-open aria-label="Search the Atlas">
-        <span aria-hidden="true">⌕</span><span class="header-search-label">Search</span><kbd>⌘ K</kbd>
+        <span aria-hidden="true">⌕</span><span class="header-search-label">Search...</span><kbd>⌘ K</kbd>
       </button>
       <a class="header-start" href="/#choose-your-goal">Start here <span aria-hidden="true">↗</span></a>
       <button class="theme-toggle" type="button" aria-label="Switch colour theme" data-theme-toggle>

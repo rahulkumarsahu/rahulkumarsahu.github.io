@@ -1,0 +1,8 @@
+Use case: scientific-educational
+Asset type: homepage article teaser illustration, wide 3.2:1 aspect ratio
+Primary request: Create a clean educational illustration for the algorithm “Move Zeroes to the End”.
+Subject: On warm drafting paper, show the integer array [0, 1, 0, 3, 12] transforming into [1, 3, 12, 0, 0]. Use five physical-looking graphite-outlined number tiles in each state, a clear directional arrow, and small read and write pointer markers. The relative order of 1, 3 and 12 must remain unchanged.
+Style: precise hand-inked engineering manual diagram, not handwriting; flat printed shapes with subtle paper texture.
+Color palette: graphite black, burnt orange for the movement arrow, oxidized green for non-zero values, muted gray for zeroes.
+Composition: wide horizontal diagram with generous margins, no headline or paragraph, subject fills the frame.
+Constraints: exact numbers only, no code, no people, no laptop, no robot, no decorative AI imagery, no dark blue background, no glow, no gradient, no watermark.

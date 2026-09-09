@@ -6,7 +6,7 @@ const { comparison } = Astro.props as { comparison: ApproachComparisonData };
 
 <section class="approach-comparison" aria-labelledby="approach-comparison-title">
   <header>
-    <span>BRUTE FORCE / OPTIMAL</span>
+    <span>Brute force / Optimal</span>
     <h2 id="approach-comparison-title">Compare the work, not only the Big O</h2>
     <p><strong>Representative input:</strong> <code>{comparison.input}</code></p>
   </header>
@@ -29,7 +29,7 @@ const { comparison } = Astro.props as { comparison: ApproachComparisonData };
   .approach-comparison header > span { color: var(--amber); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .1em; }
   .approach-comparison h2 { margin: .32rem 0 0; padding: 0; border: 0; font-size: 1.2rem; }
   .approach-comparison header p, .approach-observation, .approach-note { margin: .65rem 0 0; color: var(--text-soft); font-size: .74rem; line-height: 1.55; }
-  .approach-observation { padding: .7rem .8rem; border-left: 3px solid var(--amber); background: var(--surface); }
+  .approach-observation { padding: .7rem .8rem; border: 1px solid color-mix(in srgb, var(--amber) 46%, var(--line)); background: var(--surface); }
   .table-scroll { overflow-x: auto; margin-top: .9rem; border: 1px solid var(--line); border-radius: .65rem; }
   .approach-comparison table { width: 100%; min-width: 840px; margin: 0; border-collapse: collapse; font-size: .68rem; }
   .approach-comparison th, .approach-comparison td { padding: .68rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -39,4 +39,7 @@ const { comparison } = Astro.props as { comparison: ApproachComparisonData };
   .approach-comparison tbody th { color: var(--text); font-size: .7rem; }
   .approach-comparison td { color: var(--text-soft); }
   .table-scroll:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
+  .approach-comparison { border-radius: 2px; background: color-mix(in srgb, var(--amber) 4%, var(--surface)); }
+  .approach-comparison header > span { letter-spacing: .03em; }
+  .table-scroll { border-radius: 0; }
 </style>

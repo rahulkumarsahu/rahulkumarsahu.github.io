@@ -27,7 +27,6 @@ const stageItems = stages.map((stage) => {
 <section class="learning-structure section-wrap" aria-labelledby={`learning-structure-${topic}`}>
   <div class="section-heading section-heading-notes">
     <div>
-      <p class="section-label">Five-stage learning structure</p>
       <h2 id={`learning-structure-${topic}`}>Know where each section fits.</h2>
     </div>
     <p>Published lessons are counted automatically. Empty stages remain visible as planned so the route stays clear while the library grows.</p>
@@ -103,4 +102,40 @@ const stageItems = stages.map((stage) => {
   .learning-stage-planned { color: var(--text-faint); line-height: 1.45; }
   @media (max-width: 1050px) { .learning-stage-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px) { .learning-stage-grid { grid-template-columns: 1fr; } .learning-stage-card { min-height: auto; } .learning-stage-progress { margin-top: 1rem; } }
+
+  /* Field Manual: stages read as a contents page. */
+  .learning-structure { padding-block: clamp(3rem, 6vw, 6rem) 2rem; }
+  .learning-stage-grid { display: block; border: 0; border-top: 1px solid var(--line-strong); }
+  .learning-stage-card,
+  .learning-stage-card:not(.has-stage-content) {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: 4rem minmax(10rem, .7fr) minmax(14rem, 1.25fr) minmax(13rem, 1fr);
+    align-items: start;
+    gap: .6rem 1.5rem;
+    padding: 1.35rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+  }
+  .learning-stage-card:not(.has-stage-content) { opacity: .62; }
+  .learning-stage-top { grid-column: 1; grid-row: 1 / span 3; display: grid; justify-content: start; gap: .45rem; }
+  .learning-stage-card h3 { grid-column: 2; margin: 0; font-family: var(--font-display); font-size: 1.45rem; }
+  .learning-stage-card > p { grid-column: 3; margin: 0; }
+  .learning-stage-outcome { grid-column: 4; margin: 0; padding: 0 0 0 1rem; border: 0; border-left: 1px solid var(--line); }
+  .learning-stage-progress { grid-column: 2; margin: .35rem 0 0; padding: 0; }
+  .learning-stage-progress span { padding: 0; border: 0; border-radius: 0; }
+  .learning-stage-card > a, .learning-stage-planned { grid-column: 3 / 5; min-height: 0; margin: .25rem 0 0; padding: .6rem 0 0; }
+  @media (max-width: 900px) {
+    .learning-stage-card,
+    .learning-stage-card:not(.has-stage-content) { grid-template-columns: 3rem 1fr; gap: .65rem 1rem; }
+    .learning-stage-top { grid-column: 1; }
+    .learning-stage-card h3,
+    .learning-stage-card > p,
+    .learning-stage-outcome,
+    .learning-stage-progress,
+    .learning-stage-card > a,
+    .learning-stage-planned { grid-column: 2; }
+    .learning-stage-outcome { padding: .65rem 0 0; border-left: 0; border-top: 1px solid var(--line); }
+  }
 </style>
