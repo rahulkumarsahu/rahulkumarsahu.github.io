@@ -87,14 +87,14 @@ const stageItems = stages.map((stage) => {
   .learning-stage-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
   .learning-stage-card { display: flex; min-width: 0; min-height: 25rem; flex-direction: column; padding: 1.2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 52%, transparent); }
   .learning-stage-card:not(.has-stage-content) { background: color-mix(in srgb, var(--bg-soft) 72%, transparent); }
-  .learning-stage-top { display: flex; justify-content: space-between; gap: .5rem; color: var(--text-faint); font: .75rem var(--font-mono); }
+  .learning-stage-top { display: flex; justify-content: space-between; gap: .5rem; color: var(--text-faint); font: var(--type-technical) var(--font-mono); }
   .has-stage-content .learning-stage-top small { color: var(--green); }
   .learning-stage-card h3 { margin: 2rem 0 .65rem; font-size: 1.25rem; }
   .learning-stage-card > p { margin: 0; color: var(--text-soft); font-size: .9rem; line-height: 1.65; }
   .learning-stage-outcome { display: grid; gap: .3rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-  .learning-stage-outcome span { color: var(--amber); font: .75rem var(--font-mono); }
+  .learning-stage-outcome span { color: var(--amber); font: var(--type-technical) var(--font-mono); }
   .learning-stage-outcome strong { color: var(--text-soft); font-size: .86rem; line-height: 1.5; }
-  .learning-stage-progress { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; padding-top: 1.2rem; color: var(--text-faint); font-size: .78rem; }
+  .learning-stage-progress { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; padding-top: 1.2rem; color: var(--text-faint); font-size: var(--type-technical); }
   .learning-stage-progress span { padding: .28rem .4rem; border: 1px solid var(--line); border-radius: 999px; }
   .learning-stage-progress i { color: var(--text); font-style: normal; font-weight: 700; }
   .learning-stage-card > a, .learning-stage-planned { margin-top: .75rem; min-height: 2.75rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .85rem; }
@@ -113,14 +113,14 @@ const stageItems = stages.map((stage) => {
     grid-template-columns: 4rem minmax(10rem, .7fr) minmax(14rem, 1.25fr) minmax(13rem, 1fr);
     align-items: start;
     gap: .6rem 1.5rem;
-    padding: 1.35rem 0;
+    padding: 1.75rem 0;
     border: 0;
     border-bottom: 1px solid var(--line);
     background: transparent;
   }
   .learning-stage-card:not(.has-stage-content) { opacity: .62; }
   .learning-stage-top { grid-column: 1; grid-row: 1 / span 3; display: grid; justify-content: start; gap: .45rem; }
-  .learning-stage-card h3 { grid-column: 2; margin: 0; font-family: var(--font-display); font-size: 1.45rem; }
+  .learning-stage-card h3 { grid-column: 2; margin: .15rem 0 0; font-family: var(--font-display); font-size: 1.45rem; line-height: 1.2; }
   .learning-stage-card > p { grid-column: 3; margin: 0; }
   .learning-stage-outcome { grid-column: 4; margin: 0; padding: 0 0 0 1rem; border: 0; border-left: 1px solid var(--line); }
   .learning-stage-progress { grid-column: 2; margin: .35rem 0 0; padding: 0; }
@@ -128,7 +128,7 @@ const stageItems = stages.map((stage) => {
   .learning-stage-card > a, .learning-stage-planned { grid-column: 3 / 5; min-height: 0; margin: .25rem 0 0; padding: .6rem 0 0; }
   @media (max-width: 900px) {
     .learning-stage-card,
-    .learning-stage-card:not(.has-stage-content) { grid-template-columns: 3rem 1fr; gap: .65rem 1rem; }
+    .learning-stage-card:not(.has-stage-content) { grid-template-columns: 3rem 1fr; gap: .85rem 1rem; }
     .learning-stage-top { grid-column: 1; }
     .learning-stage-card h3,
     .learning-stage-card > p,

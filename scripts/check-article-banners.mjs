@@ -6,6 +6,14 @@ import sharp from 'sharp';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'dist');
+const vercelProductionHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+  process.env.PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+const siteOrigin =
+  process.env.PUBLIC_SITE_URL ??
+  (vercelProductionHost
+    ? `https://${vercelProductionHost}`
+    : 'https://rahulkumarsahu.github.io');
 assert(existsSync(output), 'Build the site before checking article banners.');
 const pages = readdirSync(output, { recursive: true })
   .filter((name) => name.endsWith('.html'));
@@ -74,7 +82,7 @@ for (const page of postPages) {
   assert.equal(meta(html, 'twitter:description'), meta(html, 'description'));
   assert.equal(meta(html, 'twitter:title'), meta(html, 'og:title'));
   const social = meta(html, 'og:image');
-  assert(social?.startsWith('https://rahulkumarsahu.github.io/'), `${page}: untrusted social origin`);
+  assert(social?.startsWith(`${siteOrigin}/`), `${page}: untrusted social origin`);
   assert(!social.endsWith('/og.png'), `${page}: generic social cover`);
   assert(existsSync(localFile(social)), `${page}: missing sharing image`);
   assert.equal(meta(html, 'twitter:image'), social);

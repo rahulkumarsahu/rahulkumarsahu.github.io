@@ -2,6 +2,9 @@
 node_modules
 dist
 .astro
+.vercel
+.env*
+!.env.example
 
 # IDE configurations
 .idea

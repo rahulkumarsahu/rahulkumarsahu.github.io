@@ -162,16 +162,16 @@ import SimulatorShell from './SimulatorShell.astro';
 </script>
 
 <style>
-  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: var(--type-technical); }
   .graph-canvas { display: grid; grid-template-columns: repeat(4, minmax(3rem, 1fr)); gap: 1.2rem; align-items: center; min-height: 13rem; }
   .graph-node { display: grid; width: 3.2rem; height: 3.2rem; place-self: center; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--text); font-family: var(--font-mono); font-weight: 700; }
   .graph-node.is-visited, .graph-legend i.is-visited { border-style: dashed; border-color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
   .graph-node.is-frontier, .graph-legend i.is-frontier { border-color: var(--indigo); box-shadow: 0 0 0 3px color-mix(in srgb, var(--indigo) 16%, transparent); }
   .graph-node.is-current, .graph-legend i.is-current { border-style: solid; border-color: var(--amber); outline: 3px double color-mix(in srgb, var(--amber) 40%, transparent); background: color-mix(in srgb, var(--amber) 14%, var(--surface)); }
   .graph-edges { margin-top: .8rem; padding: .65rem; border: 1px solid var(--line); border-radius: .55rem; }
-  .graph-edges span { color: var(--text-faint); font-family: var(--font-mono); font-size: .5rem; text-transform: uppercase; }
-  .graph-edges p { margin: .3rem 0 0; color: var(--text-soft); font-size: .65rem; line-height: 1.5; }
-  .graph-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: .58rem; }
+  .graph-edges span { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); text-transform: none; }
+  .graph-edges p { margin: .3rem 0 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.5; }
+  .graph-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; color: var(--text-faint); font-size: var(--type-technical); }
   .graph-legend span { display: flex; align-items: center; gap: .3rem; }
   .graph-legend i { width: .72rem; height: .72rem; border: 2px solid var(--line-strong); border-radius: 50%; }
   @media (max-width: 440px) { .graph-canvas { grid-template-columns: repeat(3, 1fr); gap: .7rem; } }

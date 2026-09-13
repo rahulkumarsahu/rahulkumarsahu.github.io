@@ -194,9 +194,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   .jdoodle-editor-bar span {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .12em;
+    letter-spacing: .03em;
   }
 
   .jdoodle-heading h2 {
@@ -210,7 +210,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     max-width: 22rem;
     margin: 0;
     color: var(--text-soft);
-    font-size: .78rem;
+    font-size: var(--type-technical);
     line-height: 1.55;
     text-align: right;
   }
@@ -238,9 +238,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     gap: .45rem;
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .57rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .1em;
+    letter-spacing: .03em;
   }
 
   .jdoodle-side-label span {
@@ -255,14 +255,14 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   }
 
   .practice-tests { margin-top: 1rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); }
-  .practice-tests summary { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem .85rem; color: var(--text); font-size: .72rem; font-weight: 700; cursor: pointer; }
+  .practice-tests summary { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem .85rem; color: var(--text); font-size: var(--type-technical); font-weight: 700; cursor: pointer; }
   .practice-tests summary span { color: var(--indigo); letter-spacing: .04em; }
   .practice-test-intro { padding: 0 .85rem .65rem; }
-  .practice-test-intro p { margin: 0; font-size: .7rem; }
+  .practice-test-intro p { margin: 0; font-size: var(--type-technical); }
   .practice-test-table { max-width: 100%; overflow-x: auto; border-top: 1px solid var(--line); }
-  .practice-test-table table { width: 100%; min-width: 38rem; border-collapse: collapse; font-size: .66rem; }
+  .practice-test-table table { width: 100%; min-width: 38rem; border-collapse: collapse; font-size: var(--type-technical); }
   .practice-test-table :is(th, td) { padding: .65rem .75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-  .practice-test-table thead th { color: var(--text-faint); font: 650 .52rem var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
+  .practice-test-table thead th { color: var(--text-faint); font: 650 var(--type-technical) var(--font-mono); letter-spacing: .03em; text-transform: none; }
   .practice-test-table tbody th { color: var(--text); }
   .practice-test-table td:last-child { color: var(--text-soft); }
   .practice-test-table code { color: var(--indigo); white-space: nowrap; }
@@ -294,14 +294,14 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   .jdoodle-example > span {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .54rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .1em;
+    letter-spacing: .03em;
   }
 
   .jdoodle-rules strong {
     color: var(--text);
-    font-size: .75rem;
+    font-size: var(--type-technical);
     font-weight: 500;
   }
 
@@ -318,7 +318,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     background: var(--surface-strong);
     color: var(--text-soft);
     font-family: var(--font-mono);
-    font-size: .72rem;
+    font-size: var(--type-technical);
     line-height: 1.65;
     white-space: pre;
   }
@@ -327,7 +327,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     display: inline-block;
     margin-top: 1rem;
     color: var(--indigo);
-    font-size: .74rem;
+    font-size: var(--type-technical);
     font-weight: 600;
   }
 
@@ -360,7 +360,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 
   .draft-state {
     font-family: var(--font-mono);
-    font-size: .6rem;
+    font-size: var(--type-technical);
   }
 
   .jdoodle-editor {
@@ -382,7 +382,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
   .jdoodle-editor-bar label {
     color: #e7ecf7;
     font-family: var(--font-mono);
-    font-size: .72rem;
+    font-size: var(--type-technical);
     font-weight: 600;
   }
 
@@ -418,7 +418,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     max-width: 28rem;
     margin: 0;
     color: #aebbd1;
-    font-size: .68rem;
+    font-size: var(--type-technical);
     line-height: 1.5;
   }
 
@@ -433,7 +433,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     padding: .55rem .8rem;
     border-radius: .6rem;
     color: white;
-    font-size: .72rem;
+    font-size: var(--type-technical);
     font-weight: 600;
     cursor: pointer;
   }
@@ -482,7 +482,7 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 
     .jdoodle-editor textarea {
       min-height: 30rem;
-      font-size: .72rem;
+      font-size: var(--type-technical);
     }
   }
 

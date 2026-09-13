@@ -56,21 +56,21 @@ const curriculumBands = [
 const dsaDirectoryGroups = [
   {
     key: 'available',
-    eyebrow: 'PUBLISHED AND AVAILABLE',
+    eyebrow: 'Published and available',
     title: 'Learn from articles you can open now',
     description: 'These sections already contain complete lessons or practice problems.',
     items: dsaDirectory.filter((item) => item.posts.length > 0),
   },
   {
     key: 'coming',
-    eyebrow: 'COMING NEXT',
+    eyebrow: 'Coming next',
     title: 'The next sections being prepared',
     description: 'These topics are closest to the front of the publishing queue.',
     items: unpublishedDsaSections.slice(0, 3),
   },
   {
     key: 'planned',
-    eyebrow: 'PLANNED FOR LATER',
+    eyebrow: 'Planned for later',
     title: 'The complete DSA map',
     description: 'These sections remain visible so you can understand where the learning path is going.',
     items: unpublishedDsaSections.slice(3),
@@ -90,7 +90,7 @@ const dsaDirectoryGroups = [
     <TopicBanner
       topic={topic.slug}
       title={topic.title}
-      label={`TRACK ${topic.number} / ${topic.meta}`}
+      label={`Track ${topic.number} / ${topic.meta}`}
       size="hero"
       heading="h1"
       eager
@@ -112,7 +112,7 @@ const dsaDirectoryGroups = [
       <section class="dsa-start-here section-wrap" id="start-here">
         <div class="section-heading section-heading-notes">
           <div>
-            <p class="section-index">START HERE / BEGINNER PATH</p>
+            <p class="section-index">Start here / beginner path</p>
             <h2>Six lessons that build on each other.</h2>
           </div>
           <p>This path begins with array mechanics, adds a few small problems, then introduces recursion before your first backtracking problem.</p>
@@ -132,20 +132,20 @@ const dsaDirectoryGroups = [
       </section>
 
       <nav class="dsa-learning-tools section-wrap" aria-label="DSA learning tools">
-        <a href="/dsa/master-sheet/"><span>PRACTICE</span><strong>DSA Master Sheet</strong><small>{MASTER_PROBLEMS.length} curated problems with local progress and revision marks</small></a>
-        <a href="/dsa/companies/"><span>COMPANIES</span><strong>Company Practice</strong><small>Google, Meta and Uber starter tracks by DSA topic</small></a>
-        <a href="/dsa/patterns/"><span>RECOGNIZE</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
-        <a href="/dsa/revision/"><span>REVISE</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>
-        <a href="/revision/"><span>ALL TRACKS</span><strong>Revision Centre</strong><small>Review every learning track in one place</small></a>
-        <a href="/study-plan/"><span>PLAN</span><strong>Personal Study Plan</strong><small>Build a schedule from published lessons</small></a>
-        <a href="/updates/"><span>TRUST</span><strong>Content Freshness</strong><small>Review dates, versions and corrections</small></a>
-        <a href="/projects/production-url-shortener/"><span>CONNECT</span><strong>Connected Project</strong><small>Carry ideas from code into a production system</small></a>
+        <a href="/dsa/master-sheet/"><span>Practice</span><strong>DSA Master Sheet</strong><small>{MASTER_PROBLEMS.length} curated problems with local progress and revision marks</small></a>
+        <a href="/dsa/companies/"><span>Companies</span><strong>Company Practice</strong><small>Google, Meta and Uber starter tracks by DSA topic</small></a>
+        <a href="/dsa/patterns/"><span>Recognize</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
+        <a href="/dsa/revision/"><span>Revise</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>
+        <a href="/revision/"><span>All tracks</span><strong>Revision Centre</strong><small>Review every learning track in one place</small></a>
+        <a href="/study-plan/"><span>Plan</span><strong>Personal Study Plan</strong><small>Build a schedule from published lessons</small></a>
+        <a href="/updates/"><span>Trust</span><strong>Content Freshness</strong><small>Review dates, versions and corrections</small></a>
+        <a href="/projects/production-url-shortener/"><span>Connect</span><strong>Connected Project</strong><small>Carry ideas from code into a production system</small></a>
       </nav>
 
       <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
         <div class="section-heading section-heading-notes">
           <div>
-            <p class="section-index">DSA TOPICS / {String(DSA_SECTIONS.length).padStart(2, '0')}</p>
+            <p class="section-index">DSA topics / {String(DSA_SECTIONS.length).padStart(2, '0')}</p>
             <h2>Choose a topic, then practice by difficulty.</h2>
           </div>
           <p>Published sections come first. Every section opens into separate Basics, Easy, Medium and Hard article lists.</p>
@@ -195,15 +195,15 @@ const dsaDirectoryGroups = [
         <section class="topic-connected-project section-wrap"><ConnectedProjectCard compact /></section>
       )}
       <nav class="topic-learning-tools section-wrap" aria-label={`${topic.title} learning tools`}>
-        <a href="/revision/"><span>REVISE</span><strong>Revision centre</strong><small>Quick review structures across every learning track</small></a>
-        <a href="/study-plan/"><span>PLAN</span><strong>Personal study plan</strong><small>Build a private schedule from published lessons</small></a>
-        <a href="/updates/"><span>TRUST</span><strong>Content freshness</strong><small>Review dates, version scope and corrections</small></a>
-        {topic.slug === 'system-design' && <a href="/system-design/decisions/"><span>DECIDE</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>}
+        <a href="/revision/"><span>Revise</span><strong>Revision centre</strong><small>Quick review structures across every learning track</small></a>
+        <a href="/study-plan/"><span>Plan</span><strong>Personal study plan</strong><small>Build a private schedule from published lessons</small></a>
+        <a href="/updates/"><span>Trust</span><strong>Content freshness</strong><small>Review dates, version scope and corrections</small></a>
+        {topic.slug === 'system-design' && <a href="/system-design/decisions/"><span>Decide</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>}
       </nav>
       {posts.length > 0 && (
         <section class="topic-posts topic-posts-curriculum section-wrap">
           <div class="section-heading section-heading-notes">
-            <div><p class="section-index">AVAILABLE NOW / {String(posts.length).padStart(2, '0')}</p><h2>Articles you can read today.</h2></div>
+            <div><p class="section-index">Available now / {String(posts.length).padStart(2, '0')}</p><h2>Articles you can read today.</h2></div>
           </div>
           <div class="post-grid">{posts.map((post) => <PostCard {post} />)}</div>
         </section>
@@ -211,7 +211,7 @@ const dsaDirectoryGroups = [
       <section class={`curriculum-directory section-wrap track-${topic.accent}`} id="curriculum">
         <div class="section-heading">
           <div>
-            <p class="section-index">{isNotes ? 'COLLECTIONS' : 'CURRICULUM'} / {String(curriculum.groups.length).padStart(2, '0')} SECTIONS</p>
+            <p class="section-index">{isNotes ? 'Collections' : 'Curriculum'} / {String(curriculum.groups.length).padStart(2, '0')} sections</p>
             <h2>{isNotes ? 'Browse by engineering theme.' : 'Choose a section, then narrow the topic.'}</h2>
           </div>
           <p>{isNotes
@@ -299,25 +299,27 @@ const dsaDirectoryGroups = [
 
 <style>
   .curriculum-availability-band { display: grid; gap: 2rem; }
-  .curriculum-band-heading h3 { margin: 0; color: var(--amber); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .06em; }
+  .curriculum-band-heading h3 { margin: 0; color: var(--amber); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .03em; }
   .curriculum-band-heading p { margin: .4rem 0 0; color: var(--text-soft); font-size: .9rem; }
   .curriculum-future-band { border-top: 1px solid var(--line); padding-top: 2rem; }
   .curriculum-future-band :global(.topic-cover-card) { background: var(--bg-soft); }
   .topic-learning-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-block: 1rem 2rem; }
   .topic-learning-tools a { display: grid; gap: .28rem; min-width: 0; padding: 1rem; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 50%, transparent); }
   .topic-learning-tools a + a { border-left: 0; }
-  .topic-learning-tools span { color: var(--amber); font: .5rem var(--font-mono); letter-spacing: .09em; }
-  .topic-learning-tools strong { font-size: .75rem; }
-  .topic-learning-tools small { color: var(--text-faint); font-size: .6rem; line-height: 1.45; }
+  .topic-learning-tools span { color: var(--amber); font: var(--type-technical) var(--font-mono); letter-spacing: .03em; }
+  .topic-learning-tools strong { font-size: var(--type-technical); }
+  .topic-learning-tools small { color: var(--text-faint); font-size: var(--type-technical); line-height: 1.45; }
   .topic-learning-tools a:hover strong { color: var(--indigo); }
   .dsa-start-here { padding-top: 4.5rem; }
   .dsa-learning-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .65rem; padding-top: 1rem; }
   .dsa-learning-tools a { display: grid; gap: .3rem; padding: .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--text); }
   .dsa-learning-tools a:hover { border-color: var(--indigo); transform: translateY(-2px); }
-  .dsa-learning-tools span { color: var(--amber); font-family: var(--font-mono); font-size: .5rem; letter-spacing: .08em; }
-  .dsa-learning-tools strong { font-size: .78rem; }
-  .dsa-learning-tools small { color: var(--text-faint); font-size: .58rem; line-height: 1.45; }
+  .dsa-learning-tools span { color: var(--amber); font-family: var(--font-mono); font-size: var(--type-technical); letter-spacing: .03em; }
+  .dsa-learning-tools strong { font-size: var(--type-technical); }
+  .dsa-learning-tools small { color: var(--text-faint); font-size: var(--type-technical); line-height: 1.45; }
   .topic-connected-project { padding-top: 3rem; }
+  .topic-posts-curriculum { padding-top: clamp(4rem, 7vw, 7rem); }
+  .topic-posts-curriculum .section-heading { margin-bottom: 1.75rem; }
   .dsa-start-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -341,17 +343,17 @@ const dsaDirectoryGroups = [
     text-decoration: none;
   }
   .dsa-start-list a:hover { border-color: color-mix(in srgb, var(--indigo) 52%, var(--line)); transform: translateY(-2px); }
-  .dsa-start-list a > span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: .62rem; }
+  .dsa-start-list a > span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: var(--type-technical); }
   .dsa-start-list div { display: grid; gap: .28rem; min-width: 0; }
-  .dsa-start-list strong { font-size: .74rem; line-height: 1.35; }
-  .dsa-start-list small { color: var(--text-faint); font-size: .58rem; text-transform: capitalize; }
-  .dsa-start-list i { color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; font-style: normal; white-space: nowrap; }
+  .dsa-start-list strong { font-size: var(--type-technical); line-height: 1.35; }
+  .dsa-start-list small { color: var(--text-faint); font-size: var(--type-technical); text-transform: capitalize; }
+  .dsa-start-list i { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); font-style: normal; white-space: nowrap; }
   .dsa-start-list [data-learning-state='solved'] i { color: #21835f; }
   .dsa-directory-groups { display: grid; gap: 3rem; margin-top: 1.5rem; }
   .dsa-directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-  .dsa-directory-heading span { color: var(--amber); font-family: var(--font-mono); font-size: .57rem; font-weight: 650; letter-spacing: .1em; }
+  .dsa-directory-heading span { color: var(--amber); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 650; letter-spacing: .03em; }
   .dsa-directory-heading h3 { margin: .3rem 0 0; font-size: 1.15rem; }
-  .dsa-directory-heading p { max-width: 28rem; margin: 0; color: var(--text-faint); font-size: .72rem; line-height: 1.55; text-align: right; }
+  .dsa-directory-heading p { max-width: 28rem; margin: 0; color: var(--text-faint); font-size: var(--type-technical); line-height: 1.55; text-align: right; }
   .dsa-directory-coming,
   .dsa-directory-planned { opacity: .84; }
   .dsa-directory-planned { opacity: .68; }
@@ -382,16 +384,16 @@ const dsaDirectoryGroups = [
   .dsa-start-list a:hover { padding-inline: .75rem; border-color: var(--line); background: var(--surface-strong); transform: none; }
   .dsa-start-list a > span { width: auto; height: auto; place-items: start; border-radius: 0; background: transparent; color: var(--orange); }
   .dsa-start-list strong { font-family: var(--font-display); font-size: 1.15rem; }
-  .dsa-start-list small, .dsa-start-list i { font-size: .68rem; }
+  .dsa-start-list small, .dsa-start-list i { font-size: var(--type-technical); }
   .dsa-learning-tools, .topic-learning-tools { gap: 1px; padding-top: 1.5rem; border: 1px solid var(--line); background: var(--line); }
   .dsa-learning-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .dsa-learning-tools a, .topic-learning-tools a { min-height: 7.5rem; padding: 1rem; border: 0; border-radius: 0; background: var(--surface); }
   .dsa-learning-tools a:hover, .topic-learning-tools a:hover { background: var(--surface-strong); transform: none; }
-  .dsa-learning-tools span, .topic-learning-tools span { color: var(--orange); font-size: .66rem; letter-spacing: .03em; text-transform: none; }
+  .dsa-learning-tools span, .topic-learning-tools span { color: var(--orange); font-size: var(--type-technical); letter-spacing: .03em; text-transform: none; }
   .dsa-learning-tools strong, .topic-learning-tools strong { font-family: var(--font-display); font-size: 1rem; }
-  .dsa-learning-tools small, .topic-learning-tools small { font-size: .7rem; }
+  .dsa-learning-tools small, .topic-learning-tools small { font-size: var(--type-technical); }
   .dsa-directory-groups, .curriculum-groups { gap: clamp(3rem, 6vw, 6rem); }
-  .dsa-directory-heading span, .curriculum-band-heading h3 { font-size: .7rem; letter-spacing: .03em; text-transform: none; }
+  .dsa-directory-heading span, .curriculum-band-heading h3 { font-size: var(--type-technical); letter-spacing: .03em; text-transform: none; }
   .dsa-directory-heading h3 { font-family: var(--font-display); font-size: 1.65rem; }
   .curriculum-future-band { opacity: .68; }
   .curriculum-group-heading i { text-transform: none; }

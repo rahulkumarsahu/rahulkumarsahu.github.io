@@ -26,17 +26,17 @@ const { comparison } = Astro.props as { comparison: ApproachComparisonData };
 
 <style>
   .approach-comparison { margin: 2rem 0; padding: 1.15rem; border: 1px solid var(--line-strong); border-radius: .9rem; background: color-mix(in srgb, var(--amber) 5%, var(--surface)); }
-  .approach-comparison header > span { color: var(--amber); font-family: var(--font-mono); font-size: .56rem; font-weight: 650; letter-spacing: .1em; }
+  .approach-comparison header > span { color: var(--amber); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 650; letter-spacing: .03em; }
   .approach-comparison h2 { margin: .32rem 0 0; padding: 0; border: 0; font-size: 1.2rem; }
-  .approach-comparison header p, .approach-observation, .approach-note { margin: .65rem 0 0; color: var(--text-soft); font-size: .74rem; line-height: 1.55; }
+  .approach-comparison header p, .approach-observation, .approach-note { margin: .65rem 0 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.55; }
   .approach-observation { padding: .7rem .8rem; border: 1px solid color-mix(in srgb, var(--amber) 46%, var(--line)); background: var(--surface); }
   .table-scroll { overflow-x: auto; margin-top: .9rem; border: 1px solid var(--line); border-radius: .65rem; }
-  .approach-comparison table { width: 100%; min-width: 840px; margin: 0; border-collapse: collapse; font-size: .68rem; }
+  .approach-comparison table { width: 100%; min-width: 840px; margin: 0; border-collapse: collapse; font-size: var(--type-technical); }
   .approach-comparison th, .approach-comparison td { padding: .68rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
   .approach-comparison tr:last-child > * { border-bottom: 0; }
   .approach-comparison tr > *:last-child { border-right: 0; }
-  .approach-comparison thead { background: var(--surface-strong); color: var(--text-faint); font-family: var(--font-mono); font-size: .54rem; letter-spacing: .05em; text-transform: uppercase; }
-  .approach-comparison tbody th { color: var(--text); font-size: .7rem; }
+  .approach-comparison thead { background: var(--surface-strong); color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); letter-spacing: .03em; text-transform: none; }
+  .approach-comparison tbody th { color: var(--text); font-size: var(--type-technical); }
   .approach-comparison td { color: var(--text-soft); }
   .table-scroll:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .approach-comparison { border-radius: 2px; background: color-mix(in srgb, var(--amber) 4%, var(--surface)); }

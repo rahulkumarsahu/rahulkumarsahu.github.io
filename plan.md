@@ -741,3 +741,255 @@ This redesign will not:
 5. Confirm that protected artwork may be re-cropped and re-framed but not redrawn.
 6. Choose whether the implementation should be comp-first or code-first after the visual direction round. Comp-first is recommended for a full visual replacement.
 
+---
+
+# Vercel Deployment and Private Repository Plan
+
+Status: Vercel production deployed; GitHub privacy cutover and custom domain pending
+
+Prepared: 2026-09-10
+
+Deployment target: Vercel
+
+Source repository: `rahulkumarsahu/rahulkumarsahu.github.io`
+
+Production branch: `main`
+
+Current production URL: `https://system-design-atlas-theta.vercel.app`
+
+## 1. Decision
+
+Yes, this Astro website can be deployed to Vercel while its GitHub repository is private.
+
+The recommended arrangement for this project is:
+
+1. Keep the repository under Rahul's personal GitHub account.
+2. Use Rahul's personal Vercel Hobby account while he is the only person deploying the private repository.
+3. Use Vercel CLI for project linking, preview deployment, production deployment and verification.
+4. Connect the GitHub repository to the Vercel project after the first successful preview so pushes to `main` deploy automatically.
+5. Make the GitHub repository private only after the Vercel production URL has passed all checks.
+
+Vercel Hobby can deploy a private repository owned by a personal GitHub account when the Vercel project owner is also the commit author. A private repository inside a GitHub organization cannot deploy to a Hobby team in the same way and normally requires Vercel Pro. This repository is currently under the personal `rahulkumarsahu` GitHub account, so the Hobby setup is appropriate for a solo project.
+
+## 2. Current repository assessment
+
+The project is already suitable for a zero-configuration static Astro deployment:
+
+1. Astro output is `static`.
+2. The production build command is `npm run build`.
+3. The generated output directory is `dist`.
+4. Node.js is constrained to version 24, which Vercel supports.
+5. The production branch is `main`.
+6. No Vercel adapter is needed for the current static site.
+7. No `vercel.json` is required for the initial deployment.
+8. The existing GitHub Pages workflow must remain active until Vercel is verified.
+
+The following values still refer to GitHub Pages and must be changed during cutover, not before:
+
+1. The `site` origin in `astro.config.mjs`.
+2. The sitemap URL in `public/robots.txt`.
+3. Fallback origins used by breadcrumbs and metadata.
+4. Canonical, Open Graph, RSS and sitemap output generated from the Astro site origin.
+
+## 3. Safety rules
+
+1. Do not deploy unreviewed local changes directly to production.
+2. Do not make the repository private before a verified Vercel production deployment exists.
+3. Do not disable GitHub Pages until the Vercel site serves all important routes.
+4. Do not store a Vercel token in source control, `plan.md`, shell history or chat.
+5. Keep `.vercel/` ignored because it contains local project-link metadata.
+6. Keep `.env.local` ignored if environment variables are introduced later.
+7. Do not install the Astro Vercel adapter unless the site later needs server rendering or Vercel Functions.
+8. Do not add a `vercel.json` merely to duplicate Vercel's Astro defaults.
+
+## 4. Phase A: prepare the repository
+
+1. Review and approve all current uncommitted website changes.
+2. Run `npm run validate` and require a clean result.
+3. Confirm that no credentials, tokens, private notes or oversized source assets are tracked.
+4. Add `.vercel` and `.env*.local` to `.gitignore` if they are not already covered.
+5. Keep the current GitHub Pages workflow unchanged during preview testing.
+6. Commit the approved website state before creating the first remote deployment.
+
+Exit condition: the approved `main` branch builds successfully and contains no secrets.
+
+## 5. Phase B: authenticate and create the Vercel project
+
+Use the current CLI through `npx vercel@latest` so a stale global installation is not required.
+
+1. Run `npx vercel@latest login --github`.
+2. Complete the GitHub authorization in Rahul's browser.
+3. Run `npx vercel@latest link` from the repository root.
+4. Select Rahul's personal Vercel scope.
+5. Create a project named `the-system-design-atlas`, subject to Vercel name availability.
+6. Confirm the detected framework is Astro.
+7. Accept the detected defaults instead of overriding them.
+8. Confirm Node.js 24, `npm run build` and `dist` in Vercel project settings.
+
+Expected local result: Vercel creates `.vercel/project.json`. This directory remains local and must not be committed.
+
+## 6. Phase C: create and inspect a preview deployment
+
+1. Run `npx vercel@latest deploy --logs`.
+2. Keep the returned preview URL for review.
+3. Check the deployment logs for warnings or build differences.
+4. Verify the homepage, About page, topic pages, article pages, DSA Master Sheet, simulators and URL Shortener lab.
+5. Verify light and dark themes, browser storage, JDoodle's intentional Run action and responsive layouts.
+6. Verify `robots.txt`, sitemap, RSS, canonical URLs, Open Graph metadata and the 404 page.
+7. Check static assets, article banners and root-relative links from the preview origin.
+
+The first preview may still emit GitHub Pages canonical URLs. That is acceptable only during this inspection phase and must be corrected before production.
+
+Exit condition: the preview renders correctly and the only expected hostname mismatch is the planned site-origin change.
+
+## 7. Phase D: choose the permanent production origin
+
+Choose one canonical production hostname before the production build:
+
+### Recommended
+
+Use `https://thesystemdesignatlas.com` after purchasing and configuring the domain. A custom domain prevents another hosting migration from changing the public identity of the site.
+
+### Temporary alternative
+
+Use the final Vercel project hostname, expected to resemble `https://the-system-design-atlas.vercel.app`. The exact hostname must be confirmed after Vercel creates the project; it must not be guessed in source files.
+
+After the hostname is known:
+
+1. Update Astro's `site` origin.
+2. Update `robots.txt`.
+3. Remove hard-coded GitHub Pages fallback origins.
+4. Regenerate and inspect canonical, RSS, sitemap and social metadata.
+5. Run the complete validation suite again.
+
+## 8. Phase E: production deployment and verification
+
+1. Run `npx vercel@latest deploy --prod --skip-domain` to create a staged production build without moving an attached custom domain immediately.
+2. Verify the staged deployment and inspect error logs.
+3. Promote the verified deployment using `npx vercel@latest promote <deployment-url>`.
+4. Confirm the production homepage and representative deep links return successful responses.
+5. Confirm assets are cached and no page points to the old GitHub Pages origin unexpectedly.
+6. Record the production deployment URL and rollback deployment URL.
+
+If no custom domain is attached, a normal `npx vercel@latest deploy --prod` may be used after preview approval.
+
+## 9. Phase F: connect private GitHub deployments
+
+1. Install or authorize the Vercel GitHub application for the `rahulkumarsahu.github.io` repository only.
+2. Run `npx vercel@latest git connect` from the linked project.
+3. Confirm `main` is the production branch.
+4. Confirm non-production branches create preview deployments.
+5. Make a harmless reviewed test commit and verify the Git deployment succeeds.
+6. Confirm Rahul's GitHub identity is connected to the same Vercel account so private-repository commit authorship can be verified.
+
+Exit condition: an authorized commit to `main` triggers a successful production deployment without manually uploading source files.
+
+## 10. Phase G: make the GitHub repository private
+
+This is the final, user-approved cutover action.
+
+1. Confirm Vercel can still access the repository through its GitHub application.
+2. In GitHub, open repository Settings, then General, then Danger Zone.
+3. Change repository visibility from public to private.
+4. Confirm the exact repository name when GitHub requests it.
+5. Trigger one deployment from a new commit after the visibility change.
+6. Confirm Vercel receives and deploys the private commit.
+7. Disable or remove the GitHub Pages deployment workflow after Vercel is proven stable.
+8. Review repository collaborators, Actions permissions, Dependabot and branch protection after the visibility change.
+
+Important GitHub consequences:
+
+1. Existing stars and watchers can be erased.
+2. Public forks are detached and remain public.
+3. Some GitHub security features differ for private repositories depending on the GitHub plan.
+4. The existing `rahulkumarsahu.github.io` GitHub Pages website may stop serving when the repository becomes private under a plan that does not support private Pages.
+
+## 11. SEO migration risk
+
+The current indexed origin is `https://rahulkumarsahu.github.io`. Making the repository private can remove that GitHub Pages site, and Vercel cannot configure a redirect on the `github.io` domain.
+
+Recommended mitigation:
+
+1. Keep GitHub Pages public during Vercel preview and production verification.
+2. Select the final canonical domain before privacy cutover.
+3. Submit the new sitemap to Google Search Console after launch.
+4. Update external profile links to the new domain.
+5. Keep a list of the most important indexed URLs and verify them on the new origin.
+6. If preserving redirects from the old `github.io` URLs is essential, keep a separate minimal public GitHub Pages repository that contains only redirects. This is optional and should be approved separately.
+
+## 12. Custom domain procedure
+
+When Rahul owns the domain:
+
+1. Add the domain to the Vercel project.
+2. Add both the apex domain and the preferred `www` variant.
+3. Choose one as canonical and redirect the other.
+4. Apply the DNS records Vercel provides through the registrar.
+5. Run `npx vercel@latest domains verify thesystemdesignatlas.com --project the-system-design-atlas`.
+6. Wait for DNS verification and TLS issuance.
+7. Update the Astro site origin only to the selected canonical hostname.
+8. Rebuild, redeploy and recheck the sitemap, RSS, canonical tags and social previews.
+
+Do not purchase a domain or change DNS as part of an automated deployment without Rahul's explicit approval.
+
+## 13. Rollback plan
+
+Before repository privacy changes:
+
+1. Leave GitHub Pages active.
+2. If Vercel fails, keep the existing GitHub Pages site as production.
+
+After repository privacy changes:
+
+1. Use Vercel's previous production deployment for an instant rollback.
+2. Temporarily make the repository public again only if GitHub Pages recovery is explicitly required.
+3. Reconnect the GitHub integration if the private-repository webhook loses access.
+4. Restore the previous canonical origin only when the previous host is actually serving the site.
+
+## 14. Information and actions required from Rahul
+
+Rahul must provide or complete these items when implementation begins:
+
+1. Sign in to or create a Vercel account using the same GitHub account that owns the repository.
+2. Confirm that the repository will remain under the personal `rahulkumarsahu` account rather than move to an organization.
+3. Approve the Vercel GitHub application for this repository.
+4. Choose the production hostname:
+   - purchase and use `thesystemdesignatlas.com`, or
+   - temporarily use the confirmed `vercel.app` hostname.
+5. Confirm the Vercel project name. Recommended: `the-system-design-atlas`.
+6. Review and approve the current uncommitted website changes before they are committed or deployed.
+7. Approve the exact moment when GitHub Pages is retired.
+8. Approve the destructive visibility change from public to private.
+9. Decide whether preserving redirects from the old `github.io` origin is important enough to keep a separate public redirect repository.
+
+Rahul should not paste passwords, Vercel tokens, GitHub tokens or DNS-account credentials into chat. Browser login and GitHub application approval should be completed directly in the official Vercel and GitHub interfaces.
+
+## 15. Acceptance checklist
+
+The migration is complete only when:
+
+1. `npm run validate` passes from a clean checkout.
+2. The Vercel preview passes visual and functional review.
+3. Production uses the approved canonical hostname.
+4. Canonical tags, sitemap, robots file, RSS and Open Graph URLs use the production hostname.
+5. All important existing routes work on Vercel.
+6. Article banners and static assets load correctly.
+7. Browser-only progress features still work.
+8. A push to `main` deploys automatically.
+9. A private-repository commit deploys successfully.
+10. GitHub Pages is retired only after Vercel is stable.
+11. No credential or `.vercel` project metadata is committed.
+12. Rahul has reviewed and approved the final deployment.
+
+## 16. Planned repository changes during implementation
+
+These changes are expected later, after approval:
+
+1. Update `.gitignore` for `.vercel/` and local environment files.
+2. Make the production site origin configurable and update the fallback origin.
+3. Update `public/robots.txt` to the selected canonical host.
+4. Disable or remove `.github/workflows/pages-deploy.yml` only after cutover.
+5. Do not add the Vercel Astro adapter for the current static build.
+6. Add `vercel.json` only if a concrete redirect, header or routing requirement cannot be handled by the existing Astro output or Vercel project settings.
+
+No deployment, repository visibility change, commit, push, DNS update or Vercel project creation is authorized by this planning section alone.

@@ -35,7 +35,7 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
   <script type="application/json" data-dashboard-model set:html={modelJson} />
   <header class="dashboard-heading">
     <div>
-      <p class="section-index">YOUR LEARNING</p>
+      <p class="section-index">Your learning</p>
       <h2 id={`learning-dashboard-${compact ? 'compact' : 'full'}-title`}>{compact ? 'Continue where you stopped.' : 'Your learning, all in one place.'}</h2>
     </div>
     {compact && <a href="/learning/">Open my learning <span aria-hidden="true">↗</span></a>}
@@ -52,12 +52,12 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
   <div class="dashboard-active" data-dashboard-active hidden>
     <section class="dashboard-continue" aria-labelledby={`dashboard-next-${compact ? 'compact' : 'full'}`}>
       <div class="dashboard-path-copy">
-        <span>CURRENT PATH</span>
+        <span>Current path</span>
         <h3 data-dashboard-goal>No path selected</h3>
         <p data-dashboard-goal-progress></p>
       </div>
       <a class="dashboard-next" data-dashboard-next href="/topics/">
-        <span>NEXT LESSON</span>
+        <span>Next lesson</span>
         <strong id={`dashboard-next-${compact ? 'compact' : 'full'}`} data-dashboard-next-title>Choose your next lesson</strong>
         <small data-dashboard-next-topic></small>
         <i aria-hidden="true">↗</i>
@@ -79,7 +79,7 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
     </div>
 
     <section class="dashboard-project">
-      <div><span>CONNECTED PROJECT</span><h3>Production URL shortener</h3><p data-dashboard-project-summary></p></div>
+      <div><span>Connected project</span><h3>Production URL shortener</h3><p data-dashboard-project-summary></p></div>
       <a href="/projects/production-url-shortener/" data-dashboard-project-next>Open project milestones ↗</a>
     </section>
   </div>
@@ -87,12 +87,12 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
   {!compact && (
     <div class="dashboard-management">
       <section class="dashboard-goal-selector" aria-labelledby="dashboard-goal-selector-title">
-        <div><span>CHANGE PATH</span><h2 id="dashboard-goal-selector-title">What are you working toward?</h2></div>
+        <div><span>Change path</span><h2 id="dashboard-goal-selector-title">What are you working toward?</h2></div>
         <div>{goals.map((goal) => <button type="button" data-dashboard-goal-choice={goal.id} aria-pressed="false">{goal.title}</button>)}</div>
       </section>
       <section class="dashboard-transfer" aria-labelledby="dashboard-transfer-title">
         <div>
-          <span>BACKUP AND RESTORE</span>
+          <span>Backup and restore</span>
           <h2 id="dashboard-transfer-title">Keep your learning progress portable</h2>
           <p>Download one private JSON backup containing your progress, bookmarks, drafts and lab choices. Nothing is uploaded.</p>
         </div>
@@ -253,44 +253,44 @@ const modelJson = JSON.stringify({ catalog, goals, milestones }).replaceAll('<',
   .dashboard-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
   .dashboard-heading h2 { margin: .35rem 0 0; font-size: clamp(1.6rem, 3vw, 2.35rem); }
   .dashboard-heading > a { font-size: .85rem; text-decoration: underline; text-underline-offset: .2em; }
-  .dashboard-storage-note { margin: 0 0 1rem; color: var(--text-soft); font-size: .78rem; }
+  .dashboard-storage-note { margin: 0 0 1rem; color: var(--text-soft); font-size: var(--type-technical); }
   .dashboard-empty { padding: 1.4rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); }
   .dashboard-empty h3 { margin: 0; } .dashboard-empty p { color: var(--text-soft); }
   .dashboard-continue { display: grid; grid-template-columns: minmax(14rem, .8fr) minmax(18rem, 1.2fr); border: 1px solid var(--line-strong); border-radius: 1rem; overflow: hidden; background: var(--surface); }
   .dashboard-path-copy, .dashboard-next { padding: 1.2rem; }
-  .dashboard-path-copy span, .dashboard-next > span, .dashboard-project span, .dashboard-goal-selector span { color: var(--text-soft); font: .6rem var(--font-mono); letter-spacing: .09em; }
+  .dashboard-path-copy span, .dashboard-next > span, .dashboard-project span, .dashboard-goal-selector span { color: var(--text-soft); font: var(--type-technical) var(--font-mono); letter-spacing: .03em; }
   .dashboard-path-copy h3 { margin: .4rem 0; font-size: 1.15rem; } .dashboard-path-copy p { margin: 0; color: var(--text-soft); font-size: .8rem; }
   .dashboard-next { position: relative; display: grid; gap: .25rem; border-left: 1px solid var(--line); background: color-mix(in srgb, var(--indigo) 9%, var(--surface-strong)); }
   .dashboard-next strong { padding-right: 2rem; font-size: 1rem; } .dashboard-next small { color: var(--text-soft); } .dashboard-next i { position: absolute; right: 1.1rem; top: 50%; color: var(--indigo); font-size: 1.4rem; font-style: normal; }
   .dashboard-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: .8rem 0; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
   .dashboard-stats div { padding: .75rem 1rem; border-right: 1px solid var(--line); } .dashboard-stats div:last-child { border: 0; }
-  .dashboard-stats dt { font-size: 1.15rem; font-weight: 700; } .dashboard-stats dd { margin: 0; color: var(--text-soft); font-size: .7rem; }
+  .dashboard-stats dt { font-size: 1.15rem; font-weight: 700; } .dashboard-stats dd { margin: 0; color: var(--text-soft); font-size: var(--type-technical); }
   .dashboard-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
   .dashboard-columns > section { min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
   .dashboard-columns h3 { margin: 0 0 .6rem; font-size: .82rem; }
   .dashboard-list { display: grid; gap: .45rem; }
-  .dashboard-list :global(a) { display: grid; gap: .12rem; color: var(--text); font-size: .72rem; text-decoration: underline; text-underline-offset: .18em; }
-  .dashboard-list :global(small), .dashboard-list :global(.dashboard-list-empty) { margin: 0; color: var(--text-soft); font-size: .64rem; }
+  .dashboard-list :global(a) { display: grid; gap: .12rem; color: var(--text); font-size: var(--type-technical); text-decoration: underline; text-underline-offset: .18em; }
+  .dashboard-list :global(small), .dashboard-list :global(.dashboard-list-empty) { margin: 0; color: var(--text-soft); font-size: var(--type-technical); }
   .dashboard-list :global(.dashboard-revision-row) { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-  .dashboard-list :global(.dashboard-revision-row button) { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-strong); color: var(--text); font-size: .6rem; cursor: pointer; }
+  .dashboard-list :global(.dashboard-revision-row button) { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-strong); color: var(--text); font-size: var(--type-technical); cursor: pointer; }
   .dashboard-project { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .8rem; padding: 1rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); }
-  .dashboard-project h3 { margin: .25rem 0; } .dashboard-project p { margin: 0; color: var(--text-soft); font-size: .75rem; } .dashboard-project a { font-size: .75rem; text-decoration: underline; }
+  .dashboard-project h3 { margin: .25rem 0; } .dashboard-project p { margin: 0; color: var(--text-soft); font-size: var(--type-technical); } .dashboard-project a { font-size: var(--type-technical); text-decoration: underline; }
   .dashboard-management { display: grid; gap: 1rem; margin-top: 2rem; }
   .dashboard-goal-selector { display: grid; grid-template-columns: minmax(12rem, .6fr) minmax(18rem, 1.4fr); gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; }
   .dashboard-goal-selector h2 { margin: .3rem 0 0; font-size: 1.1rem; } .dashboard-goal-selector > div:last-child { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
   .dashboard-goal-selector button { padding: .65rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
   .dashboard-goal-selector button[aria-pressed='true'] { border-color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, var(--surface)); }
   .dashboard-transfer { display: grid; grid-template-columns: minmax(14rem, .85fr) minmax(18rem, 1.15fr); gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); }
-  .dashboard-transfer span { color: var(--text-soft); font: .6rem var(--font-mono); letter-spacing: .09em; }
+  .dashboard-transfer span { color: var(--text-soft); font: var(--type-technical) var(--font-mono); letter-spacing: .03em; }
   .dashboard-transfer h2 { margin: .3rem 0; font-size: 1.1rem; }
-  .dashboard-transfer p { margin: 0; color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
+  .dashboard-transfer p { margin: 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.55; }
   .dashboard-transfer-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-  .dashboard-transfer button, .dashboard-import-button { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); font: 650 .65rem var(--font-sans); cursor: pointer; }
+  .dashboard-transfer button, .dashboard-import-button { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface-strong); color: var(--text); font: 650 var(--type-technical) var(--font-sans); cursor: pointer; }
   .dashboard-import-button input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
   .dashboard-import-button:focus-within { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .dashboard-transfer-actions p { flex-basis: 100%; min-height: 1rem; }
   .dashboard-reset { border: 1px solid var(--line); border-radius: .7rem; padding: .8rem 1rem; } .dashboard-reset summary { cursor: pointer; font-size: .8rem; }
-  .dashboard-reset > div { max-width: 48rem; padding-top: .8rem; color: var(--text-soft); font-size: .75rem; } .dashboard-reset label { display: block; margin-block: .7rem; }
+  .dashboard-reset > div { max-width: 48rem; padding-top: .8rem; color: var(--text-soft); font-size: var(--type-technical); } .dashboard-reset label { display: block; margin-block: .7rem; }
   .dashboard-reset button { margin: 0 .4rem .4rem 0; padding: .5rem .65rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--text); cursor: pointer; }
   .dashboard-reset [data-reset-confirm] { border-color: var(--rose); }
   @media (max-width: 680px) { .dashboard-heading, .dashboard-project { align-items: start; flex-direction: column; } .dashboard-continue, .dashboard-goal-selector, .dashboard-transfer { grid-template-columns: 1fr; } .dashboard-next { border-top: 1px solid var(--line); border-left: 0; } .dashboard-columns { grid-template-columns: 1fr; } .dashboard-goal-selector > div:last-child { grid-template-columns: 1fr; } }

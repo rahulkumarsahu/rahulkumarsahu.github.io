@@ -45,9 +45,9 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
   .hint-heading span {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .78rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .12em;
+    letter-spacing: .03em;
   }
 
   .hint-heading h3 {
@@ -101,7 +101,7 @@ const { hints, problemSlug } = Astro.props as { hints: Hint[]; problemSlug: stri
     border-radius: 50%;
     color: var(--indigo);
     font-family: var(--font-mono);
-    font-size: .75rem;
+    font-size: var(--type-technical);
   }
 
   .hint-card summary strong {

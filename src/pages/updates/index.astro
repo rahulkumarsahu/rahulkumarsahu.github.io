@@ -68,16 +68,16 @@ const due = records.length - reviewed;
   .freshness-hero > p:not(.section-index) { max-width: 50rem; }
   .freshness-hero dl { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
   .freshness-hero dl div { min-width: 11rem; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--surface); }
-  .freshness-hero dt { font-size: 1.2rem; font-weight: 700; }.freshness-hero dd { margin: .1rem 0 0; color: var(--text-faint); font-size: .62rem; }
+  .freshness-hero dt { font-size: 1.2rem; font-weight: 700; }.freshness-hero dd { margin: .1rem 0 0; color: var(--text-faint); font-size: var(--type-technical); }
   .freshness-directory { padding-bottom: 7rem; }
   .freshness-controls { display: grid; grid-template-columns: 1fr minmax(12rem, .35fr) auto; gap: .6rem; align-items: end; margin-bottom: 1rem; }
-  .freshness-controls label { display: grid; gap: .3rem; }.freshness-controls label span { color: var(--text-faint); font-size: .6rem; }
+  .freshness-controls label { display: grid; gap: .3rem; }.freshness-controls label span { color: var(--text-faint); font-size: var(--type-technical); }
   .freshness-controls input, .freshness-controls select, .freshness-controls button { min-height: 2.6rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text); }
   .freshness-controls button { cursor: pointer; }
   .freshness-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: .7rem; }
   table { width: 100%; min-width: 55rem; border-collapse: collapse; background: var(--surface); }
-  th, td { padding: .75rem; border-bottom: 1px solid var(--line); text-align: left; font-size: .65rem; }
-  th { color: var(--text-faint); font: .52rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  th, td { padding: .75rem; border-bottom: 1px solid var(--line); text-align: left; font-size: var(--type-technical); }
+  th { color: var(--text-faint); font: var(--type-technical) var(--font-mono); letter-spacing: .03em; text-transform: none; }
   td a { text-decoration: underline; text-underline-offset: .18em; }
   .freshness-status { display: inline-flex; padding: .25rem .4rem; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
   .status-reviewed { color: var(--green); }.status-review-due, .status-not-recorded { color: var(--amber); }

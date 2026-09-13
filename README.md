@@ -27,3 +27,11 @@ The static site is generated in `dist/`. Pushing to `main` or `master` publishes
 ## Content
 
 Existing articles live in `src/content/posts/`. Their date-prefixed filenames keep the original `/posts/<slug>/` URLs unchanged.
+
+## GitHub activity
+
+<div align="center">
+  <a href="https://github.com/rahulkumarsahu" aria-label="View Rahul Kumar's GitHub profile">
+    <img src="https://ghchart.rshah.org/58A6FF/rahulkumarsahu" width="95%" alt="Rahul Kumar's GitHub contribution graph" />
+  </a>
+</div>

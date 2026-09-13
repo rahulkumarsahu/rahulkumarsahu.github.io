@@ -7,6 +7,19 @@ import { spawnSync } from 'node:child_process';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const source = path.join(root, 'tests/java/DsaSolutionRegression.java');
+const compilerCheck = spawnSync('javac', ['-version'], { encoding: 'utf8' });
+
+if (compilerCheck.error?.code === 'ENOENT') {
+  process.stdout.write('Skipped Java solution regression tests because javac is not available in this build environment.\n');
+  process.exit(0);
+}
+
+assert.equal(
+  compilerCheck.status,
+  0,
+  `Could not inspect the Java compiler:\n${compilerCheck.stderr || compilerCheck.stdout}`,
+);
+
 const output = mkdtempSync(path.join(tmpdir(), 'atlas-java-tests-'));
 
 try {

@@ -1,0 +1,210 @@
+/*
+ * Cross-site accessibility guardrails.
+ * Component styles remain local; these rules enforce the shared readability,
+ * touch-target and shape conventions identified by the September 2026 audit.
+ */
+
+.header-search-label,
+.header-search kbd,
+.section-context-links a,
+.dsa-tool-links a,
+.about-writing-grid article > span,
+.about-writing-grid a,
+.topic-learning-tools small,
+.dsa-learning-tools span,
+.dsa-learning-tools small,
+.dsa-start-list small,
+.dsa-start-list i,
+.dsa-directory-heading span,
+.decision-choices span,
+.decision-factors span,
+.planner-form label span,
+.planner-form > p,
+.planner-output li small,
+.planner-output .planner-rest,
+.planner-output aside strong,
+.planner-output aside p,
+.freshness-hero dd,
+.freshness-controls label span,
+.pattern-card-top,
+.pattern-card dt,
+.pattern-card dd,
+.pattern-levels span,
+.pattern-card-link,
+.pattern-explainer span,
+.pattern-planned small,
+.orientation-steps span,
+.orientation-steps p,
+.project-progress,
+.architecture-flow span,
+.architecture-flow small,
+.milestone-number i,
+.milestone-copy p,
+.milestone-copy > div span,
+.milestone-resources h4,
+.milestone-resources a,
+.milestone-resources small,
+.milestone-resources > p,
+.planned-resources strong,
+.milestone-control,
+.milestone-control select,
+.project-topic-links > span,
+.project-topic-links a,
+.company-note strong,
+.company-note p,
+.company-stats span,
+.company-stats small,
+.company-filters input,
+.company-filters select,
+.company-result,
+.company-group summary small,
+.company-count,
+.company-source,
+.company-problem-top > span:first-child,
+.company-difficulty,
+.company-problem > p,
+.company-problem-actions :is(button, a),
+.case-study-outline > div > span,
+.case-study-outline p,
+.case-study-outline a > span,
+.case-study-outline strong,
+.case-study-outline small {
+  font-size: var(--type-metadata) !important;
+  letter-spacing: .03em !important;
+}
+
+.jdoodle-heading span,
+.jdoodle-problem span,
+.jdoodle-editor-bar span,
+.jdoodle-side-label,
+.practice-tests summary,
+.practice-test-intro p,
+.practice-test-table table,
+.practice-test-table thead th,
+.jdoodle-rules span,
+.jdoodle-example > span,
+.jdoodle-rules strong,
+.jdoodle-problem > a,
+.draft-state,
+.jdoodle-actions p,
+.editor-button,
+.trace-header > span,
+.trace-input label,
+.trace-input small,
+.trace-input [role='alert'],
+.trace-share-status,
+.trace-panel-label strong,
+.trace-code,
+.trace-phase-row,
+.trace-cell small,
+.trace-cell span,
+.trace-legend,
+.trace-output code,
+.trace-accessible-description,
+.sim-fields small,
+.lb-fields fieldset legend,
+.lb-fields fieldset label,
+.lb-request span,
+.lb-server span,
+.lb-server small,
+.lb-server i,
+.lb-legend,
+.graph-edges span,
+.graph-edges p,
+.graph-legend,
+.tree-legend,
+.cache-code-panel pre,
+.cache-request span,
+.cache-order-label,
+.cache-slot span,
+.cache-request i,
+.cache-legend,
+.simulator-prediction > p {
+  font-size: var(--type-technical) !important;
+  letter-spacing: .02em !important;
+}
+
+.jdoodle-heading > p,
+.jdoodle-problem p,
+.orientation-steps p,
+.company-note p,
+.milestone-copy p,
+.case-study-outline p,
+.trace-accessible-description,
+.graph-edges p {
+  font-size: var(--type-small) !important;
+}
+
+.share-button,
+.code-copy-button,
+.section-context-links a,
+.dsa-tool-links a,
+.planner-form :is(select, input, button),
+.freshness-controls :is(input, select, button),
+.milestone-control select,
+.project-topic-links a,
+.company-filters :is(input, select, .button),
+.company-problem-actions :is(button, a),
+.practice-tests summary,
+.editor-button,
+.trace-input :is(input, button),
+.simulator-prediction > button {
+  min-width: var(--control-min);
+  min-height: var(--control-min) !important;
+}
+
+.share-button,
+.code-copy-button,
+.section-context-links a,
+.dsa-tool-links a,
+.planner-form :is(select, input, button),
+.freshness-controls :is(input, select, button),
+.milestone-control select,
+.project-topic-links a,
+.company-filters :is(input, select, .button),
+.company-problem-actions :is(button, a),
+.practice-tests,
+.editor-button,
+.trace-input :is(input, button),
+.simulator-prediction > button,
+.project-progress,
+.company-note,
+.company-stats article,
+.company-group,
+.company-problem,
+.case-study-outline {
+  border-radius: var(--radius-control) !important;
+}
+
+.about-writing-grid article > span,
+.company-note strong,
+.milestone-control,
+.case-study-outline > div > span,
+.case-study-outline a > span,
+.practice-test-table thead th,
+.lb-fields fieldset legend,
+.graph-edges span {
+  text-transform: none !important;
+}
+
+@media (max-width: 520px) {
+  .freshness-table,
+  .practice-test-table,
+  .article-content table {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .company-chevron,
+  .trace-code-line,
+  .trace-cell,
+  .tree-node,
+  .graph-node,
+  .cache-slot,
+  .lb-server {
+    transition: none !important;
+  }
+}

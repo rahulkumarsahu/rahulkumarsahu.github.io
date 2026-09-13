@@ -2,9 +2,9 @@
 name: The System Design Atlas
 description: A warm engineering field manual for learning code, architecture, and production tradeoffs.
 colors:
-  action-orange: "#C8542F"
-  progress-green: "#416C5A"
-  note-ochre: "#9B7428"
+  action-orange: "#A93F20"
+  progress-green: "#365F4F"
+  note-ochre: "#76561A"
   link-ink: "#345A70"
   paper: "#F3EFE4"
   raised-paper: "#FFFDF7"
@@ -32,7 +32,7 @@ typography:
     lineHeight: 1.75
   technical:
     fontFamily: "SFMono-Regular, Consolas, Liberation Mono, monospace"
-    fontSize: "0.72rem"
+    fontSize: "0.8125rem"
     fontWeight: 500
     lineHeight: 1.4
 rounded:
@@ -123,7 +123,7 @@ The palette is warm, low-glare, and functional. Colour identifies actions and le
 - **Headline** (700, fluid from 2.2rem): Major page and section headings.
 - **Title** (700, 1.25rem to 1.9rem): Article cards, index rows, and tool headings.
 - **Body** (400, 1rem, 1.75): Reading prose and explanations, kept close to 65 to 72 characters per line.
-- **Technical** (500, 0.72rem, modest tracking): Code labels, progress values, and trace state. Use sentence case unless the source is code.
+- **Technical** (500, 0.8125rem minimum, modest tracking): Code labels, progress values, and trace state. Supporting interface copy uses at least 0.875rem. Use sentence case unless the source is code.
 
 **The Editorial First Rule.** Serif establishes hierarchy. Sans explains. Monospace reports data. Do not interchange these roles to manufacture variety.
 

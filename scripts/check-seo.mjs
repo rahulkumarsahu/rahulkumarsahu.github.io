@@ -5,7 +5,14 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = path.join(root, 'dist');
-const siteOrigin = 'https://rahulkumarsahu.github.io';
+const vercelProductionHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+  process.env.PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+const siteOrigin =
+  process.env.PUBLIC_SITE_URL ??
+  (vercelProductionHost
+    ? `https://${vercelProductionHost}`
+    : 'https://rahulkumarsahu.github.io');
 
 function listFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

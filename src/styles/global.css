@@ -1,50 +1,59 @@
 :root {
   color-scheme: dark;
-  --bg: #172033;
-  --bg-soft: #1d2940;
-  --surface: rgba(37, 51, 78, 0.86);
-  --surface-strong: #263652;
-  --surface-raised: #304362;
-  --text: #f8faff;
-  --text-soft: #c2ccdc;
-  --text-faint: #91a0b7;
-  --line: rgba(190, 204, 228, 0.18);
-  --line-strong: rgba(190, 204, 228, 0.32);
-  --indigo: #8b8dff;
-  --indigo-strong: #6d6ff7;
-  --amber: #f4b860;
-  --cyan: #55d6d0;
-  --violet: #c39bff;
-  --green: #79d39e;
-  --rose: #ff91b5;
-  --orange: #ff9b71;
-  --shadow: 0 30px 80px rgba(7, 12, 24, 0.27);
-  --font-display: 'Space Grotesk', 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --bg: #191814;
+  --bg-soft: #211f1a;
+  --surface: #24211b;
+  --surface-strong: #2e2a22;
+  --surface-raised: #332f27;
+  --text: #f2ecde;
+  --text-soft: #c8beab;
+  --text-faint: #a79c89;
+  --line: #474137;
+  --line-strong: #655d4f;
+  --indigo: #ef7650;
+  --indigo-strong: #d95e3a;
+  --amber: #d5a94d;
+  --cyan: #79a88e;
+  --violet: #b69a72;
+  --green: #79a88e;
+  --rose: #d8897f;
+  --orange: #ef7650;
+  --on-action: #211f1a;
+  --shadow: 0 22px 65px rgba(0, 0, 0, .24);
+  --font-editorial: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-display: var(--font-editorial);
+  --font-body: 'Avenir Next', Avenir, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --type-technical: .8125rem;
+  --type-metadata: .875rem;
+  --type-small: .9375rem;
+  --control-min: 2.75rem;
+  --radius-control: 2px;
+  --radius-panel: 2px;
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --bg: #f5f6f2;
-  --bg-soft: #eef0ec;
-  --surface: rgba(255, 255, 255, 0.84);
-  --surface-strong: #ffffff;
-  --surface-raised: #f7f8f5;
-  --text: #10182a;
-  --text-soft: #4d5a6d;
-  --text-faint: #626e82;
-  --line: rgba(31, 47, 69, 0.12);
-  --line-strong: rgba(31, 47, 69, 0.22);
-  --indigo: #5c5ee8;
-  --indigo-strong: #4749d0;
-  --amber: #9b5900;
-  --cyan: #006b6b;
-  --violet: #7440bd;
-  --green: #167043;
-  --rose: #a92d62;
-  --orange: #a84520;
-  --shadow: 0 28px 70px rgba(37, 46, 61, 0.12);
+  --bg: #f3efe4;
+  --bg-soft: #e8e1d2;
+  --surface: #fffdf7;
+  --surface-strong: #f9f5eb;
+  --surface-raised: #eee7da;
+  --text: #211f1a;
+  --text-soft: #625d52;
+  --text-faint: #686156;
+  --line: #c9c0ae;
+  --line-strong: #a89e8a;
+  --indigo: #a93f20;
+  --indigo-strong: #8e3219;
+  --amber: #76561a;
+  --cyan: #365f4f;
+  --violet: #6e533c;
+  --green: #365f4f;
+  --rose: #88443e;
+  --orange: #a93f20;
+  --on-action: #fffdf7;
+  --shadow: 0 18px 52px rgba(48, 39, 25, .12);
 }
 
 *,
@@ -122,34 +131,12 @@ summary {
 .site-shell {
   position: relative;
   min-height: 100vh;
-  overflow: clip;
 }
 
-.site-shell::before {
-  position: absolute;
-  z-index: -2;
-  inset: 0 0 auto;
-  height: 860px;
-  background:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 84%);
-  content: '';
-  opacity: 0.46;
-}
-
+.site-shell::before,
 .site-shell::after {
-  position: absolute;
-  z-index: -3;
-  top: -280px;
-  left: 35%;
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--indigo) 14%, transparent);
-  filter: blur(90px);
-  content: '';
+  display: none;
+  content: none;
 }
 
 .site-header-wrap {
@@ -237,9 +224,9 @@ summary {
   margin-top: 4px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .desktop-nav {
@@ -350,9 +337,9 @@ summary {
   background: color-mix(in srgb, var(--indigo) 8%, transparent);
   color: color-mix(in srgb, var(--indigo) 72%, var(--text));
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .status-dot,
@@ -369,9 +356,9 @@ summary {
   margin: 26px 0 13px;
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--type-technical);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: .03em;
 }
 
 .section-label {
@@ -443,7 +430,6 @@ summary {
 .button-primary {
   border-color: transparent;
   background: var(--indigo-strong);
-  box-shadow: 0 14px 34px color-mix(in srgb, var(--indigo) 24%, transparent);
   color: #fff;
 }
 
@@ -484,9 +470,9 @@ summary {
   margin: 0;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .hero-visual {
@@ -515,9 +501,9 @@ summary {
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg-soft) 58%, transparent);
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .window-title {
@@ -548,8 +534,8 @@ summary {
   left: 16px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .architecture-flow {
@@ -592,7 +578,7 @@ summary {
   background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
   text-align: center;
 }
 
@@ -609,15 +595,15 @@ summary {
 
 .architecture-node small {
   color: var(--text-faint);
-  font-size: 6.5px;
-  letter-spacing: 0.04em;
+  font-size: var(--type-technical);
+  letter-spacing: 0.03em;
 }
 
 .node-icon {
   color: var(--indigo);
-  font-size: 8px;
+  font-size: var(--type-technical);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: .03em;
 }
 
 .node-cache .node-icon,
@@ -692,9 +678,9 @@ summary {
   margin-top: 28px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .canvas-legend span {
@@ -737,7 +723,7 @@ summary {
   background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
   color: var(--text-soft);
-  font-size: 10px;
+  font-size: var(--type-technical);
   line-height: 1.5;
   backdrop-filter: blur(16px);
 }
@@ -747,8 +733,8 @@ summary {
   margin-bottom: 5px;
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.13em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .floating-note-one {
@@ -780,13 +766,13 @@ summary {
   padding-inline: 24px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.14em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .trust-track i {
   color: var(--indigo);
-  font-size: 6px;
+  font-size: var(--type-technical);
 }
 
 .tracks,
@@ -887,9 +873,9 @@ summary {
   justify-content: space-between;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .track-arrow {
@@ -900,7 +886,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .track-card h3 {
@@ -917,7 +903,7 @@ summary {
   max-width: 400px;
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -986,8 +972,8 @@ summary {
   background: color-mix(in srgb, var(--amber) 7%, transparent);
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .roadmap h2 {
@@ -1007,7 +993,7 @@ summary {
   align-items: center;
   gap: 12px;
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--type-technical);
   font-weight: 600;
 }
 
@@ -1052,7 +1038,7 @@ summary {
 .roadmap-state {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .roadmap-list div {
@@ -1071,9 +1057,9 @@ summary {
 .roadmap-list small {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .roadmap-list .is-active .roadmap-state {
@@ -1136,8 +1122,8 @@ summary {
   left: 20px;
   color: var(--note-accent);
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .note-art-shape {
@@ -1174,9 +1160,9 @@ summary {
   margin: 0 0 13px;
   color: var(--note-accent);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: .03em;
 }
 
 .note-card h3 {
@@ -1205,7 +1191,7 @@ summary {
 .note-body > p:not(.note-eyebrow) {
   margin: 15px 0 24px;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -1215,9 +1201,9 @@ summary {
   justify-content: space-between;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .note-footer span:last-child {
@@ -1349,8 +1335,8 @@ summary {
   gap: 18px;
   margin-top: 24px;
   font-family: var(--font-mono);
-  font-size: 9px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .about-links a {
@@ -1360,7 +1346,7 @@ summary {
 .about-card blockquote {
   margin: 0;
   padding: 22px 0 22px 24px;
-  border-left: 2px solid var(--amber);
+  border-left: 1px solid var(--amber);
   color: var(--text-soft);
   font-family: var(--font-display);
   font-size: 15px;
@@ -1376,9 +1362,9 @@ summary {
   border-top: 1px solid var(--line);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: .75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .footer-brand .brand-copy small {
@@ -1392,7 +1378,7 @@ summary {
   margin: 18px 0 0;
   color: var(--text-soft);
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: var(--type-technical);
   letter-spacing: normal;
   line-height: 1.6;
   text-transform: none;
@@ -1413,15 +1399,15 @@ summary {
 .footer-links > span {
   margin-bottom: 4px;
   color: var(--amber);
-  font-size: .72rem;
-  letter-spacing: .1em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .footer-links a {
   display: flex;
   min-height: 1.75rem;
   align-items: center;
-  font-size: .78rem;
+  font-size: var(--type-technical);
 }
 
 .footer-links a:hover {
@@ -1472,10 +1458,10 @@ summary {
   padding: 0;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.05em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
   list-style: none;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .breadcrumbs li {
@@ -1538,7 +1524,7 @@ summary {
   gap: 40px;
   padding: 30px 8px;
   border-bottom: 1px solid var(--line);
-  transition: background 160ms ease, padding 160ms ease;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 .topic-directory-card:first-child {
@@ -1563,16 +1549,16 @@ summary {
 .topic-directory-number {
   color: var(--track-accent);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .topic-directory-card > div:nth-child(2) > span,
 .topic-directory-meta {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .topic-directory-card h2 {
@@ -1587,7 +1573,7 @@ summary {
   max-width: 690px;
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .topic-directory-meta {
@@ -1686,8 +1672,8 @@ summary {
 .search-empty > span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .topic-empty h3,
@@ -1726,9 +1712,15 @@ summary {
   gap: 10px;
   padding: 9px 13px;
   border: 1px solid var(--line-strong);
-  border-radius: 13px;
+  border-radius: var(--radius-control);
   background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+  box-shadow: none;
+}
+
+.section-search-field:focus-within {
+  border-color: var(--indigo);
+  outline: 3px solid color-mix(in srgb, var(--indigo) 38%, transparent);
+  outline-offset: 3px;
 }
 
 .section-search-field > span {
@@ -1861,14 +1853,14 @@ summary {
 .dsa-topic-tab-top > span {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--type-technical);
 }
 
 .dsa-topic-tab-top small {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.08em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .dsa-topic-tab h3 {
@@ -1884,7 +1876,7 @@ summary {
   min-height: 61px;
   margin: 0 0 20px;
   color: var(--text-soft);
-  font-size: 11px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -1903,7 +1895,7 @@ summary {
   background: var(--bg-soft);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
+  font-size: var(--type-technical);
 }
 
 .dsa-topic-tab-levels {
@@ -1918,14 +1910,14 @@ summary {
   gap: 3px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 6px;
+  font-size: var(--type-technical);
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .dsa-topic-tab-levels strong {
   color: var(--text-soft);
-  font-size: 10px;
+  font-size: var(--type-technical);
   font-weight: 500;
 }
 
@@ -1945,9 +1937,9 @@ summary {
   padding-top: 20px;
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .dsa-section-directory {
@@ -1962,7 +1954,7 @@ summary {
   gap: 30px;
   padding: 28px 12px;
   border-bottom: 1px solid var(--line);
-  transition: background 160ms ease, padding 160ms ease;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 .dsa-section-row:first-child {
@@ -1979,14 +1971,14 @@ summary {
 .dsa-section-row > i {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
   font-style: normal;
-  letter-spacing: 0.08em;
+  letter-spacing: .03em;
 }
 
 .dsa-section-row small {
   color: var(--text-faint);
-  font-size: 8px;
+  font-size: var(--type-technical);
 }
 
 .dsa-section-row h2 {
@@ -2001,7 +1993,7 @@ summary {
   max-width: 770px;
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .dsa-section-row > i {
@@ -2029,9 +2021,9 @@ summary {
   background: color-mix(in srgb, var(--surface) 65%, transparent);
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .difficulty-basics { border-color: color-mix(in srgb, var(--indigo) 45%, var(--line)); color: var(--indigo); }
@@ -2064,8 +2056,8 @@ summary {
 .difficulty-heading > small {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .difficulty-heading > small {
@@ -2083,7 +2075,7 @@ summary {
 .difficulty-heading p {
   margin: 7px 0 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .dsa-article-grid {
@@ -2125,8 +2117,8 @@ summary {
 .dsa-article-meta > span:not(.difficulty) {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .dsa-pattern-tags {
@@ -2142,7 +2134,7 @@ summary {
   border-radius: 999px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: .48rem;
+  font-size: var(--type-technical);
   text-transform: capitalize;
 }
 
@@ -2163,7 +2155,7 @@ summary {
 .dsa-article-card-body > p {
   margin: 0 0 22px;
   color: var(--text-soft);
-  font-size: 11px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -2171,8 +2163,8 @@ summary {
   margin-top: auto;
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .difficulty-empty {
@@ -2180,7 +2172,7 @@ summary {
   border: 1px dashed var(--line-strong);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 /* Article cards */
@@ -2232,9 +2224,9 @@ summary {
   gap: 14px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .post-card h3 {
@@ -2309,9 +2301,9 @@ summary {
   background: color-mix(in srgb, var(--track-accent) 7%, transparent);
   color: var(--track-accent);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .article-chip-row {
@@ -2371,7 +2363,7 @@ summary {
 }
 
 .article-byline strong {
-  font-size: 11px;
+  font-size: var(--type-technical);
   font-weight: 600;
 }
 
@@ -2379,8 +2371,8 @@ summary {
   margin-top: 4px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .share-button {
@@ -2392,8 +2384,8 @@ summary {
   background: var(--surface);
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
   cursor: pointer;
 }
 
@@ -2404,8 +2396,8 @@ summary {
   margin-bottom: 45px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.07em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .article-divider i {
@@ -2518,7 +2510,7 @@ summary {
   margin-top: 10px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
   line-height: 1.6;
   text-align: center;
 }
@@ -2532,7 +2524,7 @@ summary {
 .article-content blockquote {
   margin: 30px 0;
   padding: 20px 24px;
-  border-left: 3px solid var(--amber);
+  border-left: 1px solid var(--amber);
   background: color-mix(in srgb, var(--amber) 6%, var(--surface));
   color: var(--text-soft);
 }
@@ -2556,7 +2548,7 @@ summary {
   border-radius: 12px;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.75;
 }
 
@@ -2575,7 +2567,7 @@ summary {
   background: rgba(8, 14, 25, 0.78);
   color: #c4cedb;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   cursor: pointer;
 }
 
@@ -2610,9 +2602,9 @@ summary {
 .practice-solution > summary span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   font-weight: 600;
-  letter-spacing: .12em;
+  letter-spacing: .03em;
 }
 
 .practice-solution > summary strong {
@@ -2638,7 +2630,7 @@ summary {
 
 .practice-solution > summary small {
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.55;
 }
 
@@ -2682,21 +2674,21 @@ summary {
 .article-end span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .article-end p {
   margin: 9px 0 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .article-end a {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 9px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .post-navigation {
@@ -2723,8 +2715,8 @@ summary {
 .post-navigation span {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .post-navigation strong {
@@ -2757,8 +2749,8 @@ summary {
   border-bottom: 1px solid var(--line);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .toc-card nav {
@@ -2772,7 +2764,7 @@ summary {
   display: block;
   padding: 7px 3px;
   color: var(--text-soft);
-  font-size: 10px;
+  font-size: var(--type-technical);
   line-height: 1.4;
 }
 
@@ -2783,13 +2775,13 @@ summary {
 .toc-card .toc-depth-3 {
   padding-left: 13px;
   color: var(--text-faint);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .toc-empty {
   margin: 16px 0 4px;
   color: var(--text-faint);
-  font-size: 10px;
+  font-size: var(--type-technical);
 }
 
 .aside-note {
@@ -2800,15 +2792,15 @@ summary {
 .aside-note span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.09em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .aside-note p {
   margin: 10px 0 0;
   color: var(--text-soft);
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.55;
 }
 
@@ -2868,8 +2860,8 @@ summary {
   gap: 14px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.09em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .about-story-label span {
@@ -2934,7 +2926,7 @@ summary {
 .principle-grid article > span {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .principle-grid h3 {
@@ -2948,7 +2940,7 @@ summary {
 .principle-grid p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .toolbox {
@@ -2972,7 +2964,7 @@ summary {
   background: var(--surface);
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .about-connect {
@@ -3031,9 +3023,9 @@ summary {
 .roadmap-module-state {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .roadmap-progress-card strong {
@@ -3046,7 +3038,7 @@ summary {
 
 .roadmap-progress-card strong small {
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   font-weight: 500;
 }
 
@@ -3065,7 +3057,7 @@ summary {
 .roadmap-progress-card p {
   margin: 17px 0 0;
   color: var(--text-faint);
-  font-size: 10px;
+  font-size: var(--type-technical);
 }
 
 .roadmap-modules {
@@ -3105,7 +3097,7 @@ summary {
   background: var(--bg);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .roadmap-module.is-available .roadmap-module-number {
@@ -3126,14 +3118,14 @@ summary {
   max-width: 720px;
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .roadmap-module > a {
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 9px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .roadmap-module-state {
@@ -3295,7 +3287,7 @@ summary {
   .mobile-nav a span {
     color: var(--indigo);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: var(--type-technical);
   }
 
   .hero {
@@ -3553,7 +3545,7 @@ summary {
   }
 
   .architecture-node {
-    font-size: 7px;
+    font-size: var(--type-technical);
   }
 
   .blueprint-footer {
@@ -3814,14 +3806,12 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  html { scroll-behavior: auto; }
+  [data-reveal],
+  .hero-orbit,
+  .hero-orbit-dot,
+  .hero-node,
+  .progress-ring { animation: none !important; }
 }
 
 /* Homepage: the Atlas workbench */
@@ -3869,9 +3859,9 @@ summary {
   margin: 27px 0 13px;
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--type-technical);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: .03em;
 }
 
 .home-hero h1 {
@@ -3934,14 +3924,14 @@ summary {
   margin-top: 24px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
 }
 
 .home-starting-points > span {
   color: var(--text-faint);
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .home-starting-points a {
@@ -4004,9 +3994,9 @@ summary {
   margin: 0;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .home-hero-copy > * {
@@ -4073,8 +4063,8 @@ summary {
   background: color-mix(in srgb, var(--bg-soft) 58%, transparent);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .atlas-board-bar span:first-child {
@@ -4183,8 +4173,8 @@ summary {
 .atlas-method-note span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.12em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .atlas-portrait-caption strong {
@@ -4198,7 +4188,7 @@ summary {
   margin-top: 2px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
+  font-size: var(--type-technical);
 }
 
 .atlas-route-list {
@@ -4247,18 +4237,18 @@ summary {
 .atlas-route > span {
   color: var(--route-accent);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
 }
 
 .atlas-route strong {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--type-technical);
   font-weight: 600;
 }
 
 .atlas-route > i {
   color: var(--text-faint);
-  font-size: 10px;
+  font-size: var(--type-technical);
   font-style: normal;
 }
 
@@ -4271,7 +4261,7 @@ summary {
   width: 205px;
   flex-direction: column;
   padding: 12px 14px;
-  border-left: 2px solid var(--amber);
+  border-left: 1px solid var(--amber);
   background: color-mix(in srgb, var(--bg-soft) 86%, transparent);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(12px);
@@ -4281,7 +4271,7 @@ summary {
   margin-top: 3px;
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
   font-weight: 500;
 }
 
@@ -4289,7 +4279,7 @@ summary {
   min-height: 45px;
   border-top: 1px solid var(--line);
   border-bottom: 0;
-  font-size: 7px;
+  font-size: var(--type-technical);
 }
 
 .trust-track {
@@ -4351,8 +4341,8 @@ summary {
 .learning-method-grid article > span {
   color: var(--method-accent, var(--indigo));
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .learning-method-grid article > strong {
@@ -4375,7 +4365,7 @@ summary {
   padding-top: 28px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--type-technical);
 }
 
 .tracks {
@@ -4567,7 +4557,7 @@ summary {
   }
 
   .atlas-board-bar {
-    font-size: 7px;
+    font-size: var(--type-technical);
   }
 
   .atlas-portrait-wrap {
@@ -4599,7 +4589,7 @@ summary {
   }
 
   .atlas-route strong {
-    font-size: 9px;
+    font-size: var(--type-technical);
   }
 
   .atlas-method-note {
@@ -4610,7 +4600,7 @@ summary {
   }
 
   .atlas-method-note strong {
-    font-size: 7px;
+    font-size: var(--type-technical);
   }
 
   .atlas-board-footer span:nth-child(2) {
@@ -4674,7 +4664,7 @@ summary {
 
 .desktop-learn-menu summary span {
   color: var(--text-faint);
-  font-size: 12px;
+  font-size: var(--type-technical);
   transition: transform 160ms ease;
 }
 
@@ -4730,9 +4720,9 @@ summary {
 .learn-menu-card small {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .learn-menu-heading strong {
@@ -4749,8 +4739,8 @@ summary {
   gap: 7px;
   color: var(--indigo);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .learn-menu-heading i,
@@ -4792,7 +4782,7 @@ summary {
 .learn-menu-card > span {
   color: var(--track-accent);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
 }
 
 .learn-menu-card > div {
@@ -4804,7 +4794,7 @@ summary {
 .learn-menu-card strong {
   color: var(--text);
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: var(--type-technical);
   font-weight: 600;
 }
 
@@ -4814,7 +4804,7 @@ summary {
 
 .learn-menu-card > i {
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: var(--type-technical);
 }
 
 .curriculum-directory {
@@ -4848,7 +4838,7 @@ summary {
   border-radius: 50%;
   color: var(--track-accent);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-technical);
 }
 
 .curriculum-group-heading > div {
@@ -4868,7 +4858,7 @@ summary {
   max-width: 760px;
   margin-top: 5px;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.65;
 }
 
@@ -4876,9 +4866,9 @@ summary {
   padding-top: 10px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   font-style: normal;
-  letter-spacing: 0.08em;
+  letter-spacing: .03em;
 }
 
 .curriculum-section-grid {
@@ -4927,8 +4917,8 @@ summary {
   justify-content: space-between;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.07em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .curriculum-section-card.has-articles .curriculum-section-top small {
@@ -4948,7 +4938,7 @@ summary {
   max-width: 520px;
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -4965,7 +4955,7 @@ summary {
   border-radius: 6px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
+  font-size: var(--type-technical);
 }
 
 .curriculum-section-action {
@@ -4976,8 +4966,8 @@ summary {
   padding-top: 25px;
   color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  text-transform: none;
 }
 
 .curriculum-section-action span {
@@ -5012,9 +5002,9 @@ summary {
   border-radius: 7px;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .curriculum-section-summary a {
@@ -5039,9 +5029,9 @@ summary {
 .curriculum-local-nav > span {
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .curriculum-local-nav > div {
@@ -5059,7 +5049,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 7px;
   color: var(--text-faint);
-  font-size: 9px;
+  font-size: var(--type-technical);
   white-space: nowrap;
 }
 
@@ -5102,7 +5092,7 @@ summary {
 .curriculum-content-heading > p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 12px;
+  font-size: var(--type-technical);
   line-height: 1.7;
 }
 
@@ -5129,8 +5119,8 @@ summary {
 .curriculum-concept-grid article small {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.07em;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
 }
 
 .curriculum-concept-grid article > div {
@@ -5199,9 +5189,9 @@ summary {
 .curriculum-pagination small {
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--type-technical);
+  letter-spacing: .03em;
+  text-transform: none;
 }
 
 .curriculum-pagination strong {

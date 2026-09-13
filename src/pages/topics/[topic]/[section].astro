@@ -108,7 +108,7 @@ const learningStage = getStageForSection(path.slug, section.slug);
     {posts.length > 0 && (
       <section class="curriculum-available" data-filter-group>
         <div class="curriculum-content-heading">
-          <div><p class="section-index">PUBLISHED AND AVAILABLE</p><h2>Start with articles you can read now</h2></div>
+          <div><p class="section-index">Published and available</p><h2>Start with articles you can read now</h2></div>
           <p>Published material appears first so you never have to search through placeholders before finding a lesson.</p>
         </div>
         <div class="post-grid">
@@ -126,7 +126,7 @@ const learningStage = getStageForSection(path.slug, section.slug);
 
     <section class="curriculum-planned" data-filter-group>
       <div class="curriculum-content-heading">
-        <div><p class="section-index">{isNotes ? 'PLANNED NOTES' : 'PLANNED FOR LATER'}</p><h2>Topics in this {isNotes ? 'collection' : 'subsection'}</h2></div>
+        <div><p class="section-index">{isNotes ? 'Planned notes' : 'Planned for later'}</p><h2>Topics in this {isNotes ? 'collection' : 'subsection'}</h2></div>
         <p>{isNotes
           ? 'Each idea can become an independent deep dive. The collection keeps related investigations easy to find as the library grows.'
           : 'These concepts remain visible as a preview of the learning path, but they stay quieter than published articles.'}</p>
@@ -146,12 +146,12 @@ const learningStage = getStageForSection(path.slug, section.slug);
   <nav class="curriculum-pagination section-wrap" aria-label="Previous and next subsection">
     {previous ? (
       <a href={`/topics/${path.slug}/${previous.section.slug}/`}>
-        <span>← PREVIOUS</span><strong>{previous.section.title}</strong><small>{previous.group.title}</small>
+        <span>← Previous</span><strong>{previous.section.title}</strong><small>{previous.group.title}</small>
       </a>
     ) : <span></span>}
     {next ? (
       <a href={`/topics/${path.slug}/${next.section.slug}/`}>
-        <span>NEXT →</span><strong>{next.section.title}</strong><small>{next.group.title}</small>
+        <span>Next →</span><strong>{next.section.title}</strong><small>{next.group.title}</small>
       </a>
     ) : <span></span>}
   </nav>
@@ -160,6 +160,6 @@ const learningStage = getStageForSection(path.slug, section.slug);
 <style>
   .system-simulator { padding-top: 1.5rem; }
   .section-context-links { display: flex; flex-wrap: wrap; gap: .45rem; padding-block: 1rem; }
-  .section-context-links a { padding: .42rem .6rem; border: 1px solid var(--line); border-radius: .45rem; color: var(--text-soft); font-size: .65rem; }
+  .section-context-links a { padding: .42rem .6rem; border: 1px solid var(--line); border-radius: .45rem; color: var(--text-soft); font-size: var(--type-technical); }
   .section-context-links a:hover { border-color: var(--indigo); color: var(--text); }
 </style>

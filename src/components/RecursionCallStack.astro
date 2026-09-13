@@ -259,7 +259,7 @@
     box-shadow: 0 24px 60px color-mix(in srgb, var(--ink) 10%, transparent);
   }
   .recursion-lab-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; padding: 1.4rem 1.5rem 1.3rem; border-bottom: 1px solid var(--border); }
-  .recursion-lab-heading > div > span, .recursion-stack-heading > div > span, .recursion-current-value span, .recursion-output-panel > div:first-child > span { color: var(--lab-blue); font-family: var(--font-mono); font-size: .67rem; font-weight: 800; letter-spacing: .13em; }
+  .recursion-lab-heading > div > span, .recursion-stack-heading > div > span, .recursion-current-value span, .recursion-output-panel > div:first-child > span { color: var(--lab-blue); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 800; letter-spacing: .03em; }
   .recursion-lab-heading h3 { margin: .25rem 0 0; color: var(--heading); font-size: clamp(1.3rem, 3vw, 1.85rem); line-height: 1.15; }
   .recursion-lab-heading p { max-width: 22rem; margin: 0; color: var(--muted); font-size: .9rem; text-align: right; }
   .recursion-lab-heading code { color: var(--lab-blue); font-weight: 750; }
@@ -267,14 +267,14 @@
   .recursion-code-panel, .recursion-stack-panel, .recursion-explanation { min-width: 0; padding: 1.25rem; }
   .recursion-stack-panel, .recursion-explanation { border-left: 1px solid var(--border); }
   .recursion-code-panel { background: color-mix(in srgb, var(--lab-navy) 96%, #000); }
-  .recursion-panel-heading { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; color: #dce7ff; font-family: var(--font-mono); font-size: .72rem; }
+  .recursion-panel-heading { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; color: #dce7ff; font-family: var(--font-mono); font-size: var(--type-technical); }
   .recursion-panel-heading > div { display: flex; gap: .35rem; }
   .recursion-panel-heading small { justify-self: end; color: #91a3c7; }
   .panel-dot { display: block; width: .58rem; height: .58rem; border-radius: 50%; }
   .panel-dot-red { background: #ff6b68; } .panel-dot-yellow { background: #ffc04a; } .panel-dot-green { background: #3fd08c; }
   .recursion-code { overflow-x: auto; margin: 1.35rem -.4rem 0; padding: .5rem 0; border: 0; background: transparent; color: #eef4ff; font-family: var(--font-mono); font-size: clamp(.72rem, 1.25vw, .83rem); line-height: 2.15; }
   .recursion-code code { display: block; min-width: 30rem; }
-  .code-line { display: grid; grid-template-columns: 1.8rem 1.3rem 1fr; align-items: center; min-height: 2rem; padding: 0 .65rem; border-left: 3px solid transparent; transition: background 180ms ease, border-color 180ms ease; }
+  .code-line { display: grid; grid-template-columns: 1.8rem 1.3rem 1fr; align-items: center; min-height: 2rem; padding: 0 .65rem; border-left: 1px solid transparent; transition: background 180ms ease, border-color 180ms ease; }
   .code-line > i { color: #6f82a8; font-style: normal; text-align: right; }
   .code-line > b { color: #6ee7e2; font-weight: 900; text-align: center; }
   .code-line > span { white-space: pre; } .code-line em { color: #b9a7ff; font-style: normal; } .code-line q { color: #ffd37b; }
@@ -284,44 +284,44 @@
   .recursion-stack-panel { background: color-mix(in srgb, var(--surface-raised) 82%, transparent); }
   .recursion-stack-heading { display: flex; align-items: start; justify-content: space-between; gap: .75rem; }
   .recursion-stack-heading h4 { margin: .2rem 0 0; color: var(--heading); font-size: .95rem; line-height: 1.2; }
-  .recursion-stack-heading small { color: var(--muted); font-family: var(--font-mono); font-size: .64rem; text-align: right; }
-  .stack-top-marker { display: flex; align-items: center; gap: .5rem; margin: 1rem 0 .4rem; color: var(--lab-blue); font-family: var(--font-mono); font-size: .62rem; font-weight: 850; letter-spacing: .12em; }
+  .recursion-stack-heading small { color: var(--muted); font-family: var(--font-mono); font-size: var(--type-technical); text-align: right; }
+  .stack-top-marker { display: flex; align-items: center; gap: .5rem; margin: 1rem 0 .4rem; color: var(--lab-blue); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 850; letter-spacing: .03em; }
   .stack-top-marker i { flex: 1; height: 1px; background: linear-gradient(90deg, var(--lab-blue), transparent); }
-  .recursion-stack-shell { display: flex; flex-direction: column; justify-content: end; min-height: 22rem; padding: .75rem .65rem 0; border-right: 3px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); border-left: 3px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); background: linear-gradient(90deg, color-mix(in srgb, var(--lab-blue) 4%, transparent), transparent 18% 82%, color-mix(in srgb, var(--lab-blue) 4%, transparent)); }
+  .recursion-stack-shell { display: flex; flex-direction: column; justify-content: end; min-height: 22rem; padding: .75rem .65rem 0; border-right: 1px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); border-left: 1px solid color-mix(in srgb, var(--lab-blue) 34%, var(--border)); background: linear-gradient(90deg, color-mix(in srgb, var(--lab-blue) 4%, transparent), transparent 18% 82%, color-mix(in srgb, var(--lab-blue) 4%, transparent)); }
   .recursion-stack-empty { display: grid; place-content: center; flex: 1; min-height: 7rem; color: var(--muted); text-align: center; }
-  .recursion-stack-empty[hidden] { display: none; } .recursion-stack-empty span { color: var(--heading); font-weight: 750; } .recursion-stack-empty small { margin-top: .2rem; font-size: .7rem; }
+  .recursion-stack-empty[hidden] { display: none; } .recursion-stack-empty span { color: var(--heading); font-weight: 750; } .recursion-stack-empty small { margin-top: .2rem; font-size: var(--type-technical); }
   .recursion-stack-frames { display: flex; flex-direction: column; gap: .36rem; }
   .recursion-frame, .recursion-main-frame { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: .45rem; padding: .56rem .65rem; border: 1px solid var(--border-strong); border-radius: .6rem; background: var(--surface); box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 7%, transparent); }
-  .recursion-frame > span, .recursion-main-frame > span { grid-column: 1 / -1; margin-bottom: .1rem; color: var(--muted); font-family: var(--font-mono); font-size: .52rem; font-weight: 850; letter-spacing: .1em; }
-  .recursion-frame strong, .recursion-main-frame strong { color: var(--heading); font-family: var(--font-mono); font-size: .76rem; }
-  .recursion-frame code { padding: .18rem .38rem; border-radius: .35rem; background: var(--surface-muted); color: var(--lab-blue); font-size: .7rem; font-weight: 800; }
+  .recursion-frame > span, .recursion-main-frame > span { grid-column: 1 / -1; margin-bottom: .1rem; color: var(--muted); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 850; letter-spacing: .03em; }
+  .recursion-frame strong, .recursion-main-frame strong { color: var(--heading); font-family: var(--font-mono); font-size: var(--type-technical); }
+  .recursion-frame code { padding: .18rem .38rem; border-radius: .35rem; background: var(--surface-muted); color: var(--lab-blue); font-size: var(--type-technical); font-weight: 800; }
   .recursion-frame.is-active { border-color: color-mix(in srgb, var(--lab-blue) 72%, var(--border)); background: color-mix(in srgb, var(--lab-blue) 9%, var(--surface)); box-shadow: 0 7px 18px color-mix(in srgb, var(--lab-blue) 18%, transparent); }
   .recursion-frame.is-base { border-color: color-mix(in srgb, var(--lab-amber) 70%, var(--border)); background: color-mix(in srgb, var(--lab-amber) 10%, var(--surface)); }
   .recursion-frame.is-returning { border-color: color-mix(in srgb, var(--lab-green) 70%, var(--border)); background: color-mix(in srgb, var(--lab-green) 10%, var(--surface)); }
   .recursion-main-frame { margin-top: .4rem; border-radius: .55rem .55rem 0 0; background: color-mix(in srgb, var(--lab-navy) 92%, var(--surface)); }
-  .recursion-main-frame span { color: #8fa3c8; } .recursion-main-frame strong { color: #f1f5ff; } .recursion-main-frame small { color: #adbbd6; font-family: var(--font-mono); font-size: .58rem; }
-  .stack-bottom-marker { padding: .4rem; border-radius: 0 0 .45rem .45rem; background: color-mix(in srgb, var(--lab-navy) 92%, var(--surface)); color: #9caed0; font-family: var(--font-mono); font-size: .55rem; font-weight: 800; letter-spacing: .13em; text-align: center; }
+  .recursion-main-frame span { color: #8fa3c8; } .recursion-main-frame strong { color: #f1f5ff; } .recursion-main-frame small { color: #adbbd6; font-family: var(--font-mono); font-size: var(--type-technical); }
+  .stack-bottom-marker { padding: .4rem; border-radius: 0 0 .45rem .45rem; background: color-mix(in srgb, var(--lab-navy) 92%, var(--surface)); color: #9caed0; font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 800; letter-spacing: .03em; text-align: center; }
   .recursion-explanation { display: flex; flex-direction: column; background: color-mix(in srgb, var(--surface) 86%, transparent); }
-  .recursion-phase { align-self: flex-start; padding: .3rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--lab-blue) 12%, var(--surface)); color: var(--lab-blue); font-family: var(--font-mono); font-size: .62rem; font-weight: 850; letter-spacing: .1em; }
+  .recursion-phase { align-self: flex-start; padding: .3rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--lab-blue) 12%, var(--surface)); color: var(--lab-blue); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 850; letter-spacing: .03em; }
   .recursion-phase[data-phase='base-check'], .recursion-phase[data-phase='base-case'] { background: color-mix(in srgb, var(--lab-amber) 13%, var(--surface)); color: var(--lab-amber); }
   .recursion-phase[data-phase='return'], .recursion-phase[data-phase='complete'] { background: color-mix(in srgb, var(--lab-green) 13%, var(--surface)); color: var(--lab-green); }
   .recursion-explanation h4 { margin: .8rem 0 .45rem; color: var(--heading); font-size: 1.08rem; }
   .recursion-explanation > p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.65; }
   .recursion-legend { display: flex; flex-wrap: wrap; gap: .55rem .8rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-  .recursion-legend span { display: flex; align-items: center; gap: .3rem; color: var(--muted); font-size: .65rem; } .recursion-legend i { width: .48rem; height: .48rem; border-radius: 50%; }
+  .recursion-legend span { display: flex; align-items: center; gap: .3rem; color: var(--muted); font-size: var(--type-technical); } .recursion-legend i { width: .48rem; height: .48rem; border-radius: 50%; }
   .legend-active { background: var(--lab-blue); } .legend-waiting { background: #8b98ac; } .legend-returning { background: var(--lab-green); }
   .recursion-output-panel { margin-top: auto; padding-top: 1.3rem; }
-  .recursion-output-panel > div:first-child { display: flex; justify-content: space-between; margin-bottom: .45rem; } .recursion-output-panel > div:first-child small { color: var(--muted); font-family: var(--font-mono); font-size: .62rem; }
-  .recursion-output { min-height: 7.2rem; padding: .75rem; border: 1px solid rgba(129,161,221,.18); border-radius: .7rem; background: color-mix(in srgb, var(--lab-navy) 96%, #000); color: #dff6ec; font-family: var(--font-mono); font-size: .7rem; line-height: 1.8; }
+  .recursion-output-panel > div:first-child { display: flex; justify-content: space-between; margin-bottom: .45rem; } .recursion-output-panel > div:first-child small { color: var(--muted); font-family: var(--font-mono); font-size: var(--type-technical); }
+  .recursion-output { min-height: 7.2rem; padding: .75rem; border: 1px solid rgba(129,161,221,.18); border-radius: .7rem; background: color-mix(in srgb, var(--lab-navy) 96%, #000); color: #dff6ec; font-family: var(--font-mono); font-size: var(--type-technical); line-height: 1.8; }
   .recursion-output span { display: block; } .recursion-output i { color: #8092b6; font-style: normal; }
   .recursion-controls { display: flex; justify-content: center; gap: .6rem; padding: 1.05rem 1.25rem .9rem; border-top: 1px solid var(--border); }
-  .recursion-controls button { min-height: 2.55rem; padding: .58rem .86rem; border: 1px solid var(--border-strong); border-radius: .7rem; background: var(--surface); color: var(--heading); font: 750 .76rem var(--font-sans); cursor: pointer; transition: transform 150ms ease, border-color 150ms ease, background 150ms ease; }
+  .recursion-controls button { min-height: 2.55rem; padding: .58rem .86rem; border: 1px solid var(--border-strong); border-radius: .7rem; background: var(--surface); color: var(--heading); font: 750 var(--type-technical) var(--font-sans); cursor: pointer; transition: transform 150ms ease, border-color 150ms ease, background 150ms ease; }
   .recursion-controls button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--lab-blue); } .recursion-controls button:focus-visible { outline: 3px solid color-mix(in srgb, var(--lab-blue) 32%, transparent); outline-offset: 2px; } .recursion-controls button:disabled { cursor: not-allowed; opacity: .42; }
   .recursion-controls .recursion-play { min-width: 5.5rem; border-color: var(--lab-blue); background: var(--lab-blue); color: white; }
   .recursion-step-line { display: flex; align-items: center; gap: .75rem; padding: 0 1.25rem 1.15rem; }
   .recursion-step-line > div { flex: 1; overflow: hidden; height: .32rem; border-radius: 999px; background: color-mix(in srgb, var(--lab-blue) 12%, var(--surface-muted)); }
   .recursion-step-line i { display: block; width: 100%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--lab-blue), var(--lab-cyan)); transform: scaleX(0); transform-origin: left; transition: transform 240ms ease; }
-  .recursion-step-line span { min-width: 5.2rem; color: var(--muted); font-family: var(--font-mono); font-size: .66rem; text-align: right; }
+  .recursion-step-line span { min-width: 5.2rem; color: var(--muted); font-family: var(--font-mono); font-size: var(--type-technical); text-align: right; }
   @media (max-width: 1120px) {
     .recursion-workspace { grid-template-columns: minmax(22rem, 1.15fr) minmax(17rem, .85fr); }
     .recursion-explanation { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(12rem, .7fr) minmax(18rem, 1.3fr); column-gap: 1.5rem; border-top: 1px solid var(--border); border-left: 0; }
@@ -421,7 +421,7 @@
     border: 1px solid var(--line);
     border-radius: .48rem;
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
     font-weight: 700;
     line-height: 1.2;
     text-align: center;
@@ -456,9 +456,9 @@
     margin: 0;
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .52rem;
+    font-size: var(--type-technical);
     font-weight: 750;
-    letter-spacing: .1em;
+    letter-spacing: .03em;
     line-height: 1.2;
   }
 
@@ -469,7 +469,7 @@
     min-width: 0;
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: .78rem;
+    font-size: var(--type-technical);
     font-weight: 600;
     line-height: 1.35;
     white-space: nowrap;
@@ -553,13 +553,43 @@
     .recursion-panel-heading { grid-template-columns: auto 1fr; }
     .recursion-panel-heading strong { justify-self: end; }
     .recursion-panel-heading small { display: none; }
-    .recursion-code { font-size: .68rem; }
+    .recursion-code { font-size: var(--type-technical); }
     .code-line { grid-template-columns: 1.35rem 1rem 1fr; padding-inline: .3rem; }
     .recursion-current-value { margin-top: .8rem; }
     .recursion-stack-heading { align-items: flex-start; flex-direction: column; }
     .recursion-stack-heading small { text-align: left; }
-    .recursion-stack-frames :global(.recursion-frame-call) { font-size: .73rem; }
+    .recursion-stack-frames :global(.recursion-frame-call) { font-size: var(--type-technical); }
     .recursion-controls { grid-template-columns: 1fr 1fr; padding-inline: .9rem; }
     .recursion-step-line { padding-inline: .9rem; }
   }
+
+  /* Keep the code trace readable at article, tablet, and phone widths. */
+  .recursion-lab-heading > div > span,
+  .recursion-panel-heading small,
+  .recursion-current-value > span,
+  .recursion-stack-heading span,
+  .recursion-stack-heading small,
+  .recursion-frame > span,
+  .recursion-main-frame > span,
+  .recursion-main-frame small,
+  .stack-bottom-marker,
+  .recursion-phase,
+  .recursion-output-panel > div:first-child small,
+  .recursion-step-line span,
+  .stack-flow span { font-size: var(--type-technical); letter-spacing: .03em; }
+  .recursion-panel-heading strong,
+  .recursion-frame strong,
+  .recursion-main-frame strong,
+  .recursion-frame code,
+  .recursion-output,
+  .recursion-legend span,
+  .recursion-stack-frames :global(.recursion-frame-call) { font-size: var(--type-metadata); }
+  .recursion-lab-heading p,
+  .recursion-explanation > p,
+  .recursion-explanation-copy > p { font-size: var(--type-small); }
+  .recursion-controls button { min-height: var(--control-min); border-radius: var(--radius-control); font-size: var(--type-small); }
+  .recursion-frame,
+  .recursion-code-panel,
+  .recursion-stack-panel,
+  .recursion-output { border-radius: var(--radius-panel); }
 </style>

@@ -188,9 +188,9 @@ import SimulatorShell from './SimulatorShell.astro';
 </script>
 
 <style>
-  .sim-fields small { width: 100%; color: var(--text-faint); font-size: .58rem; }
+  .sim-fields small { width: 100%; color: var(--text-faint); font-size: var(--type-technical); }
   .tree-canvas { display: grid; grid-template-columns: repeat(4, minmax(2.8rem, 1fr)); grid-template-rows: repeat(3, 4.6rem); gap: .6rem; align-items: center; justify-items: center; min-width: 0; }
-  .tree-node { display: grid; position: relative; z-index: 1; width: 3rem; height: 3rem; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--text); font-family: var(--font-mono); font-size: .72rem; }
+  .tree-node { display: grid; position: relative; z-index: 1; width: 3rem; height: 3rem; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--text); font-family: var(--font-mono); font-size: var(--type-technical); }
   .tree-node[data-tree-index='0'] { grid-column: 1 / 5; grid-row: 1; }
   .tree-node[data-tree-index='1'] { grid-column: 1 / 3; grid-row: 2; }
   .tree-node[data-tree-index='2'] { grid-column: 3 / 5; grid-row: 2; }
@@ -200,7 +200,7 @@ import SimulatorShell from './SimulatorShell.astro';
   .tree-node[data-tree-index='6'] { grid-column: 4; grid-row: 3; }
   .tree-node.is-visited, .tree-legend i.is-visited { border-style: dashed; border-color: var(--teal); background: color-mix(in srgb, var(--teal) 12%, var(--surface)); }
   .tree-node.is-current, .tree-legend i.is-current { border-color: var(--amber); outline: 3px solid color-mix(in srgb, var(--amber) 22%, transparent); background: color-mix(in srgb, var(--amber) 14%, var(--surface)); }
-  .tree-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1rem; color: var(--text-faint); font-size: .58rem; }
+  .tree-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1rem; color: var(--text-faint); font-size: var(--type-technical); }
   .tree-legend span { display: flex; align-items: center; gap: .3rem; }
   .tree-legend i { width: .75rem; height: .75rem; border: 2px solid var(--line-strong); border-radius: 50%; }
   @media (max-width: 440px) { .tree-canvas { grid-template-rows: repeat(3, 3.8rem); gap: .2rem; } .tree-node { width: 2.5rem; height: 2.5rem; } }

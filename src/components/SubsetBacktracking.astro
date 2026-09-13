@@ -401,9 +401,9 @@
   .subset-results small {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .11em;
+    letter-spacing: .03em;
   }
 
   .subset-lab-heading h3 {
@@ -415,7 +415,7 @@
     max-width: 18rem;
     margin: 0;
     color: var(--text-soft);
-    font-size: .78rem;
+    font-size: var(--type-technical);
     line-height: 1.55;
     text-align: right;
   }
@@ -443,7 +443,7 @@
   .subset-panel-heading strong {
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: .7rem;
+    font-size: var(--type-technical);
   }
 
   pre.subset-code {
@@ -456,7 +456,7 @@
     box-shadow: none;
     color: var(--text-soft);
     font-family: var(--font-mono);
-    font-size: .67rem;
+    font-size: var(--type-technical);
     line-height: 2.05;
   }
 
@@ -525,7 +525,7 @@
     background: var(--surface-strong);
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: .78rem;
+    font-size: var(--type-technical);
     font-weight: 600;
   }
 
@@ -549,7 +549,7 @@
   .subset-results > div:last-child :global(> i) {
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .68rem;
+    font-size: var(--type-technical);
     font-style: normal;
   }
 
@@ -581,7 +581,7 @@
   .subset-results > div:first-child span {
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
   }
 
   .subset-stack > div:last-child,
@@ -610,16 +610,16 @@
   .subset-stack :global(.subset-frame > span) {
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .48rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .1em;
+    letter-spacing: .03em;
   }
 
   .subset-stack :global(.subset-frame > code) {
     overflow: hidden;
     color: var(--text-soft);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
     line-height: 1.45;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -644,7 +644,7 @@
     background: var(--surface-strong);
     color: var(--cyan);
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: var(--type-technical);
   }
 
   .subset-explanation {
@@ -664,9 +664,9 @@
     background: color-mix(in srgb, var(--indigo) 13%, var(--surface));
     color: var(--indigo);
     font-family: var(--font-mono);
-    font-size: .55rem;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .09em;
+    letter-spacing: .03em;
   }
 
   .subset-explanation > span[data-phase='save'] { color: var(--cyan); }
@@ -682,7 +682,7 @@
   .subset-explanation p {
     margin: .2rem 0 0;
     color: var(--text-soft);
-    font-size: .76rem;
+    font-size: var(--type-technical);
     line-height: 1.55;
   }
 
@@ -700,7 +700,7 @@
     border-radius: .62rem;
     background: var(--surface-strong);
     color: var(--text);
-    font-size: .72rem;
+    font-size: var(--type-technical);
     font-weight: 600;
     cursor: pointer;
   }
@@ -747,7 +747,7 @@
     min-width: 6.2rem;
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: var(--type-technical);
     text-align: right;
   }
 
@@ -816,4 +816,31 @@
       transition: none;
     }
   }
+
+  /* Match the shared learning-component readability and control floor. */
+  .subset-lab-heading > div > span,
+  .subset-panel-heading span,
+  .subset-values small,
+  .subset-current small,
+  .subset-stack small,
+  .subset-results small,
+  .subset-stack > div:first-child span,
+  .subset-results > div:first-child span,
+  .subset-stack :global(.subset-frame > span),
+  .subset-stack :global(.subset-frame > code),
+  .subset-results :global(.subset-list-value),
+  .subset-progress span { font-size: var(--type-technical); letter-spacing: .03em; }
+  .subset-lab-heading p,
+  .subset-explanation p,
+  .subset-current > div :global(i),
+  .subset-stack > div:last-child :global(> i),
+  .subset-results > div:last-child :global(> i) { font-size: var(--type-small); }
+  .subset-panel-heading strong,
+  pre.subset-code,
+  .subset-values > div > span,
+  .subset-current > div :global(span) { font-size: var(--type-metadata); }
+  .subset-controls button { min-height: var(--control-min); border-radius: var(--radius-control); font-size: var(--type-small); }
+  .subset-lab,
+  .subset-stack :global(.subset-frame),
+  .subset-results :global(.subset-list-value) { border-radius: var(--radius-panel); }
 </style>

@@ -108,7 +108,7 @@ const reviewedOn = post.data.lastReviewed;
     margin-top: 1.2rem;
     overflow: hidden;
     border: 1px solid var(--line);
-    border-radius: .85rem;
+    border-radius: var(--radius-panel);
     background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
   }
 
@@ -124,21 +124,21 @@ const reviewedOn = post.data.lastReviewed;
   .article-learning-heading span {
     color: var(--amber);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
     font-weight: 650;
-    letter-spacing: .12em;
+    letter-spacing: .03em;
   }
 
   .article-learning-heading h2 {
     margin: .2rem 0 0;
-    font-size: .95rem;
+    font-size: 1.05rem;
   }
 
   .article-learning-heading p {
     max-width: 20rem;
     margin: 0;
     color: var(--text-faint);
-    font-size: .66rem;
+    font-size: var(--type-metadata);
     line-height: 1.45;
     text-align: right;
   }
@@ -159,15 +159,15 @@ const reviewedOn = post.data.lastReviewed;
   .article-facts dt {
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .53rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    font-size: var(--type-technical);
+    letter-spacing: .03em;
+    text-transform: none;
   }
 
   .article-facts dd {
     margin: .28rem 0 0;
     color: var(--text);
-    font-size: .72rem;
+    font-size: var(--type-small);
     font-weight: 650;
     text-transform: capitalize;
   }
@@ -187,20 +187,20 @@ const reviewedOn = post.data.lastReviewed;
 
   .article-learning-actions label > span {
     color: var(--text-faint);
-    font-size: .6rem;
+    font-size: var(--type-metadata);
   }
 
   .article-learning-actions select,
   .article-learning-actions button,
   .article-learning-actions a {
-    min-height: 2.35rem;
+    min-height: var(--control-min);
     padding: .48rem .68rem;
     border: 1px solid var(--line-strong);
-    border-radius: .55rem;
+    border-radius: var(--radius-control);
     background: var(--surface);
     color: var(--text);
     font: inherit;
-    font-size: .68rem;
+    font-size: var(--type-small);
   }
 
   .article-learning-actions button {

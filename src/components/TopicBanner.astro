@@ -69,7 +69,7 @@ const portraitMask = portrait
   <div class="topic-banner-copy">
     {portrait && <span class="topic-banner-label">{label}</span>}
     <Heading class="topic-banner-title">{title}</Heading>
-    <span class="topic-banner-byline">{portrait ? 'WITH RAHUL KUMAR' : 'THE SYSTEM DESIGN ATLAS'}</span>
+    <span class="topic-banner-byline">{portrait ? 'With Rahul Kumar' : 'The System Design Atlas'}</span>
   </div>
 </div>
 
@@ -156,11 +156,11 @@ const portraitMask = portrait
     background: rgba(10, 24, 37, .72);
     color: #e0eaf0;
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: var(--type-technical);
     font-weight: 500;
-    letter-spacing: .09em;
+    letter-spacing: .03em;
     line-height: 1.5;
-    text-transform: uppercase;
+    text-transform: none;
   }
 
   .topic-banner-copy {
@@ -195,7 +195,7 @@ const portraitMask = portrait
     line-height: 1.04;
     text-wrap: balance;
     overflow-wrap: anywhere;
-    text-shadow: 0 2px 20px rgba(6, 21, 36, .6);
+    text-shadow: none;
   }
 
   .topic-banner-byline {
@@ -203,9 +203,9 @@ const portraitMask = portrait
     margin-top: 14px;
     color: var(--banner-accent);
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: var(--type-technical);
     font-weight: 600;
-    letter-spacing: .11em;
+    letter-spacing: .03em;
     line-height: 1.6;
   }
 
@@ -233,12 +233,12 @@ const portraitMask = portrait
   .topic-banner--hero .topic-banner-label {
     top: 30px;
     left: 42px;
-    font-size: 10px;
+    font-size: var(--type-technical);
   }
 
   .topic-banner--hero .topic-banner-byline {
     margin-top: 21px;
-    font-size: 10px;
+    font-size: var(--type-technical);
   }
 
   .topic-banner--hero .topic-banner-portrait {
@@ -306,7 +306,7 @@ const portraitMask = portrait
       top: 22px;
       left: 22px;
       max-width: calc(100% - 44px);
-      font-size: 8px;
+      font-size: var(--type-technical);
     }
 
     .topic-banner--hero .topic-banner-portrait {
@@ -317,7 +317,7 @@ const portraitMask = portrait
     }
 
     .topic-banner--hero .topic-banner-byline {
-      font-size: 8px;
+      font-size: var(--type-technical);
     }
   }
 </style>

@@ -111,7 +111,7 @@ const goals = LEARNING_GOALS
   .goal-time strong { color: var(--text); }
   .goal-start { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 4.25rem; padding: .8rem 1rem; border: 1px solid var(--goal-accent); border-radius: .65rem; background: color-mix(in srgb, var(--goal-accent) 9%, var(--surface-strong)); }
   .goal-start > span:first-child { display: grid; gap: .25rem; }
-  .goal-start small { color: var(--text-soft); font-size: .78rem; }
+  .goal-start small { color: var(--text-soft); font-size: var(--type-technical); }
   .goal-start strong { font-size: 1rem; line-height: 1.45; }
   .goal-start > span:last-child { color: var(--goal-accent); font-size: 1.4rem; }
   .goal-start:hover { background: color-mix(in srgb, var(--goal-accent) 17%, var(--surface-strong)); }
@@ -122,7 +122,7 @@ const goals = LEARNING_GOALS
   .goal-lessons li { margin-block: .6rem; padding-left: .25rem; font-size: .9rem; }
   .goal-lessons a { text-decoration: underline; text-underline-offset: .18em; }
   .goal-lessons a:hover { color: var(--goal-accent); }
-  .goal-lessons small { display: block; color: var(--text-soft); font-size: .75rem; }
+  .goal-lessons small { display: block; color: var(--text-soft); font-size: var(--type-technical); }
   .goal-planned { padding-top: .75rem; border-top: 1px solid var(--line); color: var(--text-soft); }
   .goal-planned p, .goal-planned li { font-size: .85rem; }
   .goal-planned li { margin-block: .4rem; }
@@ -155,13 +155,13 @@ const goals = LEARNING_GOALS
   .goal-card:last-child { border-bottom: 0; }
   .goal-card-heading, .goal-availability, .goal-time { grid-column: 1; }
   .goal-card h3 { font-family: var(--font-display); font-size: clamp(1.55rem, 2.25vw, 2.25rem); letter-spacing: -.02em; }
-  .goal-card-heading p { max-width: 46rem; }
+  .goal-card-heading p { max-width: 38rem; }
   .goal-availability { margin-top: .8rem; }
-  .goal-start { grid-column: 2; grid-row: 1 / span 3; align-self: center; min-height: 5rem; border-width: 0 0 0 3px; border-radius: 0; background: color-mix(in srgb, var(--goal-accent) 8%, transparent); }
+  .goal-start { grid-column: 2; grid-row: 1 / span 3; align-self: center; min-height: 5rem; border-width: 1px; border-radius: 0; background: color-mix(in srgb, var(--goal-accent) 8%, transparent); }
   .goal-start:hover { background: color-mix(in srgb, var(--goal-accent) 14%, transparent); }
   .goal-outline, .goal-destination { grid-column: 1 / -1; }
   .goal-outline { margin-top: 1.1rem; }
-  .goal-outline summary { width: fit-content; font-family: var(--font-mono); font-size: .78rem; }
+  .goal-outline summary { width: fit-content; font-family: var(--font-mono); font-size: var(--type-technical); }
   .goal-outline-content { max-width: 68rem; padding-bottom: 1rem; }
   .goal-destination { width: fit-content; }
   @media (max-width: 760px) {

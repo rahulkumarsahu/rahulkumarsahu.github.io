@@ -10,7 +10,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--line-strong);
-  border-radius: 17px;
+  border-radius: var(--radius-panel);
   background: var(--surface);
   box-shadow: 0 8px 25px rgba(13, 25, 47, .06);
   text-decoration: none;
@@ -44,7 +44,7 @@
 .topic-cover-body > p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 13px;
+  font-size: var(--type-small);
   line-height: 1.75;
 }
 
@@ -58,10 +58,10 @@
 .topic-cover-keywords span {
   padding: 5px 8px;
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: var(--radius-control);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--type-technical);
   line-height: 1.5;
 }
 
@@ -74,7 +74,7 @@
   margin-top: auto;
   padding-top: 24px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--type-metadata);
   line-height: 1.6;
 }
 
@@ -112,13 +112,13 @@
 }
 
 .topic-cover-levels small {
-  font-size: 8px;
+  font-size: var(--type-technical);
   text-transform: capitalize;
 }
 
 .topic-cover-levels strong {
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--type-metadata);
 }
 
 .topic-cover-grid--major > .topic-cover-card:last-child:nth-child(3n + 1) {

@@ -9,7 +9,7 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
 
 <aside class="progress-summary" data-progress-summary data-post-slugs={JSON.stringify(postSlugs)} aria-label={label}>
   <div>
-    <span>LOCAL PROGRESS</span>
+    <span>Local progress</span>
     <strong>{label}</strong>
   </div>
   <dl>
@@ -78,13 +78,13 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
   .progress-summary > small {
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: .55rem;
-    letter-spacing: .08em;
+    font-size: var(--type-technical);
+    letter-spacing: .03em;
   }
 
   .progress-summary > div:first-child span { color: var(--cyan); }
-  .progress-summary > div:first-child strong { font-size: .78rem; }
-  .progress-summary > a { font-size: .62rem; text-decoration: underline; text-underline-offset: .18em; }
+  .progress-summary > div:first-child strong { font-size: var(--type-technical); }
+  .progress-summary > a { font-size: var(--type-technical); text-decoration: underline; text-underline-offset: .18em; }
 
   .progress-summary dl {
     display: grid;
@@ -106,7 +106,7 @@ const { postSlugs, label = 'Your progress in this section' } = Astro.props;
   .progress-summary dd {
     margin: .12rem 0 0;
     color: var(--text-faint);
-    font-size: .57rem;
+    font-size: var(--type-technical);
   }
 
   @media (max-width: 760px) {

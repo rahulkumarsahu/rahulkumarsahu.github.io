@@ -57,18 +57,18 @@ const cards = DSA_PATTERNS.map((pattern) => {
   .pattern-library { padding-block: 4rem 6rem; }
   .pattern-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; margin-top: 1.4rem; }
   .pattern-card { display: flex; min-width: 0; flex-direction: column; padding: 1.2rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
-  .pattern-card-top { display: flex; align-items: center; justify-content: space-between; color: var(--text-faint); font-family: var(--font-mono); font-size: .55rem; letter-spacing: .08em; }
+  .pattern-card-top { display: flex; align-items: center; justify-content: space-between; color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); letter-spacing: .03em; }
   .pattern-card-top > span { color: var(--amber); }
   .pattern-card h2 { margin: .8rem 0 0; font-size: 1.25rem; }
   .pattern-card h2 a { color: var(--text); }
-  .pattern-card > p { margin: .55rem 0 0; color: var(--text-soft); font-size: .75rem; line-height: 1.55; }
+  .pattern-card > p { margin: .55rem 0 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.55; }
   .pattern-card dl { display: grid; gap: .55rem; margin: 1rem 0 0; }
   .pattern-card dl div { display: grid; gap: .18rem; }
-  .pattern-card dt { color: var(--indigo); font-family: var(--font-mono); font-size: .52rem; letter-spacing: .06em; text-transform: uppercase; }
-  .pattern-card dd { margin: 0; color: var(--text-soft); font-size: .68rem; line-height: 1.5; }
+  .pattern-card dt { color: var(--indigo); font-family: var(--font-mono); font-size: var(--type-technical); letter-spacing: .03em; text-transform: none; }
+  .pattern-card dd { margin: 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.5; }
   .pattern-levels { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1rem; }
-  .pattern-levels span { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--text-faint); font-family: var(--font-mono); font-size: .52rem; text-transform: capitalize; }
-  .pattern-card-link { margin-top: auto; padding-top: 1rem; color: var(--indigo); font-size: .68rem; font-weight: 650; }
+  .pattern-levels span { padding: .3rem .45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); text-transform: capitalize; }
+  .pattern-card-link { margin-top: auto; padding-top: 1rem; color: var(--indigo); font-size: var(--type-technical); font-weight: 650; }
   .pattern-card a:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
   @media (max-width: 760px) { .pattern-card-grid { grid-template-columns: 1fr; } .pattern-library { padding-top: 3rem; } }
 </style>

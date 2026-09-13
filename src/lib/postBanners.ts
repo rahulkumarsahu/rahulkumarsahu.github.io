@@ -5,6 +5,8 @@ import { getPostSlug, getTopicForPost, type Post } from './posts';
 import recursionNotebook from '../../public/images/dsa/recursion-call-stack.webp';
 import classesAndObjects from '../assets/lld/oop/classes-and-objects.png';
 import lldRoadmap from '../assets/lld/roadmap/hld-vs-lld.png';
+import dsaPracticeGuide from '../../public/images/dsa/practice-guide/01-cover.png';
+import systemDesignRoadmap from '../../public/images/system-design/roadmap/01-system-design-cover.png';
 
 export type ArticleVisual = {
   mode: 'sequence' | 'flow' | 'compare' | 'branch';
@@ -27,6 +29,7 @@ const articleVisuals: Record<string, ArticleVisual> = {
   'longest-subarray-sum-k': { mode: 'sequence', title: 'Remember where each prefix sum appeared', items: ['1', '-1', '5', '-2', '3'], result: 'sum 3 · longest length = 4' },
   'recursion-in-java-beginners-guide': { mode: 'sequence', title: 'Calls pause, then return in reverse', items: ['n = 3', 'n = 2', 'n = 1', 'base case'], result: 'the call stack empties after the base case' },
   'subsets-in-java': { mode: 'branch', title: 'Choose, explore, undo', items: ['[ ]', '[1]', '[2]', '[1, 2]'], result: 'every choice creates another valid subset' },
+  'solving-dsa-independently': { mode: 'flow', title: 'Turn recognition into independent problem solving', items: ['Read', 'Reason', 'Implement', 'Revisit'], result: 'measure how much help you needed, not only problems completed' },
   'design-pattern': { mode: 'branch', title: 'Patterns grouped by purpose', items: ['Design need', 'Create', 'Compose', 'Behave'], result: 'choose a pattern only after the problem is clear' },
   'oops-concept': { mode: 'flow', title: 'Objects protect state and behaviour', items: ['Class', 'Object', 'Message', 'Result'], result: 'model responsibilities, not only data' },
   'solid-principles-practical-java': { mode: 'sequence', title: 'Five pressures on a design', items: ['S', 'O', 'L', 'I', 'D'], result: 'focused classes with safer dependencies' },
@@ -34,6 +37,7 @@ const articleVisuals: Record<string, ArticleVisual> = {
   'low-level-design-roadmap': { mode: 'flow', title: 'Move from requirements to working code', items: ['Scope', 'Entities', 'Design', 'Test'], result: 'explain responsibilities, relationships and tradeoffs' },
   'system-design': { mode: 'flow', title: 'A repeatable design route', items: ['Requirements', 'Data', 'Scale', 'Failures'], result: 'make every tradeoff explicit' },
   'system-design-foundations': { mode: 'flow', title: 'Design from requirements outward', items: ['Needs', 'Estimates', 'Components', 'Tradeoffs'], result: 'architecture follows the constraints' },
+  'system-design-interview-roadmap': { mode: 'flow', title: 'Build a design through decisions', items: ['Requirements', 'Scale', 'Data', 'Failures'], result: 'a roadmap from foundations to production readiness' },
   'back-of-envelope-estimation': { mode: 'sequence', title: 'Estimate before choosing components', items: ['RPS', 'Storage', 'Bandwidth', 'Concurrency'], result: '86M requests/day ≈ 1,000 requests/second' },
   'url-shortener-system-design': { mode: 'flow', title: 'Keep the redirect path short', items: ['GET /a7B', 'Cache', 'Database', '302 redirect'], result: 'analytics stays off the critical path' },
   'java-backend-foundations': { mode: 'flow', title: 'Build Java knowledge in layers', items: ['Language', 'Objects', 'Collections', 'JVM'], result: 'a foundation for backend applications' },
@@ -58,6 +62,14 @@ const customCovers: Record<string, { image: ImageMetadata; alt: string }> = {
   'low-level-design-roadmap': {
     image: lldRoadmap,
     alt: 'Comparison showing how high level design maps services while low level design maps classes and relationships.',
+  },
+  'solving-dsa-independently': {
+    image: dsaPracticeGuide,
+    alt: 'A student moving from passive DSA tutorials to independently reasoning through a coding problem.',
+  },
+  'system-design-interview-roadmap': {
+    image: systemDesignRoadmap,
+    alt: 'A candidate replacing disconnected architecture components with a structured system design interview roadmap.',
   },
 };
 

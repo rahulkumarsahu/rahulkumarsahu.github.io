@@ -365,16 +365,16 @@ import SimulatorPrediction from './SimulatorPrediction.astro';
   .trace-output span {
     color: var(--cyan);
     font-family: var(--font-mono);
-    font-size: .56rem;
+    font-size: var(--type-technical);
     font-weight: 650;
-    letter-spacing: .1em;
+    letter-spacing: .03em;
   }
 
   .trace-header h2 { margin: .25rem 0 0; padding: 0; border: 0; font-size: 1.25rem; }
-  .trace-header p { max-width: 18rem; margin: 0; color: var(--text-faint); font-size: .72rem; text-align: right; }
+  .trace-header p { max-width: 18rem; margin: 0; color: var(--text-faint); font-size: var(--type-technical); text-align: right; }
 
   .trace-input { border-bottom: 1px solid var(--line); }
-  .trace-input label { display: block; margin-bottom: .4rem; color: var(--text); font-size: .68rem; font-weight: 650; }
+  .trace-input label { display: block; margin-bottom: .4rem; color: var(--text); font-size: var(--type-technical); font-weight: 650; }
   .trace-input > div { display: flex; gap: .5rem; }
   .trace-input input {
     min-width: 0;
@@ -400,21 +400,21 @@ import SimulatorPrediction from './SimulatorPrediction.astro';
   }
   .trace-input button[type='submit'] { border-color: color-mix(in srgb, var(--indigo) 58%, var(--line)); background: var(--indigo); color: white; }
   .trace-input .trace-share { background: var(--surface); color: var(--text); }
-  .trace-input small { display: block; margin-top: .35rem; color: var(--text-faint); font-size: .6rem; }
-  .trace-input [role='alert'] { margin: .5rem 0 0; color: #c84a3a; font-size: .68rem; }
-  .trace-share-status { min-height: 1rem; margin: .35rem 0 0; color: var(--text-soft); font-size: .62rem; }
+  .trace-input small { display: block; margin-top: .35rem; color: var(--text-faint); font-size: var(--type-technical); }
+  .trace-input [role='alert'] { margin: .5rem 0 0; color: #c84a3a; font-size: var(--type-technical); }
+  .trace-share-status { min-height: 1rem; margin: .35rem 0 0; color: var(--text-soft); font-size: var(--type-technical); }
 
   .trace-workspace { display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(20rem, 1.1fr); }
   .trace-code-panel { min-width: 0; background: #10182a; color: #dbe6f8; }
   .trace-state-panel { min-width: 0; padding: 1rem 1.2rem; border-left: 1px solid var(--line); }
   .trace-panel-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .trace-panel-label strong { color: inherit; font-size: .68rem; }
+  .trace-panel-label strong { color: inherit; font-size: var(--type-technical); }
   .trace-code-panel .trace-panel-label { padding: .78rem 1rem; border-bottom: 1px solid rgba(255,255,255,.1); }
-  .trace-code { overflow-x: auto; margin: 0; padding: .9rem 0 1rem; border: 0; border-radius: 0; background: transparent; font-size: .67rem; line-height: 1.85; }
-  .trace-code code > span { display: block; min-width: max-content; padding: 0 1rem; border-left: 3px solid transparent; }
+  .trace-code { overflow-x: auto; margin: 0; padding: .9rem 0 1rem; border: 0; border-radius: 0; background: transparent; font-size: var(--type-technical); line-height: 1.85; }
+  .trace-code code > span { display: block; min-width: max-content; padding: 0 1rem; border-left: 1px solid transparent; }
   .trace-code code > span.is-active { border-left-color: #72ded2; background: rgba(114,222,210,.12); color: white; }
 
-  .trace-phase-row { display: flex; justify-content: space-between; gap: .7rem; margin-top: .9rem; color: var(--text-soft); font-family: var(--font-mono); font-size: .6rem; }
+  .trace-phase-row { display: flex; justify-content: space-between; gap: .7rem; margin-top: .9rem; color: var(--text-soft); font-family: var(--font-mono); font-size: var(--type-technical); }
   .trace-array { display: flex; flex-wrap: wrap; gap: .48rem; margin-top: 1rem; }
   .trace-cell {
     display: grid;
@@ -426,29 +426,29 @@ import SimulatorPrediction from './SimulatorPrediction.astro';
     border-radius: .65rem;
     background: var(--surface-strong);
   }
-  .trace-cell small { color: var(--text-faint); font-family: var(--font-mono); font-size: .46rem; line-height: 1.2; text-align: center; }
+  .trace-cell small { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); line-height: 1.2; text-align: center; }
   .trace-cell strong { color: var(--text); font-size: 1.1rem; }
-  .trace-cell span { min-height: .65rem; color: var(--text-faint); font-size: .5rem; }
+  .trace-cell span { min-height: .65rem; color: var(--text-faint); font-size: var(--type-technical); }
   .trace-cell.is-read { border-color: var(--amber); }
   .trace-cell.is-write { box-shadow: inset 0 -3px var(--cyan); }
   .trace-cell.is-read.is-write { border-color: var(--amber); box-shadow: inset 0 -3px var(--cyan); }
-  .trace-legend { display: flex; flex-wrap: wrap; gap: .85rem; margin-top: .7rem; color: var(--text-faint); font-size: .55rem; }
+  .trace-legend { display: flex; flex-wrap: wrap; gap: .85rem; margin-top: .7rem; color: var(--text-faint); font-size: var(--type-technical); }
   .trace-legend span { display: inline-flex; align-items: center; gap: .3rem; }
   .trace-legend i { width: .8rem; height: .22rem; border-radius: 1rem; }
   .legend-read { background: var(--amber); }
   .legend-write { background: var(--cyan); }
   .trace-explanation,
   .trace-output { margin-top: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .65rem; background: color-mix(in srgb, var(--surface-strong) 82%, transparent); }
-  .trace-explanation p { min-height: 3.2rem; margin: .35rem 0 0; color: var(--text-soft); font-size: .72rem; line-height: 1.55; }
+  .trace-explanation p { min-height: 3.2rem; margin: .35rem 0 0; color: var(--text-soft); font-size: var(--type-technical); line-height: 1.55; }
   .trace-output { display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
-  .trace-output code { color: var(--text); font-size: .66rem; }
+  .trace-output code { color: var(--text); font-size: var(--type-technical); }
 
   .trace-controls { display: flex; flex-wrap: wrap; gap: .45rem; border-top: 1px solid var(--line); }
   .trace-controls button:disabled { opacity: .42; cursor: not-allowed; }
   .trace-controls :is(button):focus-visible,
   .trace-input :is(input, button):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .move-zeroes-trace:focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 3px; }
-  .trace-accessible-description { margin: 0; border-top: 1px solid var(--line); color: var(--text-faint); font-size: .62rem; line-height: 1.5; }
+  .trace-accessible-description { margin: 0; border-top: 1px solid var(--line); color: var(--text-faint); font-size: var(--type-technical); line-height: 1.5; }
 
   @media (max-width: 760px) {
     .trace-header { align-items: start; flex-direction: column; }
