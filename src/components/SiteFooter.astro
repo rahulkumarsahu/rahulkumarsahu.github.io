@@ -19,7 +19,7 @@ import { SITE } from '../data/site';
   <div class="footer-link-groups">
     <nav class="footer-links" aria-label="Explore the Atlas">
       <span>Explore</span>
-      <a href="/topics/">Learning paths</a>
+      <a href="/topics/">All topics</a>
       <a href="/study-plan/">Study planner</a>
       <a href="/revision/">Revision centre</a>
       <a href="/system-design/decisions/">Decision library</a>
@@ -30,21 +30,21 @@ import { SITE } from '../data/site';
     </nav>
     <nav class="footer-links" aria-label="Read Rahul elsewhere">
       <span>Read elsewhere</span>
-      <a href={SITE.scalableStack}>The Scalable Stack <span aria-hidden="true">↗</span></a>
-      <a href={SITE.medium}>Medium <span aria-hidden="true">↗</span></a>
-      <a href={SITE.portfolio}>Portfolio <span aria-hidden="true">↗</span></a>
+      <a href={SITE.scalableStack} target="_blank" rel="noreferrer">The Scalable Stack <span aria-hidden="true">↗</span></a>
+      <a href={SITE.medium} target="_blank" rel="noreferrer">Medium <span aria-hidden="true">↗</span></a>
+      <a href={SITE.portfolio} target="_blank" rel="noreferrer">Portfolio <span aria-hidden="true">↗</span></a>
     </nav>
     <nav class="footer-links" aria-label="Contact Rahul">
       <span>Connect</span>
-      <a href={SITE.linkedin}>LinkedIn <span aria-hidden="true">↗</span></a>
-      <a href={SITE.github}>GitHub <span aria-hidden="true">↗</span></a>
+      <a href={SITE.linkedin} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+      <a href={SITE.github} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       <a href={`mailto:${SITE.email}?subject=Hello%20Rahul`}>Email</a>
-      <a href={SITE.topmate}>Topmate <span aria-hidden="true">↗</span></a>
+      <a href={SITE.topmate} target="_blank" rel="noreferrer">Topmate <span aria-hidden="true">↗</span></a>
     </nav>
   </div>
 
   <div class="footer-bottom">
     <p>Designed and written by {SITE.author} · India</p>
-    <a href="#main-content">Back to top ↑</a>
+    <a href="#top">Back to top ↑</a>
   </div>
 </footer>
