@@ -163,10 +163,11 @@ const dsaDirectoryGroups = [
       {['java', 'lld', 'system-design', 'cloud-native'].includes(topic.slug) && (
         <section class="topic-connected-project section-wrap"><ConnectedProjectCard compact /></section>
       )}
-      <nav class="topic-learning-tools section-wrap" aria-label={`${topic.title} learning tools`}>
-        <a href="/revision/"><span>Revise</span><strong>Revision centre</strong><small>Quick review structures across every learning track</small></a>
-        {topic.slug === 'system-design' && <a href="/system-design/decisions/"><span>Decide</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>}
-      </nav>
+      {topic.slug === 'system-design' && (
+        <nav class="topic-learning-tools section-wrap" aria-label="System design resources">
+          <a href="/system-design/decisions/"><span>Decide</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>
+        </nav>
+      )}
       {posts.length > 0 && (
         <section class="topic-posts topic-posts-curriculum section-wrap">
           <div class="section-heading section-heading-notes">

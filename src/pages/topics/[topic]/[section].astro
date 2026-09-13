@@ -74,12 +74,11 @@ const learningStage = getStageForSection(path.slug, section.slug);
     </div>
   </nav>
 
-  <nav class="section-context-links section-wrap" aria-label="Learning support">
-    <a href="/study-plan/">Add this track to a study plan</a>
-    <a href="/revision/">Open revision centre</a>
-    <a href="/updates/">Check content freshness</a>
-    {path.slug === 'system-design' && <a href="/system-design/decisions/">Browse decision library</a>}
-  </nav>
+  {path.slug === 'system-design' && (
+    <nav class="section-context-links section-wrap" aria-label="System design resources">
+      <a href="/system-design/decisions/">Browse decision library</a>
+    </nav>
+  )}
 
   {path.slug === 'system-design' && section.slug === 'caching' && (
     <div class="section-wrap system-simulator"><CacheSimulator /></div>

@@ -68,8 +68,6 @@ export const GET: APIRoute = async () => {
       keywords: `${decision.choices.join(' ')} ${decision.factors.join(' ')}`,
     })),
     { title: 'Production URL Shortener', description: 'A connected project across Java, Spring Boot, LLD, system design and cloud native engineering.', href: '/projects/production-url-shortener/', type: 'Project', topic: 'Connected project', keywords: 'url shortener java spring boot docker kubernetes' },
-    { title: 'Universal Revision Centre', description: 'Quick revision collections across the complete Atlas.', href: '/revision/', type: 'Revision', topic: 'All tracks', keywords: 'cheat sheets review interview' },
-    { title: 'Personal Study Planner', description: 'Create a local study plan from your goal and available time.', href: '/study-plan/', type: 'Learning tool', topic: 'All tracks', keywords: 'schedule goal time weekly' },
   ];
 
   return new Response(JSON.stringify(items), {

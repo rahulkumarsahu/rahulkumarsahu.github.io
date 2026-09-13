@@ -6,7 +6,6 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ArticleLearningLinks from '../components/ArticleLearningLinks.astro';
 import ArticleJourney from '../components/ArticleJourney.astro';
 import ArticlePersonalNote from '../components/ArticlePersonalNote.astro';
-import ArticleTrustPanel from '../components/ArticleTrustPanel.astro';
 import ArticleFeedback from '../components/ArticleFeedback.astro';
 import ApproachComparison from '../components/ApproachComparison.astro';
 import EngineeringConnection from '../components/EngineeringConnection.astro';
@@ -166,7 +165,6 @@ const jsonLd = {
         </div>
         <PostBanner {post} variant="hero" />
         <ArticlePersonalNote note={post.data.personalNote} />
-        <ArticleTrustPanel {post} />
       </header>
 
       <div class="article-divider">
