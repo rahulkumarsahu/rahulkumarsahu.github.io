@@ -4,9 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import CacheSimulator from '../../../components/CacheSimulator.astro';
 import LoadBalancingSimulator from '../../../components/LoadBalancingSimulator.astro';
-import LearningEstimate from '../../../components/LearningEstimate.astro';
 import PostCard from '../../../components/PostCard.astro';
-import ProgressSummary from '../../../components/ProgressSummary.astro';
 import SectionSearch from '../../../components/SectionSearch.astro';
 import TopicBanner from '../../../components/TopicBanner.astro';
 import { LEARNING_PATHS } from '../../../data/learningPaths';
@@ -65,8 +63,6 @@ const learningStage = getStageForSection(path.slug, section.slug);
       <span>{String(posts.length).padStart(2, '0')} articles available</span>
       <a href={`/topics/${path.slug}/#${group.slug}`}>Back to {group.title} ↑</a>
     </div>
-    <LearningEstimate {posts} />
-    {posts.length > 0 && <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />}
   </section>
 
   <nav class="curriculum-local-nav section-wrap" aria-label={`${group.title} subsections`}>
@@ -100,7 +96,6 @@ const learningStage = getStageForSection(path.slug, section.slug);
       itemLabel="results"
       showDifficulty
       showContentType
-      showCompletion
     />
   </div>
 

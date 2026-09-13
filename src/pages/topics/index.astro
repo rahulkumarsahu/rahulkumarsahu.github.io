@@ -2,10 +2,9 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import LearningGoals from '../../components/LearningGoals.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { TOPICS } from '../../data/site';
-import { getPostSlug, getPostsForTopic } from '../../lib/posts';
+import { getPostsForTopic } from '../../lib/posts';
 
 const posts = await getCollection('posts');
 ---
@@ -24,8 +23,6 @@ const posts = await getCollection('posts');
     </p>
   </section>
 
-  <LearningGoals {posts} />
-
   <section class="topic-cover-directory section-wrap">
     <div class="topic-cover-grid topic-cover-grid--major">
     {TOPICS.map((topic) => {
@@ -38,7 +35,6 @@ const posts = await getCollection('posts');
           href={`/topics/${topic.slug}/`}
           label={`${topic.number} / ${topic.meta}`}
           count={topicPosts.length}
-          postSlugs={topicPosts.map(getPostSlug)}
           heading="h2"
         />
       );

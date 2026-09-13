@@ -2,13 +2,11 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ConnectedProjectCard from '../components/ConnectedProjectCard.astro';
-import LearningGoals from '../components/LearningGoals.astro';
-import LearningDashboard from '../components/LearningDashboard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import WorkshopHero from '../components/WorkshopHero.astro';
 import HorizontalRailControls from '../components/HorizontalRailControls.astro';
 import { SITE, TOPICS } from '../data/site';
-import { getPostSlug, getPostsForTopic, getSortedPosts } from '../lib/posts';
+import { getPostsForTopic, getSortedPosts } from '../lib/posts';
 
 const posts = getSortedPosts(await getCollection('posts'));
 const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(posts, topic.slug).length]));
@@ -17,10 +15,6 @@ const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(
 <BaseLayout title={SITE.name} description={SITE.description} image="/og.png" bodyClass="home-page">
   <WorkshopHero {posts} />
 
-  <LearningDashboard compact />
-
-  <LearningGoals {posts} />
-
   <section class="tracks section-wrap" id="learning-paths" data-reveal aria-labelledby="learning-paths-title">
     <div class="section-heading section-heading-notes">
       <div>
@@ -28,7 +22,7 @@ const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(
         <h2 id="learning-paths-title">Choose the engineering map you need.</h2>
       </div>
       <div class="section-heading-actions">
-        <p>Each topic has its own learning structure, published articles and visual guides.</p>
+        <p>Each topic brings together its roadmap, published articles, practice, and visual guides.</p>
         <HorizontalRailControls targetId="home-topic-rail" label="Engineering topics" />
       </div>
     </div>
@@ -41,7 +35,6 @@ const topicCounts = new Map(TOPICS.map((topic) => [topic.slug, getPostsForTopic(
           href={`/topics/${topic.slug}/`}
           label={`${topic.number} / ${topic.meta}`}
           count={topicCounts.get(topic.slug) ?? 0}
-          postSlugs={getPostsForTopic(posts, topic.slug).map(getPostSlug)}
         />
       ))}
     </div>

@@ -55,7 +55,6 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
               <article
                 class="company-problem"
                 data-company-problem
-                data-id={problem.id}
                 data-company={company.id}
                 data-topic={problem.topic}
                 data-difficulty={problem.difficulty}
@@ -68,7 +67,6 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
                 <h2>{problem.title}</h2>
                 <p>{problem.patterns.slice(0, 3).map((pattern) => pattern.replaceAll('-', ' ')).join(' · ')}</p>
                 <div class="company-problem-actions">
-                  <button type="button" aria-pressed="false" data-company-solved aria-label={`Mark ${problem.title} as solved`}><span aria-hidden="true">✓</span><span data-solved-label>Mark solved</span></button>
                   <a href={problem.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${problem.title} on ${problem.platform}`}>Open on {problem.platform} <span aria-hidden="true">↗</span></a>
                 </div>
               </article>
@@ -86,39 +84,12 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
 </section>
 
 <script>
-  const MASTER_STORAGE_KEY = 'atlas-master-sheet:v1';
-  type ProblemState = { solved?: boolean; revision?: boolean };
-
   document.querySelectorAll<HTMLElement>('[data-company-directory]').forEach((directory) => {
     const cards = [...directory.querySelectorAll<HTMLElement>('[data-company-problem]')];
     const search = directory.querySelector<HTMLInputElement>('[data-company-search]');
     const companyFilter = directory.querySelector<HTMLSelectElement>('[data-company-filter]');
     const topicFilter = directory.querySelector<HTMLSelectElement>('[data-topic-filter]');
     const difficultyFilter = directory.querySelector<HTMLSelectElement>('[data-difficulty-filter]');
-    let state: Record<string, ProblemState> = {};
-
-    const readState = () => {
-      try {
-        const stored = JSON.parse(window.localStorage.getItem(MASTER_STORAGE_KEY) || '{}');
-        state = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
-      } catch { state = {}; }
-    };
-
-    const writeState = () => {
-      try { window.localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(state)); } catch { /* In-memory state still works for this visit. */ }
-    };
-
-    const updateSolvedControls = () => {
-      cards.forEach((card) => {
-        const solved = Boolean(state[card.dataset.id || '']?.solved);
-        const button = card.querySelector<HTMLButtonElement>('[data-company-solved]');
-        const label = card.querySelector<HTMLElement>('[data-solved-label]');
-        card.dataset.solved = String(solved);
-        button?.setAttribute('aria-pressed', String(solved));
-        if (label) label.textContent = solved ? 'Solved' : 'Mark solved';
-      });
-    };
-
     const applyFilters = () => {
       const term = search?.value.trim().toLowerCase() || '';
       const filtersActive = Boolean(term)
@@ -156,18 +127,10 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
       applyFilters();
     };
 
-    cards.forEach((card) => card.querySelector<HTMLButtonElement>('[data-company-solved]')?.addEventListener('click', () => {
-      const id = card.dataset.id || '';
-      state[id] = { ...state[id], solved: !state[id]?.solved };
-      writeState();
-      updateSolvedControls();
-    }));
     search?.addEventListener('input', applyFilters);
     [companyFilter, topicFilter, difficultyFilter].forEach((control) => control?.addEventListener('change', applyFilters));
     directory.querySelector('[data-reset-company-filters]')?.addEventListener('click', resetFilters);
 
-    readState();
-    updateSolvedControls();
     applyFilters();
   });
 </script>
@@ -211,7 +174,6 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
   .company-source a { color: var(--indigo); }
   .company-problem-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
   .company-problem { min-width: 0; display: grid; grid-template-rows: auto auto 1fr auto; gap: .6rem; min-height: 12.5rem; padding: .9rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface-strong); }
-  .company-problem[data-solved='true'] { border-color: color-mix(in srgb, var(--green) 40%, var(--line)); }
   .company-problem-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
   .company-problem-top > span:first-child { overflow: hidden; color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); letter-spacing: .04em; text-overflow: ellipsis; white-space: nowrap; }
   .company-difficulty { padding: .22rem .38rem; border-radius: 999px; font-family: var(--font-mono); font-size: var(--type-technical); text-transform: capitalize; }
@@ -220,9 +182,8 @@ const totalRecommendations = COMPANY_TRACKS.reduce((total, company) => total + c
   .company-difficulty-hard { background: color-mix(in srgb, #ef6a6a 14%, transparent); color: #d94d57; }
   .company-problem h2 { margin: 0; font-size: .85rem; line-height: 1.35; }
   .company-problem > p { margin: 0; color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); line-height: 1.5; }
-  .company-problem-actions { display: grid; grid-template-columns: auto 1fr; gap: .45rem; }
-  .company-problem-actions :is(button, a) { min-height: 2.25rem; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .4rem .55rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text-soft); font: inherit; font-size: var(--type-technical); text-decoration: none; cursor: pointer; }
-  .company-problem-actions button[aria-pressed='true'] { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); color: var(--green); }
+  .company-problem-actions { display: flex; }
+  .company-problem-actions a { min-height: 2.25rem; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .4rem .65rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface); color: var(--text-soft); font: inherit; font-size: var(--type-technical); text-decoration: none; }
   .company-problem-actions a { border-color: color-mix(in srgb, var(--indigo) 35%, var(--line)); color: var(--indigo); }
   .company-directory :is(input, select, button, a, summary):focus-visible { outline: 3px solid color-mix(in srgb, var(--indigo) 45%, transparent); outline-offset: 2px; }
   .company-empty { padding: 3rem 1rem; text-align: center; }

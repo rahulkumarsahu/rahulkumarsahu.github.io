@@ -3,19 +3,14 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ConnectedProjectCard from '../../components/ConnectedProjectCard.astro';
-import LearningEstimate from '../../components/LearningEstimate.astro';
 import { MASTER_PROBLEMS } from '../../data/dsaMasterSheet';
-import LearningGoals from '../../components/LearningGoals.astro';
-import LearningStructure from '../../components/LearningStructure.astro';
 import PostCard from '../../components/PostCard.astro';
-import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { DSA_SECTIONS, getLearningPath } from '../../data/learningPaths';
-import { DSA_STARTER_SLUGS, LEARNING_GOALS } from '../../data/learningGoals';
 import { TOPICS } from '../../data/site';
-import { getPostSlug, getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
+import { getPostsForLearningSection, getPostsForSeries, getPostsForTopic } from '../../lib/posts';
 
 export function getStaticPaths() {
   return TOPICS.map((topic) => ({
@@ -31,10 +26,11 @@ const isDsa = topic.slug === 'dsa';
 const isNotes = topic.slug === 'engineering-notes';
 const curriculum = getLearningPath(topic.slug);
 const difficultyLevels = ['basics', 'easy', 'medium', 'hard'] as const;
-const hasGoal = LEARNING_GOALS.some((goal) => goal.topics.includes(topic.slug));
-const startHerePosts = DSA_STARTER_SLUGS
-  .map((slug) => allPosts.find((post) => !post.data.draft && getPostSlug(post) === slug))
-  .filter((post) => Boolean(post));
+const roadmap = topic.slug === 'dsa'
+  ? { href: '/posts/solving-dsa-independently/', label: 'Open the DSA roadmap' }
+  : topic.slug === 'system-design'
+    ? { href: '/posts/system-design-interview-roadmap/', label: 'Open the system design roadmap' }
+    : undefined;
 const dsaDirectory = DSA_SECTIONS.map((section) => ({
   section,
   posts: getPostsForSeries(allPosts, section.slug),
@@ -97,49 +93,23 @@ const dsaDirectoryGroups = [
     />
     <div class="banner-page-intro">
       <p>{topic.description}</p>
-      <a class="button button-primary" href={hasGoal ? '#choose-your-goal' : '#curriculum'}>
-        {hasGoal ? 'Find your first lesson' : isNotes ? 'Browse note collections' : 'Browse sections'}
-      </a>
+      <div class="banner-page-actions">
+        {roadmap && <a class="button button-primary" href={roadmap.href}>{roadmap.label}</a>}
+        <a class:list={['button', roadmap ? 'button-secondary' : 'button-primary']} href={isDsa ? '#dsa-sections' : '#curriculum'}>
+          {isDsa ? 'Browse DSA topics' : isNotes ? 'Browse note collections' : 'Browse sections'}
+        </a>
+      </div>
     </div>
-    <LearningEstimate {posts} label={`Time for available ${topic.shortTitle} lessons`} />
   </section>
-
-  <LearningGoals posts={allPosts} topic={topic.slug} />
-  <LearningStructure topic={topic.slug} {posts} />
 
   {isDsa ? (
     <>
-      <section class="dsa-start-here section-wrap" id="start-here">
-        <div class="section-heading section-heading-notes">
-          <div>
-            <p class="section-index">Start here / beginner path</p>
-            <h2>Six lessons that build on each other.</h2>
-          </div>
-          <p>This path begins with array mechanics, adds a few small problems, then introduces recursion before your first backtracking problem.</p>
-        </div>
-        <ol class="dsa-start-list">
-          {startHerePosts.map((post, index) => post && (
-            <li data-start-here-item data-post-slug={getPostSlug(post)}>
-              <a href={`/posts/${getPostSlug(post)}/`}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div><strong>{post.data.title}</strong><small>{post.data.difficulty ?? 'basics'} · {post.data.contentType ?? 'concept'}</small></div>
-                <i data-start-status>Not started</i>
-              </a>
-            </li>
-          ))}
-        </ol>
-        <ProgressSummary postSlugs={startHerePosts.map((post) => post ? getPostSlug(post) : '').filter(Boolean)} label="Your progress on the beginner path" />
-      </section>
-
       <nav class="dsa-learning-tools section-wrap" aria-label="DSA learning tools">
-        <a href="/dsa/master-sheet/"><span>Practice</span><strong>DSA Master Sheet</strong><small>{MASTER_PROBLEMS.length} curated problems with local progress and revision marks</small></a>
+        <a href="/posts/solving-dsa-independently/"><span>Roadmap</span><strong>DSA learning roadmap</strong><small>A practical order for learning problem solving independently</small></a>
+        <a href="/dsa/master-sheet/"><span>Practice</span><strong>DSA Master Sheet</strong><small>{MASTER_PROBLEMS.length} curated problems with topic and difficulty filters</small></a>
         <a href="/dsa/companies/"><span>Companies</span><strong>Company Practice</strong><small>Google, Meta and Uber starter tracks by DSA topic</small></a>
         <a href="/dsa/patterns/"><span>Recognize</span><strong>DSA Patterns</strong><small>Signals, invariants and linked practice</small></a>
         <a href="/dsa/revision/"><span>Revise</span><strong>Revision Cards</strong><small>Print-friendly interview cheat sheets</small></a>
-        <a href="/revision/"><span>All tracks</span><strong>Revision Centre</strong><small>Review every learning track in one place</small></a>
-        <a href="/study-plan/"><span>Plan</span><strong>Personal Study Plan</strong><small>Build a schedule from published lessons</small></a>
-        <a href="/updates/"><span>Trust</span><strong>Content Freshness</strong><small>Review dates, versions and corrections</small></a>
-        <a href="/projects/production-url-shortener/"><span>Connect</span><strong>Connected Project</strong><small>Carry ideas from code into a production system</small></a>
       </nav>
 
       <section class="dsa-topic-tabs section-wrap" id="dsa-sections">
@@ -180,7 +150,6 @@ const dsaDirectoryGroups = [
                       name: level,
                       count: sectionPosts.filter((post) => (post.data.difficulty ?? 'basics') === level).length,
                     }))}
-                    postSlugs={sectionPosts.map(getPostSlug)}
                   />
                 ))}
               </div>
@@ -196,8 +165,6 @@ const dsaDirectoryGroups = [
       )}
       <nav class="topic-learning-tools section-wrap" aria-label={`${topic.title} learning tools`}>
         <a href="/revision/"><span>Revise</span><strong>Revision centre</strong><small>Quick review structures across every learning track</small></a>
-        <a href="/study-plan/"><span>Plan</span><strong>Personal study plan</strong><small>Build a private schedule from published lessons</small></a>
-        <a href="/updates/"><span>Trust</span><strong>Content freshness</strong><small>Review dates, version scope and corrections</small></a>
         {topic.slug === 'system-design' && <a href="/system-design/decisions/"><span>Decide</span><strong>Decision library</strong><small>Compare architecture choices from constraints</small></a>}
       </nav>
       {posts.length > 0 && (
@@ -250,7 +217,6 @@ const dsaDirectoryGroups = [
                       label={`${group.number}.${section.number} / ${group.title}`}
                       count={sectionPosts.length}
                       keywords={section.topics}
-                      postSlugs={sectionPosts.map(getPostSlug)}
                     />
                   );
                 })}
@@ -264,37 +230,6 @@ const dsaDirectoryGroups = [
 
     </>
   ) : null}
-
-  {isDsa && (
-    <script>
-    const START_PROGRESS_KEY = 'atlas-progress:v1';
-    const progressLabels: Record<string, string> = {
-      'not-started': 'Not started',
-      attempted: 'Attempted',
-      solved: 'Solved',
-      revisit: 'Revisit',
-    };
-
-    const updateStartHere = () => {
-      let progress: Record<string, string> = {};
-      try {
-        progress = JSON.parse(window.localStorage.getItem(START_PROGRESS_KEY) || '{}');
-      } catch {
-        progress = {};
-      }
-      document.querySelectorAll<HTMLElement>('[data-start-here-item]').forEach((item) => {
-        const state = progress[item.dataset.postSlug || ''] || 'not-started';
-        const status = item.querySelector<HTMLElement>('[data-start-status]');
-        if (status) status.textContent = progressLabels[state] || 'Not started';
-        item.dataset.learningState = state;
-      });
-    };
-
-    updateStartHere();
-    window.addEventListener('storage', updateStartHere);
-    window.addEventListener('atlas-learning-state-changed', updateStartHere);
-    </script>
-  )}
 </BaseLayout>
 
 <style>
@@ -303,14 +238,14 @@ const dsaDirectoryGroups = [
   .curriculum-band-heading p { margin: .4rem 0 0; color: var(--text-soft); font-size: .9rem; }
   .curriculum-future-band { border-top: 1px solid var(--line); padding-top: 2rem; }
   .curriculum-future-band :global(.topic-cover-card) { background: var(--bg-soft); }
-  .topic-learning-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-block: 1rem 2rem; }
+  .topic-learning-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); padding-block: 1rem 2rem; }
   .topic-learning-tools a { display: grid; gap: .28rem; min-width: 0; padding: 1rem; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 50%, transparent); }
   .topic-learning-tools a + a { border-left: 0; }
   .topic-learning-tools span { color: var(--amber); font: var(--type-technical) var(--font-mono); letter-spacing: .03em; }
   .topic-learning-tools strong { font-size: var(--type-technical); }
   .topic-learning-tools small { color: var(--text-faint); font-size: var(--type-technical); line-height: 1.45; }
   .topic-learning-tools a:hover strong { color: var(--indigo); }
-  .dsa-start-here { padding-top: 4.5rem; }
+  .banner-page-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
   .dsa-learning-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .65rem; padding-top: 1rem; }
   .dsa-learning-tools a { display: grid; gap: .3rem; padding: .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--text); }
   .dsa-learning-tools a:hover { border-color: var(--indigo); transform: translateY(-2px); }
@@ -320,35 +255,6 @@ const dsaDirectoryGroups = [
   .topic-connected-project { padding-top: 3rem; }
   .topic-posts-curriculum { padding-top: clamp(4rem, 7vw, 7rem); }
   .topic-posts-curriculum .section-heading { margin-bottom: 1.75rem; }
-  .dsa-start-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .65rem;
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .dsa-start-list li { min-width: 0; }
-  .dsa-start-list a {
-    display: grid;
-    grid-template-columns: 2rem 1fr auto;
-    align-items: center;
-    gap: .7rem;
-    min-height: 5.2rem;
-    padding: .8rem;
-    border: 1px solid var(--line);
-    border-radius: .75rem;
-    background: var(--surface);
-    color: var(--text);
-    text-decoration: none;
-  }
-  .dsa-start-list a:hover { border-color: color-mix(in srgb, var(--indigo) 52%, var(--line)); transform: translateY(-2px); }
-  .dsa-start-list a > span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); font-family: var(--font-mono); font-size: var(--type-technical); }
-  .dsa-start-list div { display: grid; gap: .28rem; min-width: 0; }
-  .dsa-start-list strong { font-size: var(--type-technical); line-height: 1.35; }
-  .dsa-start-list small { color: var(--text-faint); font-size: var(--type-technical); text-transform: capitalize; }
-  .dsa-start-list i { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-technical); font-style: normal; white-space: nowrap; }
-  .dsa-start-list [data-learning-state='solved'] i { color: #21835f; }
   .dsa-directory-groups { display: grid; gap: 3rem; margin-top: 1.5rem; }
   .dsa-directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
   .dsa-directory-heading span { color: var(--amber); font-family: var(--font-mono); font-size: var(--type-technical); font-weight: 650; letter-spacing: .03em; }
@@ -357,7 +263,7 @@ const dsaDirectoryGroups = [
   .dsa-directory-coming,
   .dsa-directory-planned { opacity: .84; }
   .dsa-directory-planned { opacity: .68; }
-  @media (max-width: 900px) { .dsa-start-list, .dsa-learning-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .dsa-learning-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 820px) { .topic-learning-tools { grid-template-columns: repeat(2, 1fr); } .topic-learning-tools a + a { border-left: 1px solid var(--line); } }
   @media (max-width: 620px) {
     .dsa-start-here { padding-top: 3rem; }

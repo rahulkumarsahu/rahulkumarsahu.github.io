@@ -6,7 +6,6 @@ interface Props {
   itemLabel?: string;
   showDifficulty?: boolean;
   showContentType?: boolean;
-  showCompletion?: boolean;
   showPattern?: boolean;
   patterns?: Array<{ value: string; label: string }>;
 }
@@ -18,11 +17,10 @@ const {
   itemLabel = 'items',
   showDifficulty = false,
   showContentType = false,
-  showCompletion = false,
   showPattern = false,
   patterns = [],
 } = Astro.props;
-const hasFilters = showDifficulty || showContentType || showCompletion || showPattern;
+const hasFilters = showDifficulty || showContentType || showPattern;
 ---
 
 <div
@@ -61,17 +59,6 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
           </select>
         </label>
       )}
-      {showCompletion && (
-        <label>My progress
-          <select data-section-filter="completion">
-            <option value="">All progress</option>
-            <option value="not-started">Not started</option>
-            <option value="attempted">Attempted</option>
-            <option value="solved">Solved</option>
-            <option value="revisit">Revisit</option>
-          </select>
-        </label>
-      )}
       {showPattern && patterns.length > 0 && (
         <label>Pattern
           <select data-section-filter="pattern">
@@ -91,17 +78,6 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
 </div>
 
 <script>
-  const SECTION_PROGRESS_KEY = 'atlas-progress:v1';
-
-  const readSectionProgress = (): Record<string, string> => {
-    try {
-      const value = JSON.parse(window.localStorage.getItem(SECTION_PROGRESS_KEY) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    } catch {
-      return {};
-    }
-  };
-
   document.querySelectorAll('[data-section-search]').forEach((search) => {
     if (!(search instanceof HTMLElement)) return;
 
@@ -121,7 +97,6 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
 
     const filter = () => {
       const query = input.value.trim().toLowerCase();
-      const progress = readSectionProgress();
       const hasActiveFilters = filters.some((control) => Boolean(control.value));
       let visible = 0;
 
@@ -133,11 +108,6 @@ const hasFilters = showDifficulty || showContentType || showCompletion || showPa
         const matchesFilters = item instanceof HTMLElement && filters.every((control) => {
           if (!control.value) return true;
           const filterName = control.dataset.sectionFilter;
-          if (filterName === 'completion') {
-            const slug = item.dataset.postSlug;
-            const state = slug ? progress[slug] ?? 'not-started' : 'unavailable';
-            return state === control.value;
-          }
           if (filterName === 'pattern') {
             return (item.dataset.filterPatterns || '').split(/\s+/).includes(control.value);
           }

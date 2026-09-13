@@ -415,11 +415,12 @@ summary {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 0 20px;
+  padding: 12px 24px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  font-size: 13px;
+  font-size: var(--type-small);
   font-weight: 600;
+  line-height: 1.25;
   transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
@@ -3253,7 +3254,7 @@ summary {
     background: var(--bg);
     backdrop-filter: blur(18px);
     opacity: 0;
-    transition: max-height 200ms ease, opacity 160ms ease, visibility 160ms ease;
+    transition: opacity 160ms ease, visibility 160ms ease;
   }
 
   .mobile-nav.is-open {

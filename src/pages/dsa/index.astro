@@ -2,10 +2,9 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import LearningEstimate from '../../components/LearningEstimate.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
-import { getPostsForSeries, getPostsForTopic } from '../../lib/posts';
+import { getPostsForSeries } from '../../lib/posts';
 
 const posts = await getCollection('posts');
 const sections = DSA_SECTIONS.map((section) => ({ section, count: getPostsForSeries(posts, section.slug).length }));
@@ -22,11 +21,9 @@ const groups = [
     <h1>Learn one pattern at a time.</h1>
     <p>Each section starts with the basic idea, then moves through patterns and practice problems grouped by difficulty.</p>
     <div class="page-hero-actions">
-      <a class="button button-primary" href="/topics/dsa/#choose-your-goal">Find your first lesson</a>
+      <a class="button button-primary" href="/posts/solving-dsa-independently/">Open the DSA roadmap</a>
       <a class="button button-secondary" href="/dsa/master-sheet/">Open the master sheet</a>
-      <a class="button button-secondary" href="/dsa/companies/">Practice by company</a>
     </div>
-    <LearningEstimate posts={getPostsForTopic(posts, 'dsa')} />
   </section>
 
   <section class="topic-cover-directory section-wrap">

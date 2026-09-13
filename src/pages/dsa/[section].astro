@@ -4,14 +4,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DsaArticleCard from '../../components/DsaArticleCard.astro';
 import GraphTraversalSimulator from '../../components/GraphTraversalSimulator.astro';
-import LearningEstimate from '../../components/LearningEstimate.astro';
-import ProgressSummary from '../../components/ProgressSummary.astro';
 import SectionSearch from '../../components/SectionSearch.astro';
 import TopicBanner from '../../components/TopicBanner.astro';
 import TreeTraversalSimulator from '../../components/TreeTraversalSimulator.astro';
 import { DSA_SECTIONS } from '../../data/learningPaths';
 import { getDsaPattern } from '../../data/dsaPatterns';
-import { getPostSlug, getPostsForSeries } from '../../lib/posts';
+import { getPostsForSeries } from '../../lib/posts';
 
 export function getStaticPaths() {
   return DSA_SECTIONS.map((section) => ({
@@ -54,8 +52,6 @@ const groupCopy = {
     <div class="dsa-topic-pills">
       {section.topics.map((topic) => <span>{topic}</span>)}
     </div>
-    <LearningEstimate {posts} />
-    <ProgressSummary postSlugs={posts.map(getPostSlug)} label={`Your progress in ${section.title}`} />
     <div class="dsa-tool-links">
       <a href="/dsa/patterns/">Browse DSA patterns</a>
       <a href="/dsa/revision/">Open revision cards</a>
@@ -73,7 +69,6 @@ const groupCopy = {
       itemLabel="articles"
       showDifficulty
       showContentType
-      showCompletion
       showPattern
       patterns={availablePatterns}
     />
