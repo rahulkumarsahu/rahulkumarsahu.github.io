@@ -2823,6 +2823,18 @@ summary {
   gap: 80px;
 }
 
+.about-page-hero .about-page-grid h1 {
+  max-width: 22ch;
+  font-size: clamp(2.5rem, 4.4vw, 4.25rem);
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.about-page-hero .about-page-grid > div:first-child > p:not(.section-index) {
+  max-width: 65ch;
+}
+
 .about-page-actions {
   display: flex;
   flex-wrap: wrap;
