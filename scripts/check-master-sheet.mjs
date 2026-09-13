@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { MASTER_PROBLEMS, MASTER_TOPICS } from '../src/data/dsaMasterSheet.ts';
 import { COMPANY_TRACKS } from '../src/data/dsaCompanyTracks.ts';
 import { CURRICULUM_PROBLEMS, CURRICULUM_SOURCE_ROW_COUNT, problemUrlKey } from '../src/data/dsaCurriculum.ts';
@@ -13,8 +14,17 @@ const allowedHosts = {
   GeeksforGeeks: 'www.geeksforgeeks.org',
   HackerRank: 'www.hackerrank.com',
 };
+const masterSheetComponent = readFileSync(
+  new URL('../src/components/DsaMasterSheet.astro', import.meta.url),
+  'utf8',
+);
 
 assert.equal(MASTER_TOPICS.length, 18, 'The master sheet should contain 18 learning topics.');
+assert.match(
+  masterSheetComponent,
+  /<style\s+is:global>/,
+  'Master Sheet styles must remain global because problem rows are rendered dynamically in the browser.',
+);
 assert.equal(CURRICULUM_SOURCE_ROW_COUNT, 726, 'The curriculum import should contain all 726 source rows.');
 assert.equal(CURRICULUM_PROBLEMS.length, 527, 'The curriculum should contain 527 unique problems after duplicate resources are merged.');
 assert.equal(UNRATED_RESOLUTIONS.length, 406, 'All verifiable unrated questions should have a direct source and difficulty.');
