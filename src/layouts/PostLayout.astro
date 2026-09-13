@@ -8,6 +8,8 @@ import ArticleJourney from '../components/ArticleJourney.astro';
 import ArticlePersonalNote from '../components/ArticlePersonalNote.astro';
 import ArticleFeedback from '../components/ArticleFeedback.astro';
 import ApproachComparison from '../components/ApproachComparison.astro';
+import ArticleModeWorkspace from '../components/ArticleModeWorkspace.astro';
+import DsaArticleWorkspace from '../components/DsaArticleWorkspace.astro';
 import EngineeringConnection from '../components/EngineeringConnection.astro';
 import JDoodlePractice from '../components/JDoodlePractice.astro';
 import KnowledgeCheck from '../components/KnowledgeCheck.astro';
@@ -127,7 +129,7 @@ const jsonLd = {
   </Fragment>
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
 
-  <div class="article-shell section-wrap">
+  <div class:list={['article-shell section-wrap', { 'article-shell-workspace': Boolean(practiceProblem) || interactive === 'recursion-call-stack' }]}>
     <article class="article-main">
       <Breadcrumbs
         items={[
@@ -175,24 +177,24 @@ const jsonLd = {
       {hasContent ? (
         <div class="article-content">
           {isSystemDesignCaseStudy && <SystemDesignCaseStudyOutline />}
-          {practiceProblem && <JDoodlePractice problem={practiceProblem} />}
           {practiceProblem ? (
             <>
-              <details class="practice-solution" data-practice-solution>
-                <summary>
-                  <span>When you are ready</span>
-                  <strong>Show the explanation and complete solution</strong>
-                  <small>Your original article, Java solution, complexity analysis and dry run are preserved here.</small>
-                </summary>
-                <div class="practice-solution-content">
+              <DsaArticleWorkspace title={post.data.title} hasVisualization={isMoveZeroesPractice || isSubsetsPractice}>
+                <Fragment slot="problem"><JDoodlePractice problem={practiceProblem} mode="problem" /></Fragment>
+                <Fragment slot="editorial">
                   <slot />
-                  {isMoveZeroesPractice && <MoveZeroesTrace />}
-                  {isSubsetsPractice && <SubsetBacktracking />}
                   {approachComparison && <ApproachComparison comparison={approachComparison} />}
                   {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
                   {learningLinks && <ArticleLearningLinks links={learningLinks} />}
-                </div>
-              </details>
+                </Fragment>
+                {(isMoveZeroesPractice || isSubsetsPractice) && (
+                  <Fragment slot="visualization">
+                    {isMoveZeroesPractice && <MoveZeroesTrace />}
+                    {isSubsetsPractice && <SubsetBacktracking />}
+                  </Fragment>
+                )}
+                <Fragment slot="code"><JDoodlePractice problem={practiceProblem} mode="code" /></Fragment>
+              </DsaArticleWorkspace>
               {knowledgeQuestions && <KnowledgeCheck articleSlug={postSlug} questions={knowledgeQuestions} />}
               <nav class="dsa-learning-destinations" aria-label="DSA learning tools">
                 {post.data.patterns?.slice(0, 2).map((pattern) => (
@@ -203,8 +205,12 @@ const jsonLd = {
             </>
           ) : (
             <>
-              <slot />
-              {interactive === 'recursion-call-stack' && <RecursionCallStack />}
+              {interactive === 'recursion-call-stack' ? (
+                <ArticleModeWorkspace title={post.data.title}>
+                  <Fragment slot="editorial"><slot /></Fragment>
+                  <Fragment slot="visualization"><RecursionCallStack /></Fragment>
+                </ArticleModeWorkspace>
+              ) : <slot />}
               {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
               {learningLinks && <ArticleLearningLinks links={learningLinks} />}
             </>
@@ -286,6 +292,11 @@ const jsonLd = {
   )}
 
   <style>
+    .article-shell-workspace { grid-template-columns: minmax(0, 1fr); }
+    .article-shell-workspace .article-aside { display: none; }
+    .article-shell-workspace .article-header,
+    .article-shell-workspace .article-divider { width: min(100%, 820px); }
+
     .dsa-learning-destinations {
       display: flex;
       flex-wrap: wrap;
@@ -343,21 +354,6 @@ const jsonLd = {
       setTimeout(() => { copyLink.textContent = 'Copy link'; }, 1600);
     });
 
-    const practiceSolution = document.querySelector<HTMLDetailsElement>('[data-practice-solution]');
-    const revealAnchoredSolution = () => {
-      if (!practiceSolution || !window.location.hash) return;
-      const target = document.querySelector(window.location.hash);
-      if (target && practiceSolution.contains(target)) practiceSolution.open = true;
-    };
-
-    document.querySelectorAll('.toc-card a').forEach((link) => {
-      link.addEventListener('click', () => {
-        if (practiceSolution) practiceSolution.open = true;
-      });
-    });
-
-    revealAnchoredSolution();
-    window.addEventListener('hashchange', revealAnchoredSolution);
 
     updateProgress();
     document.addEventListener('scroll', updateProgress, { passive: true });

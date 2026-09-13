@@ -2,7 +2,7 @@
 import type { PracticeProblem } from '../data/practiceProblems';
 import ProgressiveHints from './ProgressiveHints.astro';
 
-const { problem } = Astro.props as { problem: PracticeProblem };
+const { problem, mode = 'all' } = Astro.props as { problem: PracticeProblem; mode?: 'all' | 'problem' | 'code' };
 const configuredEmbed = problem.slug === 'subsets-in-java'
   ? import.meta.env.PUBLIC_JDOODLE_SUBSETS_EMBED_URL?.trim() ?? ''
   : '';
@@ -11,17 +11,18 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
 
 <section
   class="jdoodle-practice"
-  id="practice-workspace"
-  aria-labelledby={`practice-${problem.slug}`}
+  id={`practice-workspace-${problem.slug}-${mode}`}
+  aria-label={`${problem.title} ${mode === 'code' ? 'coding workspace' : 'problem statement'}`}
   data-practice-workspace
   data-problem-slug={problem.slug}
+  data-practice-mode={mode}
 >
-  <header class="jdoodle-heading">
+  {mode === 'all' && <header class="jdoodle-heading">
     <div><h2 id={`practice-${problem.slug}`}>Read the problem, then build your solution</h2></div>
     <p>Your saved draft stays in this browser. The completed solution remains closed until you reveal it.</p>
-  </header>
+  </header>}
 
-  <section class="jdoodle-problem" aria-labelledby={`problem-${problem.slug}`}>
+  {mode !== 'code' && <section class="jdoodle-problem" aria-labelledby={`problem-${problem.slug}`}>
     <div class="jdoodle-side-label"><span>01</span> Problem statement</div>
     <h3 id={`problem-${problem.slug}`}>{problem.title}</h3>
     <p>{problem.instruction}</p>
@@ -57,9 +58,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     {problem.officialUrl && (
       <a href={problem.officialUrl} target="_blank" rel="noopener noreferrer">Open the official problem ↗</a>
     )}
-  </section>
+  </section>}
 
-  <section class="jdoodle-build" aria-labelledby={`build-${problem.slug}`}>
+  {mode !== 'problem' && <section class="jdoodle-build" aria-labelledby={`build-${problem.slug}`}>
     <div class="jdoodle-build-heading">
       <div>
         <div class="jdoodle-side-label"><span>02</span> Build your own</div>
@@ -102,9 +103,9 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
         </div>
       </form>
     )}
-  </section>
+  </section>}
 
-  <ProgressiveHints hints={problem.hints} problemSlug={problem.slug} />
+  {mode !== 'problem' && <ProgressiveHints hints={problem.hints} problemSlug={problem.slug} />}
 </section>
 
 {hasEmbed && (
@@ -175,6 +176,19 @@ const hasEmbed = /^https:\/\/www\.jdoodle\.com\/embed\/v1\/[a-zA-Z0-9]+\/?$/.tes
     border-radius: 1rem;
     background: color-mix(in srgb, var(--surface) 90%, transparent);
     box-shadow: var(--shadow);
+  }
+
+  .jdoodle-practice[data-practice-mode]:not([data-practice-mode='all']) {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .jdoodle-practice[data-practice-mode='problem'] .jdoodle-problem,
+  .jdoodle-practice[data-practice-mode='code'] .jdoodle-build {
+    border-bottom: 0;
   }
 
   .jdoodle-heading {

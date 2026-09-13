@@ -1,0 +1,37 @@
+---
+const { title } = Astro.props as { title: string };
+---
+
+<section class="article-mode-workspace" data-article-modes aria-label={`${title} article views`}>
+  <div class="article-mode-tabs" role="tablist" aria-label="Article views">
+    <button type="button" role="tab" id="article-editorial-tab" aria-selected="true" aria-controls="article-editorial-panel" data-article-tab="editorial">Editorial</button>
+    <button type="button" role="tab" id="article-visualize-tab" aria-selected="false" aria-controls="article-visualize-panel" data-article-tab="visualize">Visualize recursion</button>
+  </div>
+  <div role="tabpanel" id="article-editorial-panel" aria-labelledby="article-editorial-tab" data-article-panel="editorial"><div class="article-editorial-copy"><slot name="editorial" /></div></div>
+  <div role="tabpanel" id="article-visualize-panel" aria-labelledby="article-visualize-tab" data-article-panel="visualize" hidden><slot name="visualization" /></div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-article-modes]').forEach((workspace) => {
+    const activate = (button: HTMLButtonElement) => {
+      const name = button.dataset.articleTab;
+      if (!name) return;
+      workspace.querySelectorAll<HTMLButtonElement>('[data-article-tab]').forEach((tab) => { const active = tab === button; tab.setAttribute('aria-selected', String(active)); tab.tabIndex = active ? 0 : -1; });
+      workspace.querySelectorAll<HTMLElement>('[data-article-panel]').forEach((panel) => { panel.hidden = panel.dataset.articlePanel !== name; });
+    };
+    workspace.querySelectorAll<HTMLButtonElement>('[data-article-tab]').forEach((button) => {
+      button.addEventListener('click', () => activate(button));
+      button.addEventListener('keydown', (event) => { if (!['ArrowLeft','ArrowRight'].includes(event.key)) return; const tabs=[...(button.parentElement?.querySelectorAll<HTMLButtonElement>('[data-article-tab]')??[])]; const next=tabs[(tabs.indexOf(button)+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length]; event.preventDefault(); next?.focus(); if(next)activate(next); });
+    });
+    const revealHash = () => { if (!window.location.hash) return; const target=workspace.querySelector(window.location.hash); if(target){ const editorial=workspace.querySelector<HTMLButtonElement>('[data-article-tab="editorial"]'); if(editorial)activate(editorial); } };
+    revealHash(); window.addEventListener('hashchange', revealHash);
+  });
+</script>
+
+<style>
+  .article-mode-workspace{width:100%;margin:0 0 3rem;overflow:hidden;border:1px solid var(--line-strong);border-radius:1rem;background:var(--surface)}
+  .article-mode-tabs{position:sticky;z-index:3;top:0;display:flex;min-height:3.2rem;padding-inline:.55rem;border-bottom:1px solid var(--line-strong);background:color-mix(in srgb,var(--surface-strong) 92%,var(--bg))}
+  .article-mode-tabs button{position:relative;min-height:3.2rem;padding:.2rem .9rem;border:0;background:transparent;color:var(--text-soft);font:700 .84rem var(--font-body);cursor:pointer}.article-mode-tabs button::after{position:absolute;right:.85rem;bottom:-1px;left:.85rem;height:2px;background:transparent;content:''}.article-mode-tabs button[aria-selected='true']{color:var(--text)}.article-mode-tabs button[aria-selected='true']::after{background:var(--orange)}.article-mode-tabs button:focus-visible{outline:3px solid color-mix(in srgb,var(--orange) 35%,transparent);outline-offset:-4px}
+  [data-article-panel][hidden]{display:none}.article-editorial-copy{width:min(100% - 2.5rem,820px);margin-inline:auto;padding:.5rem 0 3rem}.article-editorial-copy :global(h2:first-child){margin-top:2rem}
+  @media(max-width:600px){.article-mode-workspace{width:calc(100vw - 1rem)}.article-editorial-copy{width:calc(100% - 1.5rem)}}
+</style>

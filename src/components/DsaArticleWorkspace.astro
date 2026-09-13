@@ -1,0 +1,217 @@
+---
+interface Props {
+  title: string;
+  hasVisualization?: boolean;
+}
+
+const { title, hasVisualization = false } = Astro.props;
+---
+
+<section class="dsa-workspace" data-dsa-workspace aria-label={`${title} learning workspace`}>
+  <header class="dsa-workspace-heading">
+    <div>
+      <span>DSA LEARNING WORKSPACE</span>
+      <h2>Understand it, see it, then write it.</h2>
+    </div>
+    <p>Use the reading and working panes together. Your original article remains available in full under Editorial.</p>
+  </header>
+
+  <div class="dsa-workspace-grid">
+    <section class="dsa-pane dsa-reading-pane" aria-label="Reading pane">
+      <div class="dsa-pane-tabs" role="tablist" aria-label="Reading views">
+        <button type="button" role="tab" id="problem-tab" aria-selected="true" aria-controls="problem-panel" data-workspace-tab="problem">Problem</button>
+        <button type="button" role="tab" id="editorial-tab" aria-selected="false" aria-controls="editorial-panel" data-workspace-tab="editorial">Editorial</button>
+      </div>
+      <div class="dsa-pane-scroll">
+        <div role="tabpanel" id="problem-panel" aria-labelledby="problem-tab" data-workspace-panel="problem">
+          <slot name="problem" />
+        </div>
+        <div role="tabpanel" id="editorial-panel" aria-labelledby="editorial-tab" data-workspace-panel="editorial" hidden>
+          <div class="dsa-editorial">
+            <slot name="editorial" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dsa-pane dsa-working-pane" aria-label="Working pane">
+      <div class="dsa-pane-tabs" role="tablist" aria-label="Working views">
+        {hasVisualization && <button type="button" role="tab" id="visualize-tab" aria-selected="true" aria-controls="visualize-panel" data-workspace-tab="visualize">Visualize</button>}
+        <button type="button" role="tab" id="code-tab" aria-selected={hasVisualization ? 'false' : 'true'} aria-controls="code-panel" data-workspace-tab="code">Code</button>
+      </div>
+      <div class="dsa-pane-scroll dsa-tool-scroll">
+        {hasVisualization && (
+          <div role="tabpanel" id="visualize-panel" aria-labelledby="visualize-tab" data-workspace-panel="visualize">
+            <slot name="visualization" />
+          </div>
+        )}
+        <div role="tabpanel" id="code-panel" aria-labelledby="code-tab" data-workspace-panel="code" hidden={hasVisualization}>
+          <slot name="code" />
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-dsa-workspace]').forEach((workspace) => {
+    const activate = (button: HTMLButtonElement) => {
+      const tabName = button.dataset.workspaceTab;
+      const pane = button.closest<HTMLElement>('.dsa-pane');
+      if (!tabName || !pane) return;
+
+      pane.querySelectorAll<HTMLButtonElement>('[data-workspace-tab]').forEach((tab) => {
+        const selected = tab === button;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      pane.querySelectorAll<HTMLElement>('[data-workspace-panel]').forEach((panel) => {
+        panel.hidden = panel.dataset.workspacePanel !== tabName;
+      });
+    };
+
+    workspace.querySelectorAll<HTMLButtonElement>('[data-workspace-tab]').forEach((button) => {
+      button.addEventListener('click', () => activate(button));
+      button.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        const buttons = [...(button.closest('.dsa-pane-tabs')?.querySelectorAll<HTMLButtonElement>('[data-workspace-tab]') ?? [])];
+        const current = buttons.indexOf(button);
+        const direction = event.key === 'ArrowRight' ? 1 : -1;
+        const next = buttons[(current + direction + buttons.length) % buttons.length];
+        event.preventDefault();
+        next?.focus();
+        if (next) activate(next);
+      });
+    });
+
+    const openEditorialForHash = () => {
+      if (!window.location.hash) return;
+      const target = workspace.querySelector(window.location.hash);
+      if (!target) return;
+      const editorial = workspace.querySelector<HTMLButtonElement>('[data-workspace-tab="editorial"]');
+      if (editorial) activate(editorial);
+    };
+
+    openEditorialForHash();
+    window.addEventListener('hashchange', openEditorialForHash);
+  });
+</script>
+
+<style>
+  .dsa-workspace {
+    width: 100%;
+    margin: 1rem 0 3.5rem;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: 1rem;
+    background: var(--bg);
+    box-shadow: 0 24px 65px color-mix(in srgb, #000 18%, transparent);
+  }
+
+  .dsa-workspace-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.15rem 1.35rem;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-strong) 82%, var(--bg));
+  }
+
+  .dsa-workspace-heading span {
+    color: var(--amber);
+    font: 700 var(--type-technical) var(--font-mono);
+    letter-spacing: .04em;
+  }
+
+  .dsa-workspace-heading h2 {
+    margin: .25rem 0 0;
+    padding: 0;
+    border: 0;
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    line-height: 1.1;
+  }
+
+  .dsa-workspace-heading p {
+    max-width: 32rem;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: .88rem;
+    line-height: 1.55;
+    text-align: right;
+  }
+
+  .dsa-workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(31rem, .92fr);
+    min-height: 46rem;
+    max-height: min(78vh, 58rem);
+  }
+
+  .dsa-pane { min-width: 0; background: var(--surface); }
+  .dsa-working-pane { border-left: 1px solid var(--line-strong); background: color-mix(in srgb, var(--surface-strong) 76%, var(--bg)); }
+
+  .dsa-pane-tabs {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    padding-inline: .55rem;
+    border-bottom: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg));
+  }
+
+  .dsa-pane-tabs button {
+    position: relative;
+    min-height: 3rem;
+    padding: .15rem .85rem;
+    border: 0;
+    background: transparent;
+    color: var(--text-soft);
+    font: 700 .84rem var(--font-body);
+    cursor: pointer;
+  }
+
+  .dsa-pane-tabs button::after {
+    position: absolute;
+    right: .8rem;
+    bottom: -1px;
+    left: .8rem;
+    height: 2px;
+    background: transparent;
+    content: '';
+  }
+
+  .dsa-pane-tabs button[aria-selected='true'] { color: var(--text); }
+  .dsa-pane-tabs button[aria-selected='true']::after { background: var(--orange); }
+  .dsa-pane-tabs button:focus-visible { outline: 3px solid color-mix(in srgb, var(--orange) 35%, transparent); outline-offset: -4px; }
+
+  .dsa-pane-scroll {
+    height: calc(100% - 3rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  [data-workspace-panel][hidden] { display: none; }
+  .dsa-editorial { padding: .25rem 1.55rem 3rem; }
+
+  .dsa-editorial :global(h2:first-child) { margin-top: 1.35rem; }
+  .dsa-editorial :global(p),
+  .dsa-editorial :global(li) { max-width: 72ch; }
+  .dsa-editorial :global(pre) { max-width: 100%; }
+
+  @media (max-width: 1040px) {
+    .dsa-workspace { width: min(calc(100vw - 2rem), 900px); }
+    .dsa-workspace-grid { grid-template-columns: 1fr; max-height: none; }
+    .dsa-working-pane { border-top: 1px solid var(--line-strong); border-left: 0; }
+    .dsa-pane-scroll { max-height: none; overflow: visible; }
+  }
+
+  @media (max-width: 620px) {
+    .dsa-workspace { width: 100%; margin-bottom: 2.5rem; border-radius: .7rem; }
+    .dsa-workspace-heading { align-items: flex-start; flex-direction: column; gap: .5rem; padding: 1rem; }
+    .dsa-workspace-heading p { text-align: left; }
+    .dsa-editorial { padding-inline: 1rem; }
+    .dsa-pane-tabs { position: sticky; z-index: 4; top: var(--header-height, 0); }
+  }
+</style>
