@@ -44,6 +44,12 @@ body { min-width: 0; background: var(--bg); font-family: var(--font-body); }
 .home-page .header-search kbd { display: none; }
 .home-page .theme-toggle { position: absolute; right: 0; }
 .home-page .brand-copy small, .home-page .desktop-nav, .home-page .header-search { color: var(--manual-muted); }
+.home-page .desktop-learn-menu summary { color: var(--manual-ink); font-weight: 650; }
+.home-page .desktop-learn-menu summary span { color: var(--manual-muted); }
+.home-page .desktop-learn-menu summary:hover,
+.home-page .desktop-learn-menu summary:focus-visible,
+.home-page .desktop-learn-menu.is-current summary,
+.home-page .desktop-learn-menu[open] summary { color: var(--manual-action); }
 .home-page .theme-toggle { border-color: var(--manual-rule); color: var(--manual-ink); background: transparent; }
 
 .home-plate-pass .workshop-opening :is(.workshop-chapters, .workshop-statement, .workshop-margin),
