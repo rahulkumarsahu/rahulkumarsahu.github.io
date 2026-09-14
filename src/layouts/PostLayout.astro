@@ -179,7 +179,7 @@ const jsonLd = {
           {isSystemDesignCaseStudy && <SystemDesignCaseStudyOutline />}
           {practiceProblem ? (
             <>
-              <DsaArticleWorkspace title={post.data.title} hasVisualization={isMoveZeroesPractice || isSubsetsPractice}>
+              <DsaArticleWorkspace title={post.data.title} hasDebugger={isMoveZeroesPractice || isSubsetsPractice}>
                 <Fragment slot="problem"><JDoodlePractice problem={practiceProblem} mode="problem" /></Fragment>
                 <Fragment slot="editorial">
                   <slot />
@@ -187,13 +187,13 @@ const jsonLd = {
                   {engineeringConnection && <EngineeringConnection {...engineeringConnection} />}
                   {learningLinks && <ArticleLearningLinks links={learningLinks} />}
                 </Fragment>
+                <Fragment slot="code"><JDoodlePractice problem={practiceProblem} mode="code" /></Fragment>
                 {(isMoveZeroesPractice || isSubsetsPractice) && (
-                  <Fragment slot="visualization">
+                  <Fragment slot="debugger">
                     {isMoveZeroesPractice && <MoveZeroesTrace />}
                     {isSubsetsPractice && <SubsetBacktracking />}
                   </Fragment>
                 )}
-                <Fragment slot="code"><JDoodlePractice problem={practiceProblem} mode="code" /></Fragment>
               </DsaArticleWorkspace>
               {knowledgeQuestions && <KnowledgeCheck articleSlug={postSlug} questions={knowledgeQuestions} />}
               <nav class="dsa-learning-destinations" aria-label="DSA learning tools">
